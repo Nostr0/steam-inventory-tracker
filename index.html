@@ -6,8 +6,8 @@
   <title>CS:GO Inventory Value</title>
 </head>
 <body style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 2rem;">
-  <h1 style="margin:0;">CS:GO / CS2 Inventory Value</h1>
-  <p style="margin-top:.25rem;opacity:.7;">Auto-updated daily from GitHub Actions</p>
+  <h1 style="margin:0;">CS Inventory Value</h1>
+  <p style="margin-top:.25rem;opacity:.7;">Auto-updated daily :3</p>
   <canvas id="chart" height="100"></canvas>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -21,7 +21,10 @@
       const dateIdx = header.indexOf('date');
       const valIdx = header.findIndex(h => h.startsWith('value_'));
       const labels = rows.map(r => r[dateIdx]);
-      const values = rows.map(r => parseFloat(r[valIdx]));
+      const values = rows.map(r => {
+        const clean = r[valIdx].replace('€','').replace(',','.').trim();
+        return parseFloat(clean);
+      });
       return { labels, values, unit: header[valIdx].split('_')[1].toUpperCase() };
     }
 
