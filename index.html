@@ -4,39 +4,53 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>CS:GO Inventory Value</title>
+  <style>
+    table { border-collapse: collapse; width: 100%; margin-top: 2rem; }
+    th, td { border: 1px solid #ccc; padding: 0.25rem 0.5rem; text-align: left; }
+    th { background: #f0f0f0; }
+  </style>
 </head>
 <body style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 2rem;">
   <h1 style="margin:0;">CS Inventory Value</h1>
   <p style="margin-top:.25rem;opacity:.7;">Auto-updated daily :3</p>
   <canvas id="chart" height="100"></canvas>
 
+  <h2 style="margin-top:2rem;">Item Values</h2>
+  <table id="items-table">
+    <thead>
+      <tr>
+        <th>Item Name</th>
+        <th>Price (1)</th>
+        <th>Price (All)</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    async function loadCSV() {
-      const resp = await fetch('values.csv', { cache: 'no-store' });
+    async function loadCSV(file) {
+      const resp = await fetch(file, { cache: 'no-store' });
       const text = await resp.text();
       const lines = text.trim().split('\n');
       const header = lines.shift().split(',');
       const rows = lines.map(l => l.split(','));
-      const dateIdx = header.indexOf('date');
-      const valIdx = header.findIndex(h => h.startsWith('value_'));
-      const labels = rows.map(r => r[dateIdx]);
-      const values = rows.map(r => {
-        const clean = r[valIdx].replace('€','').replace(',','.').trim();
-        return parseFloat(clean);
-      });
-      return { labels, values, unit: header[valIdx].split('_')[1].toUpperCase() };
+      return { header, rows };
     }
 
     (async () => {
-      const { labels, values, unit } = await loadCSV();
+      // Chart
+      const { header: valHeader, rows: valRows } = await loadCSV('values.csv');
+      const dateIdx = valHeader.indexOf('date');
+      const valIdx = valHeader.findIndex(h => h.startsWith('value_'));
+      const labels = valRows.map(r => r[dateIdx]);
+      const values = valRows.map(r => parseFloat(r[valIdx].replace('€','').replace(',','.').trim()));
+      const unit = valHeader[valIdx].split('_')[1].toUpperCase();
+
       const ctx = document.getElementById('chart').getContext('2d');
       new Chart(ctx, {
         type: 'line',
-        data: {
-          labels,
-          datasets: [{ label: `Total Value (${unit})`, data: values, tension: 0.2, fill: false }]
-        },
+        data: { labels, datasets: [{ label: `Total Value (${unit})`, data: values, tension: 0.2, fill: false }] },
         options: {
           responsive: true,
           scales: {
@@ -45,6 +59,27 @@
           }
         }
       });
+
+      // Items table
+      const { header: itemsHeader, rows: itemsRows } = await loadCSV('items.csv');
+      // Expected items.csv: name,price,quantity
+      const items = itemsRows.map(r => ({
+        name: r[0],
+        price: parseFloat(r[1].replace('€','').replace(',','.').trim()),
+        qty: parseInt(r[2], 10)
+      }));
+      items.sort((a,b) => b.price - a.price); // sort descending by price
+
+      const tbody = document.querySelector('#items-table tbody');
+      for (const item of items) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${item.name}</td>
+          <td>${item.price.toFixed(2)} ${unit}</td>
+          <td>${(item.price * item.qty).toFixed(2)} ${unit}</td>
+        `;
+        tbody.appendChild(tr);
+      }
     })();
   </script>
 </body>
