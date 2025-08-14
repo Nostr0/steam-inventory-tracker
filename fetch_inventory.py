@@ -7,7 +7,7 @@ ROOT = Path(__file__).parent
 CONFIG = json.loads((ROOT / "config.json").read_text(encoding="utf-8"))
 STEAM_IDS = CONFIG.get("steam_ids", [])
 CURRENCY = CONFIG.get("currency", "EUR")
-SLEEP_MS = int(CONFIG.get("sleep_between_price_requests_ms", 1000))
+SLEEP_MS = int(CONFIG.get("sleep_between_price_requests_ms", 5000))
 DEBUG = CONFIG.get("debug", False)
 
 VALUES_CSV = ROOT / "values.csv"         # date,total_value
