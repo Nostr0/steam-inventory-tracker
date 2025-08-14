@@ -7,12 +7,18 @@ ROOT = Path(__file__).parent
 CONFIG = json.loads((ROOT / "config.json").read_text(encoding="utf-8"))
 STEAM_IDS = CONFIG.get("steam_ids", [])
 CURRENCY = CONFIG.get("currency", "EUR")
-SLEEP_MS = int(CONFIG.get("sleep_between_price_requests_ms", 600))
+SLEEP_MS = int(CONFIG.get("sleep_between_price_requests_ms", 1000))
+DEBUG = CONFIG.get("debug", False)
 
 VALUES_CSV = ROOT / "values.csv"         # date,total_value
 ACCOUNTS_CSV = ROOT / "accounts.csv"     # date,steam_id,value
 
 # --- Helpers ---------------------------------------------------------------
+
+def log_debug(msg):
+    if DEBUG:
+        print("[DEBUG]", msg)
+
 
 def ensure_csv_headers():
     if not VALUES_CSV.exists():
@@ -90,38 +96,42 @@ def priceoverview(name: str) -> float:
     return parse_price(price_str)
 
 def try_csgobackpack_value(steam_id: str, currency: str) -> float | None:
-    # If available, this returns a precomputed inventory value.
-    # API is known to exist but not always stable; use best-effort.
     url = "https://csgobackpack.net/api/GetInventoryValue/"
-    r = requests.get(url, params={"id": steam_id, "currency": currency}, timeout=30)
-    if r.status_code != 200:
-        return None
-    data = r.json()
-    # Common responses include a 'value' field (numeric).
-    val = data.get("value")
+    log_debug(f"Fetching total value from CSGOBackpack for {steam_id}")
     try:
+        r = requests.get(url, params={"id": steam_id, "currency": currency}, timeout=30)
+        r.raise_for_status()
+        data = r.json()
+        val = data.get("value")
+        log_debug(f"CSGOBackpack response: {data}")
         return float(val) if val is not None else None
-    except Exception:
+    except Exception as e:
+        log_debug(f"CSGOBackpack failed: {e}")
         return None
 
 def compute_value_via_market(steam_id: str) -> float:
+    log_debug(f"Falling back to Steam Market for {steam_id}")
     inv = get_inventory(steam_id)
     counts = get_item_counts(inv)
     total = 0.0
     for i, (name, qty) in enumerate(counts.items(), start=1):
         price = priceoverview(name)
+        if price == 0.0:
+            log_debug(f"[{i}] '{name}' x{qty} → FAILED to fetch price")
+        else:
+            log_debug(f"[{i}] '{name}' x{qty} → {price:.2f} each → {price * qty:.2f} total")
         total += price * qty
-        # throttle
         time.sleep(SLEEP_MS / 1000.0)
     return round(total, 2)
 
 def get_value_for_account(steam_id: str) -> float:
-    # 1) Try fast aggregated API
     v = try_csgobackpack_value(steam_id, CURRENCY)
     if isinstance(v, float) and v > 0:
+        log_debug(f"Using CSGOBackpack total: {v:.2f} {CURRENCY}")
         return round(v, 2)
-    # 2) Fallback: compute via Steam Market
-    return compute_value_via_market(steam_id)
+    else:
+        log_debug("CSGOBackpack returned no value, using Steam Market fallback")
+        return compute_value_via_market(steam_id)
 
 # --- Run -------------------------------------------------------------------
 
