@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>CS:GO Inventory Value</title>
+</head>
+<body style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 2rem;">
+  <h1 style="margin:0;">CS:GO / CS2 Inventory Value</h1>
+  <p style="margin-top:.25rem;opacity:.7;">Auto-updated daily from GitHub Actions</p>
+  <canvas id="chart" height="100"></canvas>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    async function loadCSV() {
+      const resp = await fetch('values.csv', { cache: 'no-store' });
+      const text = await resp.text();
+      const lines = text.trim().split('\n');
+      const header = lines.shift().split(',');
+      const rows = lines.map(l => l.split(','));
+      const dateIdx = header.indexOf('date');
+      const valIdx = header.findIndex(h => h.startsWith('value_'));
+      const labels = rows.map(r => r[dateIdx]);
+      const values = rows.map(r => parseFloat(r[valIdx]));
+      return { labels, values, unit: header[valIdx].split('_')[1].toUpperCase() };
+    }
+
+    (async () => {
+      const { labels, values, unit } = await loadCSV();
+      const ctx = document.getElementById('chart').getContext('2d');
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{ label: `Total Value (${unit})`, data: values, tension: 0.2, fill: false }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: { ticks: { autoSkip: true, maxTicksLimit: 12 } },
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+name: Daily Inventory Fetch
+
+on:
+  schedule:
+    # Runs at 05:00 UTC every day. That's 07:00 in Berlin during CEST, 06:00 during CET.
+    - cron: "0 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install deps
+        run: pip install requests
+
+      - name: Fetch and append value
+        run: python fetch_inventory.py
+
+      - name: Commit CSV updates
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add values.csv accounts.csv
+          git commit -m "Data: $(date -u +'%Y-%m-%d')" || echo "No changes to commit"
+          git push
