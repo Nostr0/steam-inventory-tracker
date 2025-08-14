@@ -3,6 +3,6 @@
     "76561198059817397"
   ],
   "currency": "EUR",
-  "sleep_between_price_requests_ms": 600,
+  "sleep_between_price_requests_ms": 5000,
   "debug": true
 }

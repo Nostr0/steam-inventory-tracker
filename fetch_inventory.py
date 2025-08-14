@@ -8,7 +8,7 @@ CONFIG = json.loads((ROOT / "config.json").read_text(encoding="utf-8"))
 STEAM_IDS = CONFIG.get("steam_ids", [])
 CURRENCY = CONFIG.get("currency", "EUR")
 SLEEP_MS = int(CONFIG.get("sleep_between_price_requests_ms", 5000))
-DEBUG = CONFIG.get("debug", False)
+DEBUG = CONFIG.get("debug", True)
 
 VALUES_CSV = ROOT / "values.csv"
 ACCOUNTS_CSV = ROOT / "accounts.csv"
