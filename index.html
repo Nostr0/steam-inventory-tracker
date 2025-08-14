@@ -59,27 +59,7 @@
           }
         }
       });
-
-      // Items table
-      const { header: itemsHeader, rows: itemsRows } = await loadCSV('items.csv');
-      // Expected items.csv: name,price,quantity
-      const items = itemsRows.map(r => ({
-        name: r[0],
-        price: parseFloat(r[1].replace('€','').replace(',','.').trim()),
-        qty: parseInt(r[2], 10)
-      }));
-      items.sort((a,b) => b.price - a.price); // sort descending by price
-
-      const tbody = document.querySelector('#items-table tbody');
-      for (const item of items) {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${item.name}</td>
-          <td>${item.price.toFixed(2)} ${unit}</td>
-          <td>${(item.price * item.qty).toFixed(2)} ${unit}</td>
-        `;
-        tbody.appendChild(tr);
-      }
+      
     })();
   </script>
 </body>
