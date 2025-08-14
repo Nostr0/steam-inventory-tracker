@@ -1,0 +1,7 @@
+{
+  "steam_ids": [
+    "76561198000000000"
+  ],
+  "currency": "USD",
+  "sleep_between_price_requests_ms": 600
+}
