@@ -85,9 +85,15 @@
 
       function updateChart(span) {
         const count = span === 'all' ? labels.length : Math.min(values.length, span);
-        chart.data.labels = labels.slice(-count);
-        chart.data.datasets[0].data = values.slice(-count);
-        chart.data.datasets[1].data = computeSMA(values.slice(-count), 7);
+
+        const smaFull = computeSMA(values, 7);
+        const valuesSlice = values.slice(-count);
+        const labelsSlice = labels.slice(-count);
+        const smaSlice = smaFull.slice(-count);
+
+        chart.data.labels = labelsSlice;
+        chart.data.datasets[0].data = valuesSlice;
+        chart.data.datasets[1].data = smaSlice;
         chart.update();
 
         const len = values.length;
@@ -97,6 +103,7 @@
             `Change since yesterday: ${diff >= 0 ? '+' : ''}${diff.toFixed(2)} ${unit}`;
         }
       }
+
 
       document.querySelectorAll('.btn').forEach(btn =>
         btn.addEventListener('click', () => {
