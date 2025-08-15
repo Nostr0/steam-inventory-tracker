@@ -55,7 +55,8 @@ def fetch_price(name):
             return None
         lowest_price = data.get("lowest_price") or data.get("median_price")
         if lowest_price:
-            clean = lowest_price.replace(CURRENCY_SYMBOL, "").replace(",", ".").strip()
+            # Remove currency symbols and spaces, replace comma with dot
+            clean = "".join(c for c in lowest_price if c.isdigit() or c in ",.").replace(",", ".")
             try:
                 price_cache[name] = float(clean)
             except ValueError:
@@ -85,8 +86,8 @@ def main():
 
     for name, qty in counts.items():
         price = fetch_price(name)
-        if price is None:
-            print(f"[WARN] No price for {name}")
+        if price is None or price <= 0:
+            print(f"[WARN] Skipping {name} (no valid price)")
             continue
         total = price * qty
         total_value += total
