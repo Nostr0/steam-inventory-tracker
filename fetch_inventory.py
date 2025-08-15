@@ -13,7 +13,7 @@ ITEMS_CSV = "items.csv"
 
 def fetch_inventory(steam_id):
     """Fetch inventory JSON from Steam API."""
-    url = f"https://steamcommunity.com/inventory/{steam_id}/730/2?l=english&count=5000"
+    url = f"https://steamcommunity.com/inventory/{steam_id}/730/2?l=english&count=1000"
     resp = requests.get(url)
     resp.raise_for_status()
     return resp.json()
