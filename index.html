@@ -6,184 +6,115 @@
   <title>CS:GO Inventory Value</title>
   <style>
     body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 2rem; }
-    .controls { margin: 1rem 0; display: flex; flex-wrap: wrap; gap: 1rem; }
-    select, button { padding: 0.4rem 0.6rem; font-size: 0.9rem; }
-    h2 { margin-top: 2rem; }
-    table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
-    th, td { padding: 0.4rem; border-bottom: 1px solid #ddd; text-align: left; }
-    .gain { color: green; }
-    .loss { color: red; }
+    #controls { margin-top: 1rem; }
+    .btn { margin-right: 0.5rem; padding: 0.25rem 0.5rem; cursor: pointer; }
+    .active { font-weight: bold; }
+    #daily-change { margin-top: 0.5rem; font-size: 1.1em; }
   </style>
 </head>
 <body>
-  <h1 style="margin:0;">CS Inventory Tracker</h1>
-  <p style="margin-top:.25rem;opacity:.7;">Auto-updated daily</p>
+  <h1 style="margin:0;">CS Inventory Value</h1>
+  <p style="margin-top:.25rem;opacity:.7;">Auto-updated daily :3</p>
 
-  <div class="controls">
-    <label>
-      Timeframe:
-      <select id="timeframe">
-        <option value="7">Last 7 days</option>
-        <option value="30">Last 30 days</option>
-        <option value="90">Last 90 days</option>
-        <option value="all">All time</option>
-      </select>
-    </label>
-    <label>
-      <input type="checkbox" id="avgToggle"/> Show rolling average
-    </label>
-    <label>
-      View item:
-      <select id="itemSelect"></select>
-    </label>
+  <div id="controls">
+    <span>View:</span>
+    <button class="btn active" data-span="7">7 days</button>
+    <button class="btn" data-span="30">30 days</button>
+    <button class="btn" data-span="90">90 days</button>
+    <button class="btn" data-span="all">All</button>
   </div>
 
   <canvas id="chart" height="100"></canvas>
-
-  <h2>Top Movers</h2>
-  <table id="moversTable">
-    <thead><tr><th>Item</th><th>Change</th></tr></thead>
-    <tbody></tbody>
-  </table>
+  <div id="daily-change"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    async function loadCSV(file) {
-      const resp = await fetch(file, { cache: 'no-store' });
+    async function loadCSV() {
+      const resp = await fetch('values.csv', { cache: 'no-store' });
       const text = await resp.text();
       const lines = text.trim().split('\n');
       const header = lines.shift().split(',');
       const rows = lines.map(l => l.split(','));
-      return { header, rows };
+      const dateIdx = header.indexOf('date');
+      const valIdx = header.findIndex(h => h.startsWith('value_'));
+      const labels = rows.map(r => r[dateIdx]);
+      const values = rows.map(r => parseFloat(r[valIdx].replace('€','').replace(',','.').trim()));
+      return { labels, values };
     }
 
-    function rollingAverage(data, windowSize) {
-      const res = [];
+    function computeSMA(data, window) {
+      const sma = [];
       for (let i = 0; i < data.length; i++) {
-        const start = Math.max(0, i - windowSize + 1);
-        const slice = data.slice(start, i + 1);
-        const avg = slice.reduce((a, b) => a + b, 0) / slice.length;
-        res.push(avg);
-      }
-      return res;
-    }
-
-    function filterTimeframe(labels, values, days) {
-      if (days === 'all') return { labels, values };
-      const cutoff = new Date();
-      cutoff.setDate(cutoff.getDate() - parseInt(days));
-      const outLabels = [], outValues = [];
-      for (let i = 0; i < labels.length; i++) {
-        if (new Date(labels[i]) >= cutoff) {
-          outLabels.push(labels[i]);
-          outValues.push(values[i]);
-        }
-      }
-      return { labels: outLabels, values: outValues };
-    }
-
-    async function init() {
-      const totalData = await loadCSV('values.csv');
-      const itemsData = await loadCSV('items.csv');
-
-      const dateIdx = totalData.header.indexOf('date');
-      const valIdx = totalData.header.findIndex(h => h.startsWith('value_'));
-      const labels = totalData.rows.map(r => r[dateIdx]);
-      const values = totalData.rows.map(r => parseFloat(r[valIdx].replace('€','').replace(',','.')));
-
-      const ctx = document.getElementById('chart').getContext('2d');
-      let chart = new Chart(ctx, { type: 'line', data: { labels: [], datasets: [] }, options: { responsive: true } });
-
-      const itemSelect = document.getElementById('itemSelect');
-      const timeframeSelect = document.getElementById('timeframe');
-      const avgToggle = document.getElementById('avgToggle');
-
-      // Populate item dropdown
-      const nameIdx = itemsData.header.indexOf('item_name');
-      const uniqueItems = [...new Set(itemsData.rows.map(r => r[nameIdx]))].sort();
-      itemSelect.innerHTML = `<option value="">-- Total Inventory --</option>` + uniqueItems.map(n => `<option>${n}</option>`).join('');
-
-      function updateChart() {
-        const tf = timeframeSelect.value;
-        const showAvg = avgToggle.checked;
-        const selectedItem = itemSelect.value;
-
-        let lbls, vals;
-
-        if (!selectedItem) {
-          ({ labels: lbls, values: vals } = filterTimeframe(labels, values, tf));
+        if (i < window - 1) {
+          sma.push(null);
         } else {
-          const itemRows = itemsData.rows.filter(r => r[nameIdx] === selectedItem);
-          const dIdx = itemsData.header.indexOf('date');
-          const pIdx = itemsData.header.findIndex(h => h.startsWith('price_'));
-          const sorted = itemRows.sort((a, b) => new Date(a[dIdx]) - new Date(b[dIdx]));
-          const itemLabels = sorted.map(r => r[dIdx]);
-          const itemVals = sorted.map(r => parseFloat(r[pIdx]));
-          ({ labels: lbls, values: vals } = filterTimeframe(itemLabels, itemVals, tf));
+          const slice = data.slice(i - window + 1, i + 1);
+          const sum = slice.reduce((a,b) => a + b, 0);
+          sma.push(sum / window);
         }
-
-        const datasets = [{ label: selectedItem ? selectedItem : 'Total Value', data: vals, tension: 0.2 }];
-        if (showAvg) {
-          datasets.push({ label: 'Rolling Avg', data: rollingAverage(vals, 3), borderDash: [5,5], tension: 0.2 });
-        }
-
-        chart.data.labels = lbls;
-        chart.data.datasets = datasets;
-        chart.update();
-
-        updateMovers(tf);
       }
+      return sma;
+    }
 
-      function updateMovers(tf) {
-        const tbody = document.querySelector('#moversTable tbody');
-        tbody.innerHTML = '';
+    (async () => {
+      const { labels, values } = await loadCSV();
+      const unit = 'EUR';
+      const ctx = document.getElementById('chart').getContext('2d');
 
-        const dIdx = itemsData.header.indexOf('date');
-        const nIdx = itemsData.header.indexOf('item_name');
-        const pIdx = itemsData.header.findIndex(h => h.startsWith('price_'));
-
-        const cutoff = tf === 'all' ? null : (() => { const c = new Date(); c.setDate(c.getDate() - parseInt(tf)); return c; })();
-
-        const grouped = {};
-        for (const row of itemsData.rows) {
-          const date = new Date(row[dIdx]);
-          if (cutoff && date < cutoff) continue;
-          const name = row[nIdx];
-          const price = parseFloat(row[pIdx]);
-          if (!grouped[name]) grouped[name] = [];
-          grouped[name].push({ date, price });
-        }
-
-        const changes = [];
-        for (const [name, arr] of Object.entries(grouped)) {
-          arr.sort((a, b) => a.date - b.date);
-          const first = arr[0].price;
-          const last = arr[arr.length - 1].price;
-          if (first && last && first !== 0) {
-            const changePct = ((last - first) / first) * 100;
-            changes.push({ name, changePct });
+      const config = {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [
+            { label: `Total Value (${unit})`, data: values, borderColor: 'blue', tension: 0.2, fill: false },
+            { label: '7-day Avg', data: computeSMA(values, 7), borderColor: 'orange', borderDash: [5,5], fill: false }
+          ]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            x: { ticks: { autoSkip: true, maxTicksLimit: 12 } },
+            y: { beginAtZero: true }
+          },
+          plugins: {
+            legend: { position: 'top' }
           }
         }
+      };
+      const chart = new Chart(ctx, config);
 
-        const top = [...changes].sort((a, b) => b.changePct - a.changePct).slice(0, 5);
-        const bottom = [...changes].sort((a, b) => a.changePct - b.changePct).slice(0, 5);
+      function updateChart(span) {
+        const count = span === 'all' ? labels.length : Math.min(values.length, span);
 
-        for (const g of top) {
-          tbody.innerHTML += `<tr><td>${g.name}</td><td class="gain">+${g.changePct.toFixed(2)}%</td></tr>`;
-        }
-        for (const l of bottom) {
-          tbody.innerHTML += `<tr><td>${l.name}</td><td class="loss">${l.changePct.toFixed(2)}%</td></tr>`;
+        const smaFull = computeSMA(values, 7);
+        const valuesSlice = values.slice(-count);
+        const labelsSlice = labels.slice(-count);
+        const smaSlice = smaFull.slice(-count);
+
+        chart.data.labels = labelsSlice;
+        chart.data.datasets[0].data = valuesSlice;
+        chart.data.datasets[1].data = smaSlice;
+        chart.update();
+
+        const len = values.length;
+        if (len >= 2) {
+          const diff = values[len - 1] - values[len - 2];
+          document.getElementById('daily-change').textContent =
+            `Change since yesterday: ${diff >= 0 ? '+' : ''}${diff.toFixed(2)} ${unit}`;
         }
       }
 
-      timeframeSelect.addEventListener('change', updateChart);
-      avgToggle.addEventListener('change', updateChart);
-      itemSelect.addEventListener('change', updateChart);
 
-      updateChart();
-    }
+      document.querySelectorAll('.btn').forEach(btn =>
+        btn.addEventListener('click', () => {
+          document.querySelector('.active').classList.remove('active');
+          btn.classList.add('active');
+          updateChart(btn.dataset.span);
+        })
+      );
 
-    init();
+      updateChart('7');
+    })();
   </script>
 </body>
 </html>

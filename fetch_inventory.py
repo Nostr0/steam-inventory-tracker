@@ -1,139 +1,116 @@
-import csv
-import os
-import time
-from datetime import datetime, timezone
+#!/usr/bin/env python3
+import csv, datetime as dt, json, os, re, time
+from pathlib import Path
 import requests
 
-STEAM_ID = "76561198059817397"  # your SteamID64
-CURRENCY = "eur"  # lowercase for API
-CURRENCY_SYMBOL = "€"
+ROOT = Path(__file__).parent
+CONFIG = json.loads((ROOT / "config.json").read_text(encoding="utf-8"))
+STEAM_IDS = CONFIG.get("steam_ids", [])
+CURRENCY = CONFIG.get("currency", "EUR")
+SLEEP_MS = int(CONFIG.get("sleep_between_price_requests_ms", 5000))
+DEBUG = CONFIG.get("debug", True)
 
-VALUES_CSV = "values.csv"
-ITEMS_CSV = "items.csv"
+VALUES_CSV = ROOT / "values.csv"
+ACCOUNTS_CSV = ROOT / "accounts.csv"
 
-def fetch_inventory(steam_id):
-    """Fetch inventory JSON from Steam API."""
-    url = f"https://steamcommunity.com/inventory/{steam_id}/730/2?l=english&count=1000"
-    resp = requests.get(url)
-    resp.raise_for_status()
-    return resp.json()
+# --- Helpers ---------------------------------------------------------------
 
-def get_item_counts(inv):
-    """Aggregate counts per market hash name."""
+def log_debug(msg):
+    if DEBUG:
+        print("[DEBUG]", msg)
+
+def ensure_csv_headers():
+    if not VALUES_CSV.exists():
+        with open(VALUES_CSV, "w", newline="", encoding="utf-8") as f:
+            csv.writer(f).writerow(["date", f"value_{CURRENCY.lower()}"])
+    if not ACCOUNTS_CSV.exists():
+        with open(ACCOUNTS_CSV, "w", newline="", encoding="utf-8") as f:
+            csv.writer(f).writerow(["date", "steam_id", f"value_{CURRENCY.lower()}"])
+
+PRICE_RE = re.compile(r"(\d+[.,]?\d*(?:[.,]\d{2})?)")
+
+def parse_price(text: str) -> float:
+    if not text: return 0.0
+    m = PRICE_RE.search(text.replace("\u202f", "").replace(" ", ""))
+    if not m: return 0.0
+    raw = m.group(1)
+    if "." in raw and "," in raw:
+        raw = raw.replace(".", "").replace(",", ".")
+    elif "," in raw and "." not in raw:
+        raw = raw.replace(",", ".")
+    try:
+        return float(raw)
+    except ValueError:
+        return 0.0
+
+# --- Steam inventory & prices ----------------------------------------------
+
+def get_inventory(steam_id: str):
+    url = f"https://steamcommunity.com/inventory/{steam_id}/730/2?l=english&count=2000"
+    r = requests.get(url, timeout=30)
+    r.raise_for_status()
+    return r.json()
+
+def get_item_counts(inv_json):
+    desc_map = {(str(d.get("classid")), str(d.get("instanceid", "0"))): d
+                for d in inv_json.get("descriptions", [])}
     counts = {}
-    assets = {a['assetid']: a for a in inv.get("assets", [])}
-    for desc in inv.get("descriptions", []):
-        name = desc["market_hash_name"]
-        quantity = sum(
-            1 for a in assets.values()
-            if a["classid"] == desc["classid"] and a["instanceid"] == desc["instanceid"]
-        )
-        counts[name] = quantity
+    for a in inv_json.get("assets", []):
+        key = (str(a.get("classid")), str(a.get("instanceid", "0")))
+        d = desc_map.get(key)
+        if not d:
+            d = next((x for x in inv_json.get("descriptions", []) if str(x.get("classid")) == key[0]), None)
+        name = d.get("market_hash_name") if d else None
+        if name:
+            counts[name] = counts.get(name, 0) + 1
     return counts
 
-# --- Price cache to reduce requests ---
-price_cache = {}
-
-def fetch_price(name):
-    """Fetch item price from Steam Market with rate-limit handling."""
-    if name in price_cache:
-        return price_cache[name]
-
+def get_item_price(name: str):
     url = "https://steamcommunity.com/market/priceoverview/"
-    params = {"appid": 730, "currency": 3, "market_hash_name": name}
+    r = requests.get(url, params={"appid": "730", "market_hash_name": name, "currency": 3}, timeout=30)
+    if r.status_code != 200: return 0.0
+    data = r.json()
+    price_str = data.get("lowest_price") or data.get("median_price")
+    return parse_price(price_str)
 
-    while True:
-        resp = requests.get(url, params=params)
-        if resp.status_code == 429:
-            print(f"[WARN] Rate limited fetching '{name}' — sleeping 5s")
-            time.sleep(5)
-            continue
-        resp.raise_for_status()
-        data = resp.json()
-        if not data.get("success"):
-            price_cache[name] = None
-            return None
-        lowest_price = data.get("lowest_price") or data.get("median_price")
-        if lowest_price:
-            # Remove currency symbols and spaces, replace comma with dot
-            clean = "".join(c for c in lowest_price if c.isdigit() or c in ",.").replace(",", ".")
-            try:
-                price_cache[name] = float(clean)
-            except ValueError:
-                price_cache[name] = None
-        else:
-            price_cache[name] = None
-        return price_cache[name]
+def compute_inventory_value(steam_id: str) -> float:
+    log_debug(f"Computing Steam Market value for {steam_id}")
+    inv = get_inventory(steam_id)
+    counts = get_item_counts(inv)
+    total = 0.0
+    for i, (name, qty) in enumerate(counts.items(), start=1):
+        price = get_item_price(name)
+        total += price * qty
+        log_debug(f"[{i}] '{name}' x{qty} → {price:.2f} each → {price * qty:.2f} total")
+        time.sleep(SLEEP_MS / 1000.0)
+    return round(total, 2)
 
-def append_csv(filename, header, row):
-    """Append row to CSV, create file if not exists."""
-    exists = os.path.exists(filename)
-    with open(filename, "a", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
-        if not exists:
-            writer.writerow(header)
-        writer.writerow(row)
+# --- Main ---------------------------------------------------------------
 
 def main():
-    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    today = dt.date.today().isoformat()
+    ensure_csv_headers()
 
-    print(f"[DEBUG] Fetching inventory for {STEAM_ID}")
-    inv = fetch_inventory(STEAM_ID)
-    counts = get_item_counts(inv)
+    per_account = []
+    for sid in STEAM_IDS:
+        try:
+            val = compute_inventory_value(sid)
+        except Exception as e:
+            log_debug(f"Error fetching {sid}: {e}")
+            val = 0.0
+        per_account.append((sid, val))
 
-    total_value = 0.0
-    item_rows = []
+    total = round(sum(v for _, v in per_account), 2)
 
-    for name, qty in counts.items():
-        price = fetch_price(name)
-        if price is None or price <= 0:
-            print(f"[WARN] Skipping {name} (no valid price)")
-            continue
-        total = price * qty
-        total_value += total
-        item_rows.append([today, STEAM_ID, name, qty, f"{price:.2f}", f"{total:.2f}"])
-        print(f"[DEBUG] {name} | {qty}x @ {price:.2f}{CURRENCY_SYMBOL} → {total:.2f}{CURRENCY_SYMBOL}")
-        time.sleep(0.5)  # safe delay between requests
+    with open(ACCOUNTS_CSV, "a", newline="", encoding="utf-8") as f:
+        w = csv.writer(f)
+        for sid, val in per_account:
+            w.writerow([today, sid, val])
 
-    # Save total inventory value
-    append_csv(
-        VALUES_CSV,
-        ["date", f"value_{CURRENCY}"],
-        [today, f"{total_value:.2f} {CURRENCY_SYMBOL}"]
-    )
+    with open(VALUES_CSV, "a", newline="", encoding="utf-8") as f:
+        csv.writer(f).writerow([today, total])
 
-    # Save per-item snapshot
-    for row in item_rows:
-        append_csv(
-            ITEMS_CSV,
-            ["date", "steam_id", "item_name", "quantity", f"price_{CURRENCY}", f"total_value_{CURRENCY}"],
-            row
-        )
-
-    print(f"[INFO] Total inventory value: {total_value:.2f}{CURRENCY_SYMBOL}")
-
-    # --- Optional: compute top gainers/losers based on last snapshot ---
-    try:
-        if os.path.exists(ITEMS_CSV):
-            prev_prices = {}
-            with open(ITEMS_CSV, newline="", encoding="utf-8") as f:
-                reader = csv.DictReader(f)
-                for row in reader:
-                    key = row["item_name"]
-                    prev_prices[key] = float(row[f"price_{CURRENCY}"])
-            changes = [
-                (name, price - prev_prices.get(name, price))
-                for name, price in price_cache.items()
-                if prev_prices.get(name) is not None
-            ]
-            changes.sort(key=lambda x: x[1], reverse=True)
-            if changes:
-                top_gainers = changes[:5]
-                top_losers = changes[-5:]
-                print("[INFO] Top 5 gainers:", top_gainers)
-                print("[INFO] Top 5 losers:", top_losers)
-    except Exception as e:
-        print("[WARN] Could not compute gainers/losers:", e)
+    print(f"Recorded {today} total={total} {CURRENCY}; accounts={per_account}")
 
 if __name__ == "__main__":
     main()
