@@ -5,49 +5,108 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>CS:GO Inventory Value</title>
   <style>
-    table { border-collapse: collapse; width: 100%; margin-top: 2rem; }
-    th, td { border: 1px solid #ccc; padding: 0.25rem 0.5rem; text-align: left; }
-    th { background: #f0f0f0; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 2rem; }
+    #controls { margin-top: 1rem; }
+    .btn { margin-right: 0.5rem; padding: 0.25rem 0.5rem; cursor: pointer; }
+    .active { font-weight: bold; }
+    #daily-change { margin-top: 0.5rem; font-size: 1.1em; }
   </style>
 </head>
-<body style="font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 2rem;">
+<body>
   <h1 style="margin:0;">CS Inventory Value</h1>
   <p style="margin-top:.25rem;opacity:.7;">Auto-updated daily :3</p>
+
+  <div id="controls">
+    <span>View:</span>
+    <button class="btn active" data-span="7">7 days</button>
+    <button class="btn" data-span="30">30 days</button>
+    <button class="btn" data-span="90">90 days</button>
+    <button class="btn" data-span="all">All</button>
+  </div>
+
   <canvas id="chart" height="100"></canvas>
+  <div id="daily-change"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
-    async function loadCSV(file) {
-      const resp = await fetch(file, { cache: 'no-store' });
+    async function loadCSV() {
+      const resp = await fetch('values.csv', { cache: 'no-store' });
       const text = await resp.text();
       const lines = text.trim().split('\n');
       const header = lines.shift().split(',');
       const rows = lines.map(l => l.split(','));
-      return { header, rows };
+      const dateIdx = header.indexOf('date');
+      const valIdx = header.findIndex(h => h.startsWith('value_'));
+      const labels = rows.map(r => r[dateIdx]);
+      const values = rows.map(r => parseFloat(r[valIdx].replace('€','').replace(',','.').trim()));
+      return { labels, values };
+    }
+
+    function computeSMA(data, window) {
+      const sma = [];
+      for (let i = 0; i < data.length; i++) {
+        if (i < window - 1) {
+          sma.push(null);
+        } else {
+          const slice = data.slice(i - window + 1, i + 1);
+          const sum = slice.reduce((a,b) => a + b, 0);
+          sma.push(sum / window);
+        }
+      }
+      return sma;
     }
 
     (async () => {
-      // Chart
-      const { header: valHeader, rows: valRows } = await loadCSV('values.csv');
-      const dateIdx = valHeader.indexOf('date');
-      const valIdx = valHeader.findIndex(h => h.startsWith('value_'));
-      const labels = valRows.map(r => r[dateIdx]);
-      const values = valRows.map(r => parseFloat(r[valIdx].replace('€','').replace(',','.').trim()));
-      const unit = valHeader[valIdx].split('_')[1].toUpperCase();
-
+      const { labels, values } = await loadCSV();
+      const unit = 'EUR';
       const ctx = document.getElementById('chart').getContext('2d');
-      new Chart(ctx, {
+
+      const config = {
         type: 'line',
-        data: { labels, datasets: [{ label: `Total Value (${unit})`, data: values, tension: 0.2, fill: false }] },
+        data: {
+          labels,
+          datasets: [
+            { label: `Total Value (${unit})`, data: values, borderColor: 'blue', tension: 0.2, fill: false },
+            { label: '7-day Avg', data: computeSMA(values, 7), borderColor: 'orange', borderDash: [5,5], fill: false }
+          ]
+        },
         options: {
           responsive: true,
           scales: {
             x: { ticks: { autoSkip: true, maxTicksLimit: 12 } },
             y: { beginAtZero: true }
+          },
+          plugins: {
+            legend: { position: 'top' }
           }
         }
-      });
-      
+      };
+      const chart = new Chart(ctx, config);
+
+      function updateChart(span) {
+        const count = span === 'all' ? labels.length : Math.min(values.length, span);
+        chart.data.labels = labels.slice(-count);
+        chart.data.datasets[0].data = values.slice(-count);
+        chart.data.datasets[1].data = computeSMA(values.slice(-count), 7);
+        chart.update();
+
+        const len = values.length;
+        if (len >= 2) {
+          const diff = values[len - 1] - values[len - 2];
+          document.getElementById('daily-change').textContent =
+            `Change since yesterday: ${diff >= 0 ? '+' : ''}${diff.toFixed(2)} ${unit}`;
+        }
+      }
+
+      document.querySelectorAll('.btn').forEach(btn =>
+        btn.addEventListener('click', () => {
+          document.querySelector('.active').classList.remove('active');
+          btn.classList.add('active');
+          updateChart(btn.dataset.span);
+        })
+      );
+
+      updateChart('7');
     })();
   </script>
 </body>
