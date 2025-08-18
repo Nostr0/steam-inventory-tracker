@@ -5,27 +5,103 @@
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>CS:GO Inventory Value</title>
   <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 2rem; }
-    #controls { margin-top: 1rem; }
-    .btn { margin-right: 0.5rem; padding: 0.25rem 0.5rem; cursor: pointer; }
-    .active { font-weight: bold; }
-    #daily-change { margin-top: 0.5rem; font-size: 1.1em; }
+    /* --- Global Theme --- */
+    body {
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      margin: 0;
+      background: #1e1e2f;
+      color: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .card {
+      background: #2a2a3d;
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+      padding: 2rem;
+      max-width: 800px;
+      width: 100%;
+      animation: fadeIn 0.6s ease;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+
+    p.subtitle {
+      margin-top: 0.25rem;
+      opacity: 0.7;
+      font-size: 0.9rem;
+    }
+
+    /* --- Controls --- */
+    #controls {
+      margin: 1.5rem 0 1rem 0;
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      background: #3a3a50;
+      border: none;
+      border-radius: 8px;
+      padding: 0.4rem 0.9rem;
+      color: #f5f5f5;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    .btn:hover {
+      background: #50506a;
+      transform: translateY(-1px);
+    }
+
+    .btn.active {
+      background: #4cafef;
+      color: #fff;
+      font-weight: bold;
+      box-shadow: 0 0 10px rgba(76,175,239,0.6);
+    }
+
+    /* --- Chart --- */
+    #chart {
+      margin-top: 1rem;
+    }
+
+    /* --- Daily change --- */
+    #daily-change {
+      margin-top: 1rem;
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    /* Animation */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
   </style>
 </head>
 <body>
-  <h1 style="margin:0;">CS Inventory Value</h1>
-  <p style="margin-top:.25rem;opacity:.7;">Auto-updated daily :3</p>
+  <div class="card">
+    <h1>CS Inventory Value</h1>
+    <p class="subtitle">Auto-updated daily :3</p>
 
-  <div id="controls">
-    <span>View:</span>
-    <button class="btn active" data-span="7">7 days</button>
-    <button class="btn" data-span="30">30 days</button>
-    <button class="btn" data-span="90">90 days</button>
-    <button class="btn" data-span="all">All</button>
+    <div id="controls">
+      <button class="btn active" data-span="7">7 days</button>
+      <button class="btn" data-span="30">30 days</button>
+      <button class="btn" data-span="90">90 days</button>
+      <button class="btn" data-span="all">All</button>
+    </div>
+
+    <canvas id="chart" height="120"></canvas>
+    <div id="daily-change"></div>
   </div>
-
-  <canvas id="chart" height="100"></canvas>
-  <div id="daily-change"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
@@ -61,49 +137,43 @@
       const unit = 'EUR';
       const ctx = document.getElementById('chart').getContext('2d');
 
-      const config = {
+      const chart = new Chart(ctx, {
         type: 'line',
         data: {
           labels,
           datasets: [
-            { label: `Total Value (${unit})`, data: values, borderColor: 'blue', tension: 0.2, fill: false },
-            { label: '7-day Avg', data: computeSMA(values, 7), borderColor: 'orange', borderDash: [5,5], fill: false }
+            { label: `Total Value (${unit})`, data: values, borderColor: '#4cafef', backgroundColor: 'rgba(76,175,239,0.15)', tension: 0.25, fill: true },
+            { label: '7-day Avg', data: computeSMA(values, 7), borderColor: '#ffb74d', borderDash: [6,4], fill: false }
           ]
         },
         options: {
           responsive: true,
           scales: {
-            x: { ticks: { autoSkip: true, maxTicksLimit: 12 } },
-            y: { beginAtZero: true }
+            x: { ticks: { autoSkip: true, maxTicksLimit: 12, color: '#ccc' }, grid: { color: '#444' } },
+            y: { beginAtZero: true, ticks: { color: '#ccc' }, grid: { color: '#444' } }
           },
           plugins: {
-            legend: { position: 'top' }
+            legend: { labels: { color: '#eee' }, position: 'top' }
           }
         }
-      };
-      const chart = new Chart(ctx, config);
+      });
 
       function updateChart(span) {
         const count = span === 'all' ? labels.length : Math.min(values.length, span);
 
         const smaFull = computeSMA(values, 7);
-        const valuesSlice = values.slice(-count);
-        const labelsSlice = labels.slice(-count);
-        const smaSlice = smaFull.slice(-count);
-
-        chart.data.labels = labelsSlice;
-        chart.data.datasets[0].data = valuesSlice;
-        chart.data.datasets[1].data = smaSlice;
+        chart.data.labels = labels.slice(-count);
+        chart.data.datasets[0].data = values.slice(-count);
+        chart.data.datasets[1].data = smaFull.slice(-count);
         chart.update();
 
-        const len = values.length;
-        if (len >= 2) {
-          const diff = values[len - 1] - values[len - 2];
+        if (values.length >= 2) {
+          const diff = values[values.length - 1] - values[values.length - 2];
           document.getElementById('daily-change').textContent =
             `Change since yesterday: ${diff >= 0 ? '+' : ''}${diff.toFixed(2)} ${unit}`;
+          document.getElementById('daily-change').style.color = diff >= 0 ? '#4caf50' : '#e57373';
         }
       }
-
 
       document.querySelectorAll('.btn').forEach(btn =>
         btn.addEventListener('click', () => {
