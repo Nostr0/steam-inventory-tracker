@@ -22,10 +22,12 @@ def log_debug(msg):
 def ensure_csv_headers():
     if not VALUES_CSV.exists():
         with open(VALUES_CSV, "w", newline="", encoding="utf-8") as f:
-            csv.writer(f).writerow(["date", f"value_{CURRENCY.lower()}"])
-    if not ACCOUNTS_CSV.exists():
-        with open(ACCOUNTS_CSV, "w", newline="", encoding="utf-8") as f:
-            csv.writer(f).writerow(["date", "steam_id", f"value_{CURRENCY.lower()}"])
+            csv.writer(f).writerow([
+                "date",
+                "lowest",
+                "median"
+            ])
+
 
 PRICE_RE = re.compile(r"(\d+[.,]?\d*(?:[.,]\d{2})?)")
 
@@ -68,22 +70,30 @@ def get_item_counts(inv_json):
 def get_item_price(name: str):
     url = "https://steamcommunity.com/market/priceoverview/"
     r = requests.get(url, params={"appid": "730", "market_hash_name": name, "currency": 3}, timeout=30)
-    if r.status_code != 200: return 0.0
+    if r.status_code != 200: 
+        return 0.0, 0.0
     data = r.json()
-    price_str = data.get("median_price") or data.get("lowest_price")
-    return parse_price(price_str)
+    lowest = parse_price(data.get("lowest_price"))
+    median = parse_price(data.get("median_price"))
+    return lowest, median
 
-def compute_inventory_value(steam_id: str) -> float:
+def compute_inventory_value(steam_id: str):
     log_debug(f"Computing Steam Market value for {steam_id}")
     inv = get_inventory(steam_id)
     counts = get_item_counts(inv)
-    total = 0.0
+
+    lowest_values = []
+    median_values = []
+
     for i, (name, qty) in enumerate(counts.items(), start=1):
-        price = get_item_price(name)
-        total += price * qty
-        log_debug(f"[{i}] '{name}' x{qty} → {price:.2f} each → {price * qty:.2f} total")
+        lowest, median = get_item_price(name)
+        lowest_values.extend([lowest] * qty)
+        median_values.extend([median] * qty)
+        log_debug(f"[{i}] '{name}' x{qty} → L:{lowest:.2f} M:{median:.2f} → {lowest * qty:.2f} total")
         time.sleep(SLEEP_MS / 1000.0)
-    return round(total, 2)
+
+    return lowest_values, median_values
+
 
 # --- Main ---------------------------------------------------------------
 
@@ -92,15 +102,22 @@ def main():
     ensure_csv_headers()
 
     per_account = []
+    all_lowest = []
+    all_median = []
+
     for sid in STEAM_IDS:
         try:
-            val = compute_inventory_value(sid)
+            val, lowest_vals, median_vals = compute_inventory_value(sid)
+            all_lowest.extend(lowest_vals)
+            all_median.extend(median_vals)
         except Exception as e:
             log_debug(f"Error fetching {sid}: {e}")
             val = 0.0
         per_account.append((sid, val))
 
-    total = round(sum(v for _, v in per_account), 2)
+    # Durchschnittswerte berechnen
+    lowest = round(sum(all_lowest) / len(all_lowest), 2) if all_lowest else 0.0
+    median = round(sum(all_median) / len(all_median), 2) if all_median else 0.0
 
     with open(ACCOUNTS_CSV, "a", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
@@ -108,9 +125,9 @@ def main():
             w.writerow([today, sid, val])
 
     with open(VALUES_CSV, "a", newline="", encoding="utf-8") as f:
-        csv.writer(f).writerow([today, total])
+        csv.writer(f).writerow([today, lowest, median])
 
-    print(f"Recorded {today} total={total} {CURRENCY}; accounts={per_account}")
+    print(f"Recorded {today} lowest={lowest}; median={median}; accounts={per_account}")
 
 if __name__ == "__main__":
     main()

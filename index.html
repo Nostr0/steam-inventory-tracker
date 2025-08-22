@@ -35,11 +35,16 @@
       const lines = text.trim().split('\n');
       const header = lines.shift().split(',');
       const rows = lines.map(l => l.split(','));
+
       const dateIdx = header.indexOf('date');
-      const valIdx = header.findIndex(h => h.startsWith('value_'));
+      const lowestIdx = header.indexOf('lowest');
+      const medianIdx = header.indexOf('median');
+
       const labels = rows.map(r => r[dateIdx]);
-      const values = rows.map(r => parseFloat(r[valIdx].replace('€','').replace(',','.').trim()));
-      return { labels, values };
+      const lowestValues = rows.map(r => parseFloat(r[lowestIdx].replace('€','').replace(',','.').trim()));
+      const medianValues = rows.map(r => parseFloat(r[medianIdx].replace('€','').replace(',','.').trim()));
+
+      return { labels, lowestValues, medianValues };
     }
 
     function computeSMA(data, window) {
@@ -66,7 +71,8 @@
         data: {
           labels,
           datasets: [
-            { label: `Total Value (${unit})`, data: values, borderColor: 'blue', tension: 0.2, fill: false },
+            { label: `Lowest Price (${unit})`, data: lowestValues, borderColor: 'red', tension: 0.2, fill: false },
+            { label: `Median Price (${unit})`, data: medianValues, borderColor: 'blue', tension: 0.2, fill: false },
             { label: '7-day Avg', data: computeSMA(values, 7), borderColor: 'orange', borderDash: [5,5], fill: false }
           ]
         },
