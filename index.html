@@ -4,6 +4,7 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>CS:GO Inventory Value</title>
+  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
   <style>
     body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 2rem; }
     #controls { margin-top: 1rem; }
@@ -33,8 +34,8 @@
       const resp = await fetch('values.csv', { cache: 'no-store' });
       const text = await resp.text();
       const lines = text.trim().split('\n');
-      const header = lines.shift().split(',');
-      const rows = lines.map(l => l.split(','));
+      const rows = lines.map(l => l.split(',').map(v => v.trim()));
+      const header = rows[0];
 
       const dateIdx = header.indexOf('date');
       const lowestIdx = header.indexOf('lowest');
@@ -62,7 +63,7 @@
     }
 
     (async () => {
-      const { labels, values } = await loadCSV();
+      const { labels, lowestValues, medianValues } = await loadCSV();
       const unit = 'EUR';
       const ctx = document.getElementById('chart').getContext('2d');
 
@@ -73,7 +74,7 @@
           datasets: [
             { label: `Lowest Price (${unit})`, data: lowestValues, borderColor: 'red', tension: 0.2, fill: false },
             { label: `Median Price (${unit})`, data: medianValues, borderColor: 'blue', tension: 0.2, fill: false },
-            { label: '7-day Avg', data: computeSMA(values, 7), borderColor: 'orange', borderDash: [5,5], fill: false }
+            { label: '7-day Avg', data: computeSMA(medianValues, 7), borderColor: 'orange', borderDash: [5,5], fill: false }
           ]
         },
         options: {
@@ -90,24 +91,27 @@
       const chart = new Chart(ctx, config);
 
       function updateChart(span) {
-        const count = span === 'all' ? labels.length : Math.min(values.length, span);
+        const count = span === 'all' ? labels.length : Math.min(lowestValues.length, span);
 
-        const smaFull = computeSMA(values, 7);
-        const valuesSlice = values.slice(-count);
+        const smaFull = computeSMA(lowestValues, 7);
         const labelsSlice = labels.slice(-count);
-        const smaSlice = smaFull.slice(-count);
+        const valuesSlice = lowestValues.slice(-count);
+        const medianSlice = medianValues.slice(-count);
+        const smaSlice = computeSMA(lowestValues, 7).slice(-count);
 
         chart.data.labels = labelsSlice;
-        chart.data.datasets[0].data = valuesSlice;
-        chart.data.datasets[1].data = smaSlice;
+        chart.data.datasets[0].data = valuesSlice;      // Lowest
+        chart.data.datasets[1].data = medianSlice;      // Median
+        chart.data.datasets[2].data = smaSlice;         // 7-day SMA of median
         chart.update();
 
-        const len = values.length;
+        const len = lowestValues.length;
         if (len >= 2) {
-          const diff = values[len - 1] - values[len - 2];
-          document.getElementById('daily-change').textContent =
-            `Change since yesterday: ${diff >= 0 ? '+' : ''}${diff.toFixed(2)} ${unit}`;
-        }
+                const diff = lowestValues[len - 1] - lowestValues[len - 2];
+                const dailyChangeEl = document.getElementById('daily-change');
+                dailyChangeEl.textContent = `Change since yesterday: ${diff >= 0 ? '+' : ''}${diff.toFixed(2)} ${unit}`;
+                dailyChangeEl.style.color = diff >= 0 ? 'green' : 'red';
+            }
       }
 
 
