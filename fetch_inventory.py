@@ -107,7 +107,8 @@ def main():
 
     for sid in STEAM_IDS:
         try:
-            lowest_vals, median_vals = compute_inventory_value(sid)
+            lowest_vals, median_vals = compute_inventory_value(sid)  # only 2 values returned
+            val = round(sum(lowest_vals), 2)  # total value of that account
             all_lowest.extend(lowest_vals)
             all_median.extend(median_vals)
         except Exception as e:
