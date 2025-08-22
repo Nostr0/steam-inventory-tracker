@@ -136,13 +136,19 @@
 
       document.querySelectorAll('.btn').forEach(btn =>
         btn.addEventListener('click', () => {
+          // reset previous zoom
+          chart.resetZoom();
+
+          // update active button style
           document.querySelector('.active').classList.remove('active');
           btn.classList.add('active');
+
+          // update chart for the selected span
           updateChart(btn.dataset.span);
         })
       );
 
-      updateChart('7');
+      updateChart('all');
     })();
   </script>
 </body>
