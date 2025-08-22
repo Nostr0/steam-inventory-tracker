@@ -27,8 +27,11 @@
 
   <canvas id="chart" height="100"></canvas>
   <div id="daily-change"></div>
-
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="js/chartjs-plugin-zoom.min.js"></script>
+  <script>
+    Chart.register(ChartZoom);
+  </script>
   <script>
     async function loadCSV() {
       const resp = await fetch('values.csv', { cache: 'no-store' });
@@ -84,12 +87,29 @@
             y: { beginAtZero: true }
           },
           plugins: {
-            legend: { position: 'top' }
-          }
+            legend: { position: 'top' },
+            zoom: {
+              zoom: {
+                wheel: { enabled: true },       // zoom with mouse wheel
+                drag: { enabled: true },        // drag-to-zoom
+                mode: 'x'                       // only along x-axis (time)
+              },
+              pan: {
+                enabled: true,
+                mode: 'x'                       // pan along x-axis
+              }
+            }
+          },
+          // double-click anywhere on the chart to reset zoom
+          onDblClick: chart => chart.resetZoom()
         }
       };
-      const chart = new Chart(ctx, config);
 
+
+      const chart = new Chart(ctx, config);
+      ctx.canvas.addEventListener('dblclick', () => {
+        chart.resetZoom();
+      });
       function updateChart(span) {
         const count = span === 'all' ? labels.length : Math.min(lowestValues.length, span);
 
@@ -113,7 +133,6 @@
                 dailyChangeEl.style.color = diff >= 0 ? 'green' : 'red';
             }
       }
-
 
       document.querySelectorAll('.btn').forEach(btn =>
         btn.addEventListener('click', () => {
