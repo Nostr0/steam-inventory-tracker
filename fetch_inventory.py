@@ -70,7 +70,7 @@ def get_item_price(name: str):
     r = requests.get(url, params={"appid": "730", "market_hash_name": name, "currency": 3}, timeout=30)
     if r.status_code != 200: return 0.0
     data = r.json()
-    price_str = data.get("lowest_price") or data.get("median_price")
+    price_str = data.get("median_price") or data.get("lowest_price")
     return parse_price(price_str)
 
 def compute_inventory_value(steam_id: str) -> float:
