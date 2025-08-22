@@ -107,7 +107,7 @@ def main():
 
     for sid in STEAM_IDS:
         try:
-            val, lowest_vals, median_vals = compute_inventory_value(sid)
+            lowest_vals, median_vals = compute_inventory_value(sid)
             all_lowest.extend(lowest_vals)
             all_median.extend(median_vals)
         except Exception as e:
