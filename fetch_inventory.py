@@ -7,8 +7,46 @@ ROOT = Path(__file__).parent
 CONFIG = json.loads((ROOT / "config.json").read_text(encoding="utf-8"))
 STEAM_IDS = CONFIG.get("steam_ids", [])
 CURRENCY = CONFIG.get("currency", "EUR")
+ACCOUNT_LABELS = CONFIG.get("account_labels", {})
 SLEEP_MS = int(CONFIG.get("sleep_between_price_requests_ms", 5000))
 DEBUG = CONFIG.get("debug", True)
+
+CURRENCY_MAP = {
+    "USD": 1,
+    "GBP": 2,
+    "EUR": 3,
+    "CHF": 4,
+    "RUB": 5,
+    "BRL": 7,
+    "JPY": 8,
+    "NOK": 9,
+    "IDR": 10,
+    "MYR": 11,
+    "PHP": 12,
+    "SGD": 13,
+    "THB": 14,
+    "VND": 15,
+    "KRW": 16,
+    "TRY": 17,
+    "UAH": 18,
+    "MXN": 19,
+    "CAD": 20,
+    "AUD": 21,
+    "NZD": 22,
+    "PLN": 23,
+    "DKK": 24,
+    "SEK": 25,
+    "CNY": 27,
+    "INR": 28,
+    "CLP": 29,
+    "PEN": 30,
+    "COP": 31,
+    "ZAR": 32,
+    "HKD": 34,
+    "TWD": 35,
+}
+
+CURRENCY_CODE = CURRENCY_MAP.get(CURRENCY.upper(), 3)
 
 VALUES_CSV = ROOT / "values.csv"
 ACCOUNTS_CSV = ROOT / "accounts.csv"
@@ -69,7 +107,15 @@ def get_item_counts(inv_json):
 
 def get_item_price(name: str):
     url = "https://steamcommunity.com/market/priceoverview/"
-    r = requests.get(url, params={"appid": "730", "market_hash_name": name, "currency": 3}, timeout=30)
+    r = requests.get(
+        url,
+        params={
+            "appid": "730",
+            "market_hash_name": name,
+            "currency": CURRENCY_CODE,
+        },
+        timeout=30,
+    )
     if r.status_code != 200: 
         return 0.0, 0.0
     data = r.json()
@@ -77,8 +123,9 @@ def get_item_price(name: str):
     median = parse_price(data.get("median_price"))
     return lowest, median
 
-def compute_inventory_value(steam_id: str):
-    log_debug(f"Computing Steam Market value for {steam_id}")
+def compute_inventory_value(steam_id: str, display_name: str = ""):
+    label = display_name or ACCOUNT_LABELS.get(steam_id, steam_id)
+    log_debug(f"Computing Steam Market value for {label} ({steam_id})")
     inv = get_inventory(steam_id)
     counts = get_item_counts(inv)
 
@@ -106,8 +153,9 @@ def main():
     all_median = []
 
     for sid in STEAM_IDS:
+        display_name = ACCOUNT_LABELS.get(sid, "")
         try:
-            lowest_vals, median_vals = compute_inventory_value(sid)
+            lowest_vals, median_vals = compute_inventory_value(sid, display_name)
             val = round(sum(lowest_vals), 2)
             all_lowest.extend(lowest_vals)
             all_median.extend(median_vals)

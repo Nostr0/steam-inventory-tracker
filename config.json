@@ -2,7 +2,10 @@
   "steam_ids": [
     "76561198059817397"
   ],
+  "account_labels": {
+    "76561198059817397": "Main Account"
+  },
   "currency": "EUR",
-  "sleep_between_price_requests_ms": 5000,
+  "sleep_between_price_requests_ms": 4000,
   "debug": true
 }

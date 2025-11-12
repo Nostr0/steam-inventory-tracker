@@ -6,15 +6,27 @@
   <title>CS:GO Inventory Value</title>
   <link rel="icon" href="favicon.ico" type="image/x-icon"/>
   <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 2rem; }
-    #controls { margin-top: 1rem; }
-    .btn { margin-right: 0.5rem; padding: 0.25rem 0.5rem; cursor: pointer; }
-    .active { font-weight: bold; }
-    #daily-change { margin-top: 0.5rem; font-size: 1.1em; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 2rem; max-width: 1100px; }
+    h1 { margin: 0; }
+    #controls { margin-top: 1rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+    .btn { padding: 0.35rem 0.75rem; border: 1px solid #ccc; border-radius: 0.4rem; background: #f8f9fb; cursor: pointer; transition: all 0.2s ease; }
+    .btn:hover { background: #eef2ff; }
+    .btn.active { background: #3949ab; color: #fff; border-color: #3949ab; font-weight: 600; }
+    #summary { margin-top: 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
+    .summary-card { border: 1px solid #e3e8ef; border-radius: 0.75rem; padding: 1rem; background: #fdfdff; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04); }
+    .summary-label { font-size: 0.9rem; color: #64748b; margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .summary-value { font-size: 1.6rem; font-weight: 600; color: #0f172a; }
+    .summary-delta { margin-top: 0.3rem; font-size: 0.95rem; font-weight: 500; }
+    #charts { margin-top: 2rem; display: grid; gap: 2rem; }
+    .chart-card { border: 1px solid #e3e8ef; border-radius: 0.75rem; padding: 1.5rem; background: #fff; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05); }
+    .chart-card h2 { margin: 0 0 0.75rem 0; font-size: 1.25rem; }
+    canvas { width: 100%; }
+    #daily-change { margin-top: 0.75rem; font-size: 1rem; }
+    #meta { margin-top: 0.5rem; color: #64748b; font-size: 0.9rem; }
   </style>
 </head>
 <body>
-  <h1 style="margin:0;">CS Inventory Value</h1>
+  <h1>CS Inventory Value</h1>
   <p style="margin-top:.25rem;opacity:.7;">Auto-updated daily :3</p>
 
   <div id="controls">
@@ -25,30 +37,167 @@
     <button class="btn" data-span="all">All</button>
   </div>
 
-  <canvas id="chart" height="100"></canvas>
-  <div id="daily-change"></div>
+  <section id="summary">
+    <article class="summary-card">
+      <div class="summary-label">Latest Value</div>
+      <div class="summary-value" id="summary-latest">—</div>
+      <div class="summary-delta" id="summary-daily-delta">—</div>
+    </article>
+    <article class="summary-card">
+      <div class="summary-label">30 Day Trend</div>
+      <div class="summary-value" id="summary-30d">—</div>
+      <div class="summary-delta" id="summary-30d-delta">—</div>
+    </article>
+    <article class="summary-card">
+      <div class="summary-label">All-Time Range</div>
+      <div class="summary-value" id="summary-range">—</div>
+      <div class="summary-delta" id="summary-at-delta">—</div>
+    </article>
+    <article class="summary-card">
+      <div class="summary-label">Volatility (30d)</div>
+      <div class="summary-value" id="summary-volatility">—</div>
+      <div class="summary-delta" id="summary-volatility-desc">—</div>
+    </article>
+  </section>
+
+  <section id="charts">
+    <div class="chart-card">
+      <h2>Total Inventory Value</h2>
+      <canvas id="chart" height="120"></canvas>
+      <div id="daily-change"></div>
+    </div>
+
+    <div class="chart-card">
+      <h2>Value By Account</h2>
+      <canvas id="account-chart" height="120"></canvas>
+      <div id="meta"></div>
+    </div>
+  </section>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="js/chartjs-plugin-zoom.min.js"></script>
   <script>
     Chart.register(ChartZoom);
   </script>
   <script>
-    async function loadCSV() {
-      const resp = await fetch('values.csv', { cache: 'no-store' });
-      const text = await resp.text();
-      const lines = text.trim().split('\n');
-      const rows = lines.map(l => l.split(',').map(v => v.trim()));
-      const header = rows[0];
+    const currencySymbols = {
+      AUD: 'A$',
+      CAD: 'C$',
+      CHF: 'Fr.',
+      CNY: '¥',
+      DKK: 'kr.',
+      EUR: '€',
+      GBP: '£',
+      HKD: 'HK$',
+      INR: '₹',
+      JPY: '¥',
+      MXN: '$',
+      NOK: 'kr',
+      NZD: 'NZ$',
+      PLN: 'zł',
+      SEK: 'kr',
+      SGD: 'S$',
+      THB: '฿',
+      TRY: '₺',
+      USD: '$',
+      ZAR: 'R'
+    };
 
+    async function fetchText(url) {
+      const response = await fetch(url, { cache: 'no-store' });
+      if (!response.ok) {
+        throw new Error(`Failed to load ${url}: ${response.status}`);
+      }
+      return response.text();
+    }
+
+    function parseValuesCSV(text) {
+      const lines = text.trim().split('\n').filter(Boolean);
+      if (lines.length <= 1) {
+        return { labels: [], lowestValues: [], medianValues: [] };
+      }
+
+      const header = lines[0].split(',').map(v => v.trim().toLowerCase());
+      const rows = lines.slice(1);
       const dateIdx = header.indexOf('date');
       const lowestIdx = header.indexOf('lowest');
       const medianIdx = header.indexOf('median');
 
-      const labels = rows.map(r => r[dateIdx]);
-      const lowestValues = rows.map(r => parseFloat(r[lowestIdx].replace('€','').replace(',','.').trim()));
-      const medianValues = rows.map(r => parseFloat(r[medianIdx].replace('€','').replace(',','.').trim()));
+      const labels = [];
+      const lowestValues = [];
+      const medianValues = [];
+
+      rows.forEach(line => {
+        const cols = line.split(',');
+        if (!cols.length) return;
+        const date = (cols[dateIdx] || '').trim();
+        if (!date) return;
+
+        const parseNumeric = idx => {
+          if (idx === -1) return NaN;
+          const raw = (cols[idx] || '').replace(/[^\d.-]/g, '');
+          const value = parseFloat(raw);
+          return Number.isFinite(value) ? value : NaN;
+        };
+
+        labels.push(date);
+        lowestValues.push(parseNumeric(lowestIdx));
+        medianValues.push(parseNumeric(medianIdx));
+      });
 
       return { labels, lowestValues, medianValues };
+    }
+
+    function parseAccountsCSV(text) {
+      const lines = text.trim().split('\n').filter(Boolean);
+      if (lines.length <= 1) {
+        return { labels: [], datasets: [], accountIds: [] };
+      }
+
+      const header = lines[0].split(',').map(v => v.trim().toLowerCase());
+      const dateIdx = header.indexOf('date');
+      const idIdx = header.indexOf('steam_id');
+      const valueIdx = header.indexOf('value_eur');
+
+      const latestByKey = new Map();
+
+      lines.slice(1).forEach(line => {
+        const cols = line.split(',').map(v => v.trim());
+        if (cols.length < 3) return;
+        const date = cols[dateIdx];
+        const steamId = cols[idIdx];
+        const rawValue = cols[valueIdx];
+        if (!date || !steamId) return;
+        const numeric = parseFloat(rawValue.replace(/[^\d.-]/g, ''));
+        if (!Number.isFinite(numeric)) return;
+        const key = `${date}::${steamId}`;
+        latestByKey.set(key, numeric);
+      });
+
+      const perDate = new Map();
+      latestByKey.forEach((value, key) => {
+        const [date, steamId] = key.split('::');
+        if (!perDate.has(date)) {
+          perDate.set(date, new Map());
+        }
+        perDate.get(date).set(steamId, value);
+      });
+
+      const labels = Array.from(perDate.keys()).sort();
+      const accountIds = new Set();
+      perDate.forEach(map => {
+        map.forEach((_, steamId) => accountIds.add(steamId));
+      });
+
+      const sortedAccountIds = Array.from(accountIds).sort();
+      const datasets = sortedAccountIds.map((steamId, index) => {
+        const data = labels.map(date => {
+          const value = perDate.get(date)?.get(steamId);
+          return value === undefined ? null : parseFloat(value.toFixed(2));
+        });
+        return { steamId, data, index };
+      });
+
+      return { labels, datasets, accountIds: sortedAccountIds };
     }
 
     function computeSMA(data, window) {
@@ -56,7 +205,9 @@
       for (let i = 0; i < data.length; i++) {
         if (i < window - 1) {
           sma.push(null);
-        } else {
+        } 
+        else 
+        {
           const slice = data.slice(i - window + 1, i + 1);
           const sum = slice.reduce((a,b) => a + b, 0);
           sma.push(sum / window);
@@ -65,12 +216,100 @@
       return sma;
     }
 
-    (async () => {
-      const { labels, lowestValues, medianValues } = await loadCSV();
-      const unit = 'EUR';
-      const ctx = document.getElementById('chart').getContext('2d');
+    function formatCurrency(value, currency, symbol) {
+      if (!Number.isFinite(value)) return '—';
+      const options = {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      };
+      if (symbol) {
+        options.style = 'currency';
+        options.currency = currency;
+      } else {
+        options.style = 'decimal';
+      }
+      const formatter = new Intl.NumberFormat(undefined, options);
 
-      const config = {
+      if (symbol) {
+        return formatter.format(value);
+      }
+      return `${formatter.format(value)} ${currency}`;
+    }
+
+    function formatDelta(value, currency, symbol) {
+      if (!Number.isFinite(value)) return '—';
+      const prefix = value > 0 ? '+' : '';
+      return `${prefix}${formatCurrency(value, currency, symbol)}`;
+    }
+
+    function percentChange(current, previous) {
+      if (!Number.isFinite(current) || !Number.isFinite(previous) || previous === 0) return null;
+      return ((current - previous) / previous) * 100;
+    }
+
+    (async () => {
+      const [valuesText, accountsText, configText] = await Promise.all([
+        fetchText('values.csv'),
+        fetchText('accounts.csv').catch(() => ''),
+        fetch('config.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : ({ currency: 'EUR' })),
+      ]);
+
+      const config = typeof configText === 'string' ? JSON.parse(configText) : configText;
+      const accountLabels = config.account_labels || {};
+      const currency = (config.currency || 'EUR').toUpperCase();
+      const currencySymbol = currencySymbols[currency] || null;
+
+      const { labels, lowestValues, medianValues } = parseValuesCSV(valuesText);
+      const accountData = accountsText ? parseAccountsCSV(accountsText) : { labels: [], datasets: [], accountIds: [] };
+
+      const unit = currency;
+      const ctx = document.getElementById('chart').getContext('2d');
+      const primaryValues = medianValues.some(v => Number.isFinite(v) && v > 0) ? medianValues : lowestValues;
+
+      const latest = primaryValues[primaryValues.length - 1];
+      const previous = primaryValues[primaryValues.length - 2];
+
+      const delta = Number.isFinite(latest) && Number.isFinite(previous) ? latest - previous : NaN;
+      const deltaPct = percentChange(latest, previous);
+
+      const idx30 = primaryValues.length > 30 ? primaryValues.length - 31 : 0;
+      const base30 = primaryValues[idx30];
+      const delta30 = Number.isFinite(latest) && Number.isFinite(base30) ? latest - base30 : NaN;
+      const delta30Pct = percentChange(latest, base30);
+
+      const filteredValues = primaryValues.filter(Number.isFinite);
+      const high = filteredValues.length ? Math.max(...filteredValues) : NaN;
+      const low = filteredValues.length ? Math.min(...filteredValues) : NaN;
+      const rangeText = filteredValues.length ? `${formatCurrency(low, unit, currencySymbol)} → ${formatCurrency(high, unit, currencySymbol)}` : '—';
+      const rangeDelta = filteredValues.length ? `Spread: ${formatCurrency(high - low, unit, currencySymbol)}` : '—';
+
+      const windowValues = filteredValues.slice(-30);
+      let volatility = NaN;
+      if (windowValues.length > 1) {
+        const mean = windowValues.reduce((acc, val) => acc + val, 0) / windowValues.length;
+        const variance = windowValues.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / (windowValues.length - 1);
+        volatility = Math.sqrt(variance);
+      }
+      const volatilityDesc = Number.isFinite(volatility) && Number.isFinite(latest)
+        ? `${((volatility / latest) * 100).toFixed(2)}% of current`
+        : '—';
+
+      document.getElementById('summary-latest').textContent = formatCurrency(latest, unit, currencySymbol);
+      document.getElementById('summary-daily-delta').textContent = [
+        formatDelta(delta, unit, currencySymbol),
+        deltaPct !== null ? `(${deltaPct.toFixed(2)}%)` : ''
+      ].filter(Boolean).join(' ');
+      document.getElementById('summary-30d').textContent = Number.isFinite(latest) ? formatCurrency(latest, unit, currencySymbol) : '—';
+      document.getElementById('summary-30d-delta').textContent = [
+        formatDelta(delta30, unit, currencySymbol),
+        delta30Pct !== null ? `(${delta30Pct.toFixed(2)}%)` : ''
+      ].filter(Boolean).join(' ') || '—';
+      document.getElementById('summary-range').textContent = rangeText;
+      document.getElementById('summary-at-delta').textContent = rangeDelta;
+      document.getElementById('summary-volatility').textContent = Number.isFinite(volatility) ? formatCurrency(volatility, unit, currencySymbol) : '—';
+      document.getElementById('summary-volatility-desc').textContent = volatilityDesc;
+
+      const chartConfig = {
         type: 'line',
         data: {
           labels,
@@ -106,18 +345,17 @@
       };
 
 
-      const chart = new Chart(ctx, config);
+      const chart = new Chart(ctx, chartConfig);
       ctx.canvas.addEventListener('dblclick', () => {
         chart.resetZoom();
       });
       function updateChart(span) {
         const count = span === 'all' ? labels.length : Math.min(lowestValues.length, span);
 
-        const smaFull = computeSMA(lowestValues, 7);
         const labelsSlice = labels.slice(-count);
         const valuesSlice = lowestValues.slice(-count);
         const medianSlice = medianValues.slice(-count);
-        const smaSlice = computeSMA(lowestValues, 7).slice(-count);
+        const smaSlice = computeSMA(medianValues, 7).slice(-count);
 
         chart.data.labels = labelsSlice;
         chart.data.datasets[0].data = valuesSlice;      // Lowest
@@ -127,11 +365,16 @@
 
         const len = lowestValues.length;
         if (len >= 2) {
-                const diff = lowestValues[len - 1] - lowestValues[len - 2];
-                const dailyChangeEl = document.getElementById('daily-change');
-                dailyChangeEl.textContent = `Change since yesterday: ${diff >= 0 ? '+' : ''}${diff.toFixed(2)} ${unit}`;
-                dailyChangeEl.style.color = diff >= 0 ? 'green' : 'red';
-            }
+          const diff = lowestValues[len - 1] - lowestValues[len - 2];
+          const diffText = formatDelta(diff, unit, currencySymbol);
+          const dailyChangeEl = document.getElementById('daily-change');
+          dailyChangeEl.textContent = `Change since yesterday: ${diffText}`;
+          dailyChangeEl.style.color = diff >= 0 ? 'green' : 'red';
+        } else {
+          const dailyChangeEl = document.getElementById('daily-change');
+          dailyChangeEl.textContent = 'Change since yesterday: —';
+          dailyChangeEl.style.color = '#334155';
+        }
       }
 
       document.querySelectorAll('.btn').forEach(btn =>
@@ -149,6 +392,53 @@
       );
 
       updateChart('all');
+
+      if (accountData.labels.length && accountData.datasets.length) {
+        const accountCtx = document.getElementById('account-chart').getContext('2d');
+        const palette = ['#2563eb', '#9333ea', '#26a269', '#d97706', '#ef4444', '#0ea5e9', '#8b5cf6'];
+        const datasets = accountData.datasets.map(ds => ({
+          label: accountLabels[ds.steamId] || ds.steamId,
+          data: ds.data,
+          borderColor: palette[ds.index % palette.length],
+          backgroundColor: palette[ds.index % palette.length] + '33',
+          tension: 0.25,
+          fill: true,
+          spanGaps: true,
+          stack: 'total'
+        }));
+
+        new Chart(accountCtx, {
+          type: 'line',
+          data: {
+            labels: accountData.labels,
+            datasets
+          },
+          options: {
+            responsive: true,
+            scales: {
+              x: { ticks: { autoSkip: true, maxTicksLimit: 12 } },
+              y: { stacked: true, beginAtZero: true }
+            },
+            plugins: {
+              legend: { position: 'bottom' },
+              tooltip: {
+                callbacks: {
+                  label: ctx => {
+                    const value = ctx.parsed.y;
+                    return `${ctx.dataset.label}: ${formatCurrency(value, unit, currencySymbol)}`;
+                  }
+                }
+              }
+            },
+            interaction: { intersect: false, mode: 'index' }
+          }
+        });
+
+        document.getElementById('meta').textContent = `Tracking ${accountData.datasets.length} account(s).`;
+      } else {
+        document.getElementById('account-chart').remove();
+        document.querySelector('#charts .chart-card:last-child').insertAdjacentHTML('beforeend', '<p>No account-level history available yet.</p>');
+      }
     })();
   </script>
 </body>
