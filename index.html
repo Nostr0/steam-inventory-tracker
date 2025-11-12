@@ -7,70 +7,101 @@
   <link rel="icon" href="favicon.ico" type="image/x-icon"/>
   <style>
     body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 2rem; max-width: 1100px; }
+    body.no-scroll { overflow: hidden; }
     h1 { margin: 0; }
     #controls { margin-top: 1rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
     .btn { padding: 0.35rem 0.75rem; border: 1px solid #ccc; border-radius: 0.4rem; background: #f8f9fb; cursor: pointer; transition: all 0.2s ease; }
     .btn:hover { background: #eef2ff; }
     .btn.active { background: #3949ab; color: #fff; border-color: #3949ab; font-weight: 600; }
+    .language-picker { margin-left: auto; display: flex; align-items: center; gap: 0.4rem; }
+    .language-picker select { padding: 0.3rem 0.5rem; border-radius: 0.4rem; border: 1px solid #cbd5f5; background: #f8fafc; }
     #summary { margin-top: 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
     .summary-card { border: 1px solid #e3e8ef; border-radius: 0.75rem; padding: 1rem; background: #fdfdff; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04); }
     .summary-label { font-size: 0.9rem; color: #64748b; margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 0.04em; }
     .summary-value { font-size: 1.6rem; font-weight: 600; color: #0f172a; }
     .summary-delta { margin-top: 0.3rem; font-size: 0.95rem; font-weight: 500; }
     #charts { margin-top: 2rem; display: grid; gap: 2rem; }
-    .chart-card { border: 1px solid #e3e8ef; border-radius: 0.75rem; padding: 1.5rem; background: #fff; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05); }
-    .chart-card h2 { margin: 0 0 0.75rem 0; font-size: 1.25rem; }
-    canvas { width: 100%; }
-    #daily-change { margin-top: 0.75rem; font-size: 1rem; }
-    #meta { margin-top: 0.5rem; color: #64748b; font-size: 0.9rem; }
+    .chart-card { border: 1px solid #e3e8ef; border-radius: 0.75rem; padding: 1.5rem; background: #fff; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05); position: relative; display: flex; flex-direction: column; }
+    .chart-card-header { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+    .chart-card-header h2 { margin: 0; font-size: 1.25rem; }
+    .fullscreen-toggle { padding: 0.3rem 0.6rem; border-radius: 0.4rem; border: 1px solid #cbd5f5; background: #eef2ff; color: #1e3a8a; cursor: pointer; transition: all 0.2s ease; }
+    .fullscreen-toggle:hover { background: #dbeafe; }
+    .chart-card-body { margin-top: 1rem; display: flex; flex-direction: column; gap: 0.75rem; height: 420px; }
+    .chart-card-body canvas { flex: 1; width: 100%; }
+    .chart-card.fullscreen { position: fixed; inset: 0; width: 100vw; height: 100vh; padding: 2rem; border-radius: 0; box-shadow: none; z-index: 1000; }
+    .chart-card.fullscreen .chart-card-body { height: calc(100vh - 140px); }
+    .chart-card.fullscreen .fullscreen-toggle { background: #1e3a8a; color: #fff; border-color: #1e3a8a; }
+    #daily-change { font-size: 1rem; }
+    #meta { color: #64748b; font-size: 0.9rem; }
+    @media (max-width: 640px) {
+      .language-picker { margin-left: 0; width: 100%; justify-content: flex-start; }
+      .chart-card.fullscreen { padding: 1rem; }
+    }
   </style>
 </head>
 <body>
-  <h1>CS Inventory Value</h1>
-  <p style="margin-top:.25rem;opacity:.7;">Auto-updated daily :3</p>
+  <h1 data-i18n="title">CS Inventory Value</h1>
+  <p style="margin-top:.25rem;opacity:.7;" data-i18n="subtitle">Auto-updated daily :3</p>
 
   <div id="controls">
-    <span>View:</span>
-    <button class="btn active" data-span="7">7 days</button>
-    <button class="btn" data-span="30">30 days</button>
-    <button class="btn" data-span="90">90 days</button>
-    <button class="btn" data-span="all">All</button>
+    <span data-i18n="viewLabel">View:</span>
+    <button class="btn active" data-span="7" data-i18n="span7">7 days</button>
+    <button class="btn" data-span="30" data-i18n="span30">30 days</button>
+    <button class="btn" data-span="90" data-i18n="span90">90 days</button>
+    <button class="btn" data-span="all" data-i18n="spanAll">All</button>
+    <div class="language-picker">
+      <label for="language-select" data-i18n="languageLabel">Language:</label>
+      <select id="language-select">
+        <option value="en" data-i18n="languageEnglish">English</option>
+        <option value="de" data-i18n="languageGerman">Deutsch</option>
+      </select>
+    </div>
   </div>
 
   <section id="summary">
     <article class="summary-card">
-      <div class="summary-label">Latest Value</div>
+      <div class="summary-label" data-i18n="summaryLatest">Latest Value</div>
       <div class="summary-value" id="summary-latest">—</div>
       <div class="summary-delta" id="summary-daily-delta">—</div>
     </article>
     <article class="summary-card">
-      <div class="summary-label">30 Day Trend</div>
+      <div class="summary-label" data-i18n="summary30d">30 Day Trend</div>
       <div class="summary-value" id="summary-30d">—</div>
       <div class="summary-delta" id="summary-30d-delta">—</div>
     </article>
     <article class="summary-card">
-      <div class="summary-label">All-Time Range</div>
+      <div class="summary-label" data-i18n="summaryRange">All-Time Range</div>
       <div class="summary-value" id="summary-range">—</div>
       <div class="summary-delta" id="summary-at-delta">—</div>
     </article>
     <article class="summary-card">
-      <div class="summary-label">Volatility (30d)</div>
+      <div class="summary-label" data-i18n="summaryVolatility">Volatility (30d)</div>
       <div class="summary-value" id="summary-volatility">—</div>
       <div class="summary-delta" id="summary-volatility-desc">—</div>
     </article>
   </section>
 
   <section id="charts">
-    <div class="chart-card">
-      <h2>Total Inventory Value</h2>
-      <canvas id="chart" height="120"></canvas>
-      <div id="daily-change"></div>
+    <div class="chart-card" data-chart="total">
+      <div class="chart-card-header">
+        <h2 data-i18n="totalValueHeading">Total Inventory Value</h2>
+        <button class="fullscreen-toggle" type="button" data-i18n="expand">Expand</button>
+      </div>
+      <div class="chart-card-body">
+        <canvas id="chart"></canvas>
+        <div id="daily-change"></div>
+      </div>
     </div>
 
-    <div class="chart-card">
-      <h2>Value By Account</h2>
-      <canvas id="account-chart" height="120"></canvas>
-      <div id="meta"></div>
+    <div class="chart-card" data-chart="accounts">
+      <div class="chart-card-header">
+        <h2 data-i18n="valueByAccountHeading">Value By Account</h2>
+        <button class="fullscreen-toggle" type="button" data-i18n="expand">Expand</button>
+      </div>
+      <div class="chart-card-body">
+        <canvas id="account-chart"></canvas>
+        <div id="meta"></div>
+      </div>
     </div>
   </section>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -79,6 +110,65 @@
     Chart.register(ChartZoom);
   </script>
   <script>
+    const translations = {
+      en: {
+        documentTitle: 'CS Inventory Value',
+        title: 'CS Inventory Value',
+        subtitle: 'Auto-updated daily :3',
+        viewLabel: 'View:',
+        span7: '7 days',
+        span30: '30 days',
+        span90: '90 days',
+        spanAll: 'All',
+        languageLabel: 'Language:',
+        languageEnglish: 'English',
+        languageGerman: 'German',
+        summaryLatest: 'Latest Value',
+        summary30d: '30 Day Trend',
+        summaryRange: 'All-Time Range',
+        summaryVolatility: 'Volatility (30d)',
+        totalValueHeading: 'Total Inventory Value',
+        valueByAccountHeading: 'Value By Account',
+        expand: 'Expand',
+        collapse: 'Exit Fullscreen',
+        changeSinceYesterday: 'Change since yesterday: {value}',
+        changeSinceYesterdayNA: 'Change since yesterday: —',
+        trackingAccounts: 'Tracking {count} account(s).',
+        noAccountHistory: 'No account-level history available yet.',
+        rangeSpread: 'Spread: {value}',
+        volatilityPercent: '{value}% of current',
+        notAvailable: '—'
+      },
+      de: {
+        documentTitle: 'CS-Inventarwert',
+        title: 'CS-Inventarwert',
+        subtitle: 'Täglich automatisch aktualisiert :3',
+        viewLabel: 'Ansicht:',
+        span7: '7 Tage',
+        span30: '30 Tage',
+        span90: '90 Tage',
+        spanAll: 'Gesamt',
+        languageLabel: 'Sprache:',
+        languageEnglish: 'Englisch',
+        languageGerman: 'Deutsch',
+        summaryLatest: 'Aktueller Wert',
+        summary30d: 'Trend (30 Tage)',
+        summaryRange: 'Spanne (Gesamtzeitraum)',
+        summaryVolatility: 'Volatilität (30 Tage)',
+        totalValueHeading: 'Gesamtwert des Inventars',
+        valueByAccountHeading: 'Wert nach Konto',
+        expand: 'Vollbild',
+        collapse: 'Vollbild schließen',
+        changeSinceYesterday: 'Veränderung seit gestern: {value}',
+        changeSinceYesterdayNA: 'Veränderung seit gestern: —',
+        trackingAccounts: 'Verfolge {count} Konto(s).',
+        noAccountHistory: 'Noch keine Kontohistorie vorhanden.',
+        rangeSpread: 'Spanne: {value}',
+        volatilityPercent: '{value}% des aktuellen Werts',
+        notAvailable: '—'
+      }
+    };
+
     const currencySymbols = {
       AUD: 'A$',
       CAD: 'C$',
@@ -101,6 +191,66 @@
       USD: '$',
       ZAR: 'R'
     };
+
+    const translationUpdaters = [];
+    const languageStorageKey = 'inventory_language';
+    let currentLanguage = (localStorage.getItem(languageStorageKey) || 'en').toLowerCase();
+    const languageSelect = document.getElementById('language-select');
+
+    function translate(key, params = {}) {
+      const dict = translations[currentLanguage] || translations.en;
+      const fallback = translations.en[key] !== undefined ? translations.en[key] : key;
+      const template = dict[key] !== undefined ? dict[key] : fallback;
+      return template.replace(/\{(\w+)\}/g, (match, name) => {
+        return params[name] !== undefined ? params[name] : match;
+      });
+    }
+
+    function registerTranslationUpdater(fn) {
+      translationUpdaters.push(fn);
+    }
+
+    function applyTranslations() {
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (key) {
+          el.textContent = translate(key);
+        }
+      });
+      if (languageSelect) {
+        Array.from(languageSelect.options).forEach(option => {
+          const key = option.dataset.i18n;
+          if (key) {
+            option.textContent = translate(key);
+          }
+        });
+      }
+      document.title = translate('documentTitle');
+      document.documentElement.setAttribute('lang', currentLanguage);
+      translationUpdaters.forEach(fn => fn());
+    }
+
+    function setLanguage(lang, { skipSave } = {}) {
+      if (!translations[lang]) {
+        lang = 'en';
+      }
+      currentLanguage = lang;
+      if (!skipSave) {
+        localStorage.setItem(languageStorageKey, currentLanguage);
+      }
+      if (languageSelect) {
+        languageSelect.value = currentLanguage;
+      }
+      applyTranslations();
+    }
+
+    if (languageSelect) {
+      languageSelect.addEventListener('change', event => {
+        setLanguage(event.target.value, { skipSave: false });
+      });
+    }
+
+    setLanguage(currentLanguage, { skipSave: true });
 
     async function fetchText(url) {
       const response = await fetch(url, { cache: 'no-store' });
@@ -205,11 +355,9 @@
       for (let i = 0; i < data.length; i++) {
         if (i < window - 1) {
           sma.push(null);
-        } 
-        else 
-        {
+        } else {
           const slice = data.slice(i - window + 1, i + 1);
-          const sum = slice.reduce((a,b) => a + b, 0);
+          const sum = slice.reduce((a, b) => a + b, 0);
           sma.push(sum / window);
         }
       }
@@ -217,7 +365,7 @@
     }
 
     function formatCurrency(value, currency, symbol) {
-      if (!Number.isFinite(value)) return '—';
+      if (!Number.isFinite(value)) return translate('notAvailable');
       const options = {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
@@ -229,15 +377,12 @@
         options.style = 'decimal';
       }
       const formatter = new Intl.NumberFormat(undefined, options);
-
-      if (symbol) {
-        return formatter.format(value);
-      }
-      return `${formatter.format(value)} ${currency}`;
+      const formatted = formatter.format(value);
+      return symbol ? formatted : `${formatted} ${currency}`;
     }
 
     function formatDelta(value, currency, symbol) {
-      if (!Number.isFinite(value)) return '—';
+      if (!Number.isFinite(value)) return translate('notAvailable');
       const prefix = value > 0 ? '+' : '';
       return `${prefix}${formatCurrency(value, currency, symbol)}`;
     }
@@ -247,17 +392,59 @@
       return ((current - previous) / previous) * 100;
     }
 
+    function setupFullscreen(card, chartInstance) {
+      const button = card?.querySelector('.fullscreen-toggle');
+      if (!button || !chartInstance) return;
+
+      const updateButtonLabel = () => {
+        const key = card.classList.contains('fullscreen') ? 'collapse' : 'expand';
+        button.textContent = translate(key);
+      };
+
+      const updateBodyLock = () => {
+        const isAnyFullscreen = document.querySelector('.chart-card.fullscreen');
+        document.body.classList.toggle('no-scroll', Boolean(isAnyFullscreen));
+      };
+
+      button.addEventListener('click', () => {
+        document.querySelectorAll('.chart-card.fullscreen').forEach(el => {
+          if (el !== card) {
+            el.classList.remove('fullscreen');
+            const otherButton = el.querySelector('.fullscreen-toggle');
+            if (otherButton) {
+              otherButton.textContent = translate('expand');
+            }
+          }
+        });
+
+        const isActive = card.classList.toggle('fullscreen');
+        updateBodyLock();
+        setTimeout(() => chartInstance.resize(), isActive ? 120 : 60);
+        updateButtonLabel();
+      });
+
+      registerTranslationUpdater(updateButtonLabel);
+      updateButtonLabel();
+    }
+
     (async () => {
-      const [valuesText, accountsText, configText] = await Promise.all([
+      const [valuesText, accountsText, configResponse] = await Promise.all([
         fetchText('values.csv'),
         fetchText('accounts.csv').catch(() => ''),
-        fetch('config.json', { cache: 'no-store' }).then(r => r.ok ? r.json() : ({ currency: 'EUR' })),
+        fetch('config.json', { cache: 'no-store' }).then(r => (r.ok ? r.json() : { currency: 'EUR' })).catch(() => ({ currency: 'EUR' }))
       ]);
 
-      const config = typeof configText === 'string' ? JSON.parse(configText) : configText;
+      const config = configResponse || {};
       const accountLabels = config.account_labels || {};
       const currency = (config.currency || 'EUR').toUpperCase();
       const currencySymbol = currencySymbols[currency] || null;
+
+      if (!localStorage.getItem(languageStorageKey)) {
+        const configLanguage = (config.language || '').slice(0, 2).toLowerCase();
+        if (configLanguage && translations[configLanguage]) {
+          setLanguage(configLanguage, { skipSave: true });
+        }
+      }
 
       const { labels, lowestValues, medianValues } = parseValuesCSV(valuesText);
       const accountData = accountsText ? parseAccountsCSV(accountsText) : { labels: [], datasets: [], accountIds: [] };
@@ -280,8 +467,8 @@
       const filteredValues = primaryValues.filter(Number.isFinite);
       const high = filteredValues.length ? Math.max(...filteredValues) : NaN;
       const low = filteredValues.length ? Math.min(...filteredValues) : NaN;
-      const rangeText = filteredValues.length ? `${formatCurrency(low, unit, currencySymbol)} → ${formatCurrency(high, unit, currencySymbol)}` : '—';
-      const rangeDelta = filteredValues.length ? `Spread: ${formatCurrency(high - low, unit, currencySymbol)}` : '—';
+      const rangeText = filteredValues.length ? `${formatCurrency(low, unit, currencySymbol)} → ${formatCurrency(high, unit, currencySymbol)}` : translate('notAvailable');
+      const rangeDelta = filteredValues.length ? translate('rangeSpread', { value: formatCurrency(high - low, unit, currencySymbol) }) : translate('notAvailable');
 
       const windowValues = filteredValues.slice(-30);
       let volatility = NaN;
@@ -291,22 +478,22 @@
         volatility = Math.sqrt(variance);
       }
       const volatilityDesc = Number.isFinite(volatility) && Number.isFinite(latest)
-        ? `${((volatility / latest) * 100).toFixed(2)}% of current`
-        : '—';
+        ? translate('volatilityPercent', { value: ((volatility / latest) * 100).toFixed(2) })
+        : translate('notAvailable');
 
       document.getElementById('summary-latest').textContent = formatCurrency(latest, unit, currencySymbol);
       document.getElementById('summary-daily-delta').textContent = [
         formatDelta(delta, unit, currencySymbol),
         deltaPct !== null ? `(${deltaPct.toFixed(2)}%)` : ''
-      ].filter(Boolean).join(' ');
-      document.getElementById('summary-30d').textContent = Number.isFinite(latest) ? formatCurrency(latest, unit, currencySymbol) : '—';
+      ].filter(Boolean).join(' ') || translate('notAvailable');
+      document.getElementById('summary-30d').textContent = Number.isFinite(latest) ? formatCurrency(latest, unit, currencySymbol) : translate('notAvailable');
       document.getElementById('summary-30d-delta').textContent = [
         formatDelta(delta30, unit, currencySymbol),
         delta30Pct !== null ? `(${delta30Pct.toFixed(2)}%)` : ''
-      ].filter(Boolean).join(' ') || '—';
+      ].filter(Boolean).join(' ') || translate('notAvailable');
       document.getElementById('summary-range').textContent = rangeText;
       document.getElementById('summary-at-delta').textContent = rangeDelta;
-      document.getElementById('summary-volatility').textContent = Number.isFinite(volatility) ? formatCurrency(volatility, unit, currencySymbol) : '—';
+      document.getElementById('summary-volatility').textContent = Number.isFinite(volatility) ? formatCurrency(volatility, unit, currencySymbol) : translate('notAvailable');
       document.getElementById('summary-volatility-desc').textContent = volatilityDesc;
 
       const chartConfig = {
@@ -316,11 +503,12 @@
           datasets: [
             { label: `Lowest Price (${unit})`, data: lowestValues, borderColor: 'red', tension: 0.2, fill: false },
             { label: `Median Price (${unit})`, data: medianValues, borderColor: 'blue', tension: 0.2, fill: false },
-            { label: '7-day Avg', data: computeSMA(medianValues, 7), borderColor: 'orange', borderDash: [5,5], fill: false }
+            { label: '7-day Avg', data: computeSMA(medianValues, 7), borderColor: 'orange', borderDash: [5, 5], fill: false }
           ]
         },
         options: {
           responsive: true,
+          maintainAspectRatio: false,
           scales: {
             x: { ticks: { autoSkip: true, maxTicksLimit: 12 } },
             y: { beginAtZero: true }
@@ -329,28 +517,43 @@
             legend: { position: 'top' },
             zoom: {
               zoom: {
-                wheel: { enabled: true },       // zoom with mouse wheel
-                drag: { enabled: true },        // drag-to-zoom
-                mode: 'x'                       // only along x-axis (time)
+                wheel: { enabled: true },
+                drag: { enabled: true },
+                mode: 'x'
               },
               pan: {
                 enabled: true,
-                mode: 'x'                       // pan along x-axis
+                mode: 'x'
               }
             }
           },
-          // double-click anywhere on the chart to reset zoom
           onDblClick: chart => chart.resetZoom()
         }
       };
 
-
       const chart = new Chart(ctx, chartConfig);
+      const dailyChangeEl = document.getElementById('daily-change');
+      let lastDiffValue = NaN;
+
+      const setDailyChange = diff => {
+        if (Number.isFinite(diff)) {
+          const diffText = formatDelta(diff, unit, currencySymbol);
+          dailyChangeEl.textContent = translate('changeSinceYesterday', { value: diffText });
+          dailyChangeEl.style.color = diff >= 0 ? 'green' : 'red';
+        } else {
+          dailyChangeEl.textContent = translate('changeSinceYesterdayNA');
+          dailyChangeEl.style.color = '#334155';
+        }
+      };
+
+      registerTranslationUpdater(() => setDailyChange(lastDiffValue));
+
       ctx.canvas.addEventListener('dblclick', () => {
         chart.resetZoom();
       });
+
       function updateChart(span) {
-        const count = span === 'all' ? labels.length : Math.min(lowestValues.length, span);
+        const count = span === 'all' ? labels.length : Math.min(lowestValues.length, Number(span));
 
         const labelsSlice = labels.slice(-count);
         const valuesSlice = lowestValues.slice(-count);
@@ -358,56 +561,60 @@
         const smaSlice = computeSMA(medianValues, 7).slice(-count);
 
         chart.data.labels = labelsSlice;
-        chart.data.datasets[0].data = valuesSlice;      // Lowest
-        chart.data.datasets[1].data = medianSlice;      // Median
-        chart.data.datasets[2].data = smaSlice;         // 7-day SMA of median
+        chart.data.datasets[0].data = valuesSlice;
+        chart.data.datasets[1].data = medianSlice;
+        chart.data.datasets[2].data = smaSlice;
         chart.update();
 
         const len = lowestValues.length;
         if (len >= 2) {
           const diff = lowestValues[len - 1] - lowestValues[len - 2];
-          const diffText = formatDelta(diff, unit, currencySymbol);
-          const dailyChangeEl = document.getElementById('daily-change');
-          dailyChangeEl.textContent = `Change since yesterday: ${diffText}`;
-          dailyChangeEl.style.color = diff >= 0 ? 'green' : 'red';
+          lastDiffValue = diff;
+          setDailyChange(diff);
         } else {
-          const dailyChangeEl = document.getElementById('daily-change');
-          dailyChangeEl.textContent = 'Change since yesterday: —';
-          dailyChangeEl.style.color = '#334155';
+          lastDiffValue = NaN;
+          setDailyChange(NaN);
         }
       }
 
-      document.querySelectorAll('.btn').forEach(btn =>
+      document.querySelectorAll('.btn').forEach(btn => {
         btn.addEventListener('click', () => {
-          // reset previous zoom
           chart.resetZoom();
-
-          // update active button style
-          document.querySelector('.active').classList.remove('active');
+          const active = document.querySelector('.btn.active');
+          if (active) {
+            active.classList.remove('active');
+          }
           btn.classList.add('active');
-
-          // update chart for the selected span
           updateChart(btn.dataset.span);
-        })
-      );
+        });
+      });
 
       updateChart('all');
 
-      if (accountData.labels.length && accountData.datasets.length) {
-        const accountCtx = document.getElementById('account-chart').getContext('2d');
+      const totalCard = document.querySelector('.chart-card[data-chart="total"]');
+      if (totalCard) {
+        setupFullscreen(totalCard, chart);
+      }
+
+      const accountCanvas = document.getElementById('account-chart');
+      const accountCard = document.querySelector('.chart-card[data-chart="accounts"]');
+      const metaEl = document.getElementById('meta');
+
+      if (accountData.labels.length && accountData.datasets.length && accountCanvas && accountCard) {
+        const accountCtx = accountCanvas.getContext('2d');
         const palette = ['#2563eb', '#9333ea', '#26a269', '#d97706', '#ef4444', '#0ea5e9', '#8b5cf6'];
         const datasets = accountData.datasets.map(ds => ({
           label: accountLabels[ds.steamId] || ds.steamId,
           data: ds.data,
           borderColor: palette[ds.index % palette.length],
-          backgroundColor: palette[ds.index % palette.length] + '33',
+          backgroundColor: `${palette[ds.index % palette.length]}33`,
           tension: 0.25,
           fill: true,
           spanGaps: true,
           stack: 'total'
         }));
 
-        new Chart(accountCtx, {
+        const accountChart = new Chart(accountCtx, {
           type: 'line',
           data: {
             labels: accountData.labels,
@@ -415,6 +622,7 @@
           },
           options: {
             responsive: true,
+            maintainAspectRatio: false,
             scales: {
               x: { ticks: { autoSkip: true, maxTicksLimit: 12 } },
               y: { stacked: true, beginAtZero: true }
@@ -423,9 +631,9 @@
               legend: { position: 'bottom' },
               tooltip: {
                 callbacks: {
-                  label: ctx => {
-                    const value = ctx.parsed.y;
-                    return `${ctx.dataset.label}: ${formatCurrency(value, unit, currencySymbol)}`;
+                  label: tooltipCtx => {
+                    const value = tooltipCtx.parsed.y;
+                    return `${tooltipCtx.dataset.label}: ${formatCurrency(value, unit, currencySymbol)}`;
                   }
                 }
               }
@@ -434,10 +642,25 @@
           }
         });
 
-        document.getElementById('meta').textContent = `Tracking ${accountData.datasets.length} account(s).`;
+        const updateMeta = () => {
+          metaEl.textContent = translate('trackingAccounts', { count: accountData.datasets.length });
+        };
+        updateMeta();
+        registerTranslationUpdater(updateMeta);
+        setupFullscreen(accountCard, accountChart);
       } else {
-        document.getElementById('account-chart').remove();
-        document.querySelector('#charts .chart-card:last-child').insertAdjacentHTML('beforeend', '<p>No account-level history available yet.</p>');
+        if (accountCanvas) {
+          accountCanvas.style.display = 'none';
+        }
+        const accountButton = accountCard?.querySelector('.fullscreen-toggle');
+        if (accountButton) {
+          accountButton.style.display = 'none';
+        }
+        const updatePlaceholder = () => {
+          metaEl.textContent = translate('noAccountHistory');
+        };
+        updatePlaceholder();
+        registerTranslationUpdater(updatePlaceholder);
       }
     })();
   </script>

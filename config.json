@@ -6,6 +6,7 @@
     "76561198059817397": "Main Account"
   },
   "currency": "EUR",
+  "language": "de",
   "sleep_between_price_requests_ms": 4000,
   "debug": true
 }
