@@ -1,44 +1,206 @@
 <!doctype html>
 <html lang="en">
+
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>CS:GO Inventory Value</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon"/>
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
   <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 2rem; max-width: 1100px; }
-    body.no-scroll { overflow: hidden; }
-    h1 { margin: 0; }
-    #controls { margin-top: 1rem; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
-    .btn { padding: 0.35rem 0.75rem; border: 1px solid #ccc; border-radius: 0.4rem; background: #f8f9fb; cursor: pointer; transition: all 0.2s ease; }
-    .btn:hover { background: #eef2ff; }
-    .btn.active { background: #3949ab; color: #fff; border-color: #3949ab; font-weight: 600; }
-    .language-picker { margin-left: auto; display: flex; align-items: center; gap: 0.4rem; }
-    .language-picker select { padding: 0.3rem 0.5rem; border-radius: 0.4rem; border: 1px solid #cbd5f5; background: #f8fafc; }
-    #summary { margin-top: 1.5rem; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; }
-    .summary-card { border: 1px solid #e3e8ef; border-radius: 0.75rem; padding: 1rem; background: #fdfdff; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04); }
-    .summary-label { font-size: 0.9rem; color: #64748b; margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 0.04em; }
-    .summary-value { font-size: 1.6rem; font-weight: 600; color: #0f172a; }
-    .summary-delta { margin-top: 0.3rem; font-size: 0.95rem; font-weight: 500; }
-    #charts { margin-top: 2rem; display: grid; gap: 2rem; }
-    .chart-card { border: 1px solid #e3e8ef; border-radius: 0.75rem; padding: 1.5rem; background: #fff; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05); position: relative; display: flex; flex-direction: column; }
-    .chart-card-header { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
-    .chart-card-header h2 { margin: 0; font-size: 1.25rem; }
-    .fullscreen-toggle { padding: 0.3rem 0.6rem; border-radius: 0.4rem; border: 1px solid #cbd5f5; background: #eef2ff; color: #1e3a8a; cursor: pointer; transition: all 0.2s ease; }
-    .fullscreen-toggle:hover { background: #dbeafe; }
-    .chart-card-body { margin-top: 1rem; display: flex; flex-direction: column; gap: 0.75rem; height: 420px; }
-    .chart-card-body canvas { flex: 1; width: 100%; }
-    .chart-card.fullscreen { position: fixed; inset: 0; width: 100vw; height: 100vh; padding: 2rem; border-radius: 0; box-shadow: none; z-index: 1000; }
-    .chart-card.fullscreen .chart-card-body { height: calc(100vh - 140px); }
-    .chart-card.fullscreen .fullscreen-toggle { background: #1e3a8a; color: #fff; border-color: #1e3a8a; }
-    #daily-change { font-size: 1rem; }
-    #meta { color: #64748b; font-size: 0.9rem; }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      margin: 2rem;
+      max-width: 1100px;
+    }
+
+    body.no-scroll {
+      overflow: hidden;
+    }
+
+    h1 {
+      margin: 0;
+    }
+
+    #controls {
+      margin-top: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.35rem 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 0.4rem;
+      background: #f8f9fb;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      background: #eef2ff;
+    }
+
+    .btn.active {
+      background: #3949ab;
+      color: #fff;
+      border-color: #3949ab;
+      font-weight: 600;
+    }
+
+    .language-picker {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .language-picker select {
+      padding: 0.3rem 0.5rem;
+      border-radius: 0.4rem;
+      border: 1px solid #cbd5f5;
+      background: #f8fafc;
+    }
+
+    #summary {
+      margin-top: 1.5rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .summary-card {
+      border: 1px solid #e3e8ef;
+      border-radius: 0.75rem;
+      padding: 1rem;
+      background: #fdfdff;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+    }
+
+    .summary-label {
+      font-size: 0.9rem;
+      color: #64748b;
+      margin-bottom: 0.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .summary-value {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #0f172a;
+    }
+
+    .summary-delta {
+      margin-top: 0.3rem;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    #charts {
+      margin-top: 2rem;
+      display: grid;
+      gap: 2rem;
+    }
+
+    .chart-card {
+      border: 1px solid #e3e8ef;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      padding-bottom: 2.5rem;
+      background: #fff;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chart-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    .chart-card-header h2 {
+      margin: 0;
+      font-size: 1.25rem;
+    }
+
+    .fullscreen-toggle {
+      padding: 0.3rem 0.6rem;
+      border-radius: 0.4rem;
+      border: 1px solid #cbd5f5;
+      background: #eef2ff;
+      color: #1e3a8a;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .fullscreen-toggle:hover {
+      background: #dbeafe;
+    }
+
+    .chart-card-body {
+      margin-top: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      height: 420px;
+      width: calc(100vw - 5vw);
+    }
+
+    .chart-card-body canvas {
+      flex: 1;
+      width: 100%;
+    }
+
+    .chart-card.fullscreen {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      padding: 2rem;
+      border-radius: 0;
+      box-shadow: none;
+      z-index: 1000;
+    }
+
+    .chart-card.fullscreen .chart-card-body {
+      height: calc(100vh - 140px);
+      width: calc(100vw - 50vw);
+    }
+
+    .chart-card.fullscreen .fullscreen-toggle {
+      background: #1e3a8a;
+      color: #fff;
+      border-color: #1e3a8a;
+    }
+
+    #daily-change {
+      font-size: 1rem;
+    }
+
+    #meta {
+      color: #64748b;
+      font-size: 0.9rem;
+    }
+
     @media (max-width: 640px) {
-      .language-picker { margin-left: 0; width: 100%; justify-content: flex-start; }
-      .chart-card.fullscreen { padding: 1rem; }
+      .language-picker {
+        margin-left: 0;
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .chart-card.fullscreen {
+        padding: 1rem;
+      }
     }
   </style>
 </head>
+
 <body>
   <h1 data-i18n="title">CS Inventory Value</h1>
   <p style="margin-top:.25rem;opacity:.7;" data-i18n="subtitle">Auto-updated daily :3</p>
@@ -93,6 +255,7 @@
       </div>
     </div>
 
+    <!-- 
     <div class="chart-card" data-chart="accounts">
       <div class="chart-card-header">
         <h2 data-i18n="valueByAccountHeading">Value By Account</h2>
@@ -103,6 +266,7 @@
         <div id="meta"></div>
       </div>
     </div>
+    -->
   </section>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="js/chartjs-plugin-zoom.min.js"></script>
@@ -135,7 +299,7 @@
         changeSinceYesterdayNA: 'Change since yesterday: —',
         trackingAccounts: 'Tracking {count} account(s).',
         noAccountHistory: 'No account-level history available yet.',
-        rangeSpread: 'Spread: {value}',
+        rangeSpread: 'Span: {value}',
         volatilityPercent: '{value}% of current',
         notAvailable: '—'
       },
@@ -665,4 +829,5 @@
     })();
   </script>
 </body>
+
 </html>
