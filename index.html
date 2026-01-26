@@ -31,24 +31,29 @@
   <script src="js/chartjs-plugin-zoom.min.js"></script>
   <script>
     Chart.register(ChartZoom);
-  </script>
-  <script>
+
     async function loadCSV() {
-      const resp = await fetch('values.csv', { cache: 'no-store' });
-      const text = await resp.text();
-      const lines = text.trim().split('\n');
-      const rows = lines.map(l => l.split(',').map(v => v.trim()));
-      const header = rows[0];
+      try {
+        const resp = await fetch('values.csv', { cache: 'no-store' });
+        if (!resp.ok) throw new Error('Failed to load CSV');
+        const text = await resp.text();
+        const lines = text.trim().split('\n');
+        const rows = lines.map(l => l.split(',').map(v => v.trim()));
+        const header = rows.shift(); // Remove header
 
-      const dateIdx = header.indexOf('date');
-      const lowestIdx = header.indexOf('lowest');
-      const medianIdx = header.indexOf('median');
+        const dateIdx = header.indexOf('date');
+        const lowestIdx = header.indexOf('lowest');
+        const medianIdx = header.indexOf('median');
 
-      const labels = rows.map(r => r[dateIdx]);
-      const lowestValues = rows.map(r => parseFloat(r[lowestIdx].replace('€','').replace(',','.').trim()));
-      const medianValues = rows.map(r => parseFloat(r[medianIdx].replace('€','').replace(',','.').trim()));
+        const labels = rows.map(r => r[dateIdx]);
+        const lowestValues = rows.map(r => parseFloat(r[lowestIdx].replace('€','').replace(',','.').trim()) || 0);
+        const medianValues = rows.map(r => parseFloat(r[medianIdx].replace('€','').replace(',','.').trim()) || 0);
 
-      return { labels, lowestValues, medianValues };
+        return { labels, lowestValues, medianValues };
+      } catch (error) {
+        console.error('Error loading CSV:', error);
+        return { labels: [], lowestValues: [], medianValues: [] };
+      }
     }
 
     function computeSMA(data, window) {
@@ -58,7 +63,7 @@
           sma.push(null);
         } else {
           const slice = data.slice(i - window + 1, i + 1);
-          const sum = slice.reduce((a,b) => a + b, 0);
+          const sum = slice.reduce((a, b) => a + b, 0);
           sma.push(sum / window);
         }
       }
@@ -77,7 +82,7 @@
           datasets: [
             { label: `Lowest Price (${unit})`, data: lowestValues, borderColor: 'red', tension: 0.2, fill: false },
             { label: `Median Price (${unit})`, data: medianValues, borderColor: 'blue', tension: 0.2, fill: false },
-            { label: '7-day Avg', data: computeSMA(medianValues, 7), borderColor: 'orange', borderDash: [5,5], fill: false }
+            { label: '7-day Avg', data: computeSMA(lowestValues, 7), borderColor: 'orange', borderDash: [5,5], fill: false }
           ]
         },
         options: {
@@ -90,60 +95,51 @@
             legend: { position: 'top' },
             zoom: {
               zoom: {
-                wheel: { enabled: true },       // zoom with mouse wheel
-                drag: { enabled: true },        // drag-to-zoom
-                mode: 'x'                       // only along x-axis (time)
+                wheel: { enabled: true },
+                drag: { enabled: true },
+                mode: 'x'
               },
               pan: {
                 enabled: true,
-                mode: 'x'                       // pan along x-axis
+                mode: 'x'
               }
             }
           },
-          // double-click anywhere on the chart to reset zoom
           onDblClick: chart => chart.resetZoom()
         }
       };
 
-
       const chart = new Chart(ctx, config);
-      ctx.canvas.addEventListener('dblclick', () => {
-        chart.resetZoom();
-      });
+      ctx.canvas.addEventListener('dblclick', () => chart.resetZoom());
+
       function updateChart(span) {
         const count = span === 'all' ? labels.length : Math.min(lowestValues.length, span);
 
-        const smaFull = computeSMA(lowestValues, 7);
         const labelsSlice = labels.slice(-count);
         const valuesSlice = lowestValues.slice(-count);
         const medianSlice = medianValues.slice(-count);
         const smaSlice = computeSMA(lowestValues, 7).slice(-count);
 
         chart.data.labels = labelsSlice;
-        chart.data.datasets[0].data = valuesSlice;      // Lowest
-        chart.data.datasets[1].data = medianSlice;      // Median
-        chart.data.datasets[2].data = smaSlice;         // 7-day SMA of median
+        chart.data.datasets[0].data = valuesSlice;
+        chart.data.datasets[1].data = medianSlice;
+        chart.data.datasets[2].data = smaSlice;
         chart.update();
 
         const len = lowestValues.length;
         if (len >= 2) {
-                const diff = lowestValues[len - 1] - lowestValues[len - 2];
-                const dailyChangeEl = document.getElementById('daily-change');
-                dailyChangeEl.textContent = `Change since yesterday: ${diff >= 0 ? '+' : ''}${diff.toFixed(2)} ${unit}`;
-                dailyChangeEl.style.color = diff >= 0 ? 'green' : 'red';
-            }
+          const diff = lowestValues[len - 1] - lowestValues[len - 2];
+          const dailyChangeEl = document.getElementById('daily-change');
+          dailyChangeEl.textContent = `Change since yesterday: ${diff >= 0 ? '+' : ''}${diff.toFixed(2)} ${unit}`;
+          dailyChangeEl.style.color = diff >= 0 ? 'green' : 'red';
+        }
       }
 
       document.querySelectorAll('.btn').forEach(btn =>
         btn.addEventListener('click', () => {
-          // reset previous zoom
           chart.resetZoom();
-
-          // update active button style
           document.querySelector('.active').classList.remove('active');
           btn.classList.add('active');
-
-          // update chart for the selected span
           updateChart(btn.dataset.span);
         })
       );
