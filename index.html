@@ -1,833 +1,1103 @@
 <!doctype html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>CS:GO Inventory Value</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <title>CS Inventory</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
   <style>
+    /* ── Reset & Variables ──────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #070809;
+      --surface:     #0d1014;
+      --surface2:    #12161b;
+      --border:      #1c2129;
+      --border2:     #252c38;
+      --text:        #b8c4d4;
+      --text-dim:    #4e5a6e;
+      --text-bright: #e4ecf7;
+      --accent:      #e8a730;
+      --accent-dim:  rgba(232,167,48,.11);
+      --positive:    #2ec97a;
+      --pos-dim:     rgba(46,201,122,.10);
+      --negative:    #e85252;
+      --neg-dim:     rgba(232,82,82,.10);
+      --mono: 'Space Mono', monospace;
+      --sans: 'DM Sans', sans-serif;
+      --r:    7px;
+    }
+
+    html { font-size: 15px; }
+
     body {
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      margin: 2rem;
-      max-width: 1100px;
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      /* subtle dot grid */
+      background-image: radial-gradient(circle, #151b24 1px, transparent 1px);
+      background-size: 26px 26px;
     }
 
-    body.no-scroll {
-      overflow: hidden;
+    body.no-scroll { overflow: hidden; }
+
+    /* ── Layout ─────────────────────────────────────────────── */
+    .page {
+      max-width: 1160px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 5rem;
     }
 
-    h1 {
-      margin: 0;
-    }
-
-    #controls {
-      margin-top: 1rem;
+    /* ── Header ─────────────────────────────────────────────── */
+    header {
       display: flex;
-      align-items: center;
-      gap: 0.5rem;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.75rem;
       flex-wrap: wrap;
     }
 
-    .btn {
-      padding: 0.35rem 0.75rem;
-      border: 1px solid #ccc;
-      border-radius: 0.4rem;
-      background: #f8f9fb;
-      cursor: pointer;
-      transition: all 0.2s ease;
+    .logo {
+      font-family: var(--mono);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-bright);
+      letter-spacing: -.02em;
     }
-
-    .btn:hover {
-      background: #eef2ff;
-    }
-
-    .btn.active {
-      background: #3949ab;
-      color: #fff;
-      border-color: #3949ab;
-      font-weight: 600;
-    }
-
-    .language-picker {
-      margin-left: auto;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
-
-    .language-picker select {
-      padding: 0.3rem 0.5rem;
-      border-radius: 0.4rem;
-      border: 1px solid #cbd5f5;
-      background: #f8fafc;
-    }
-
-    #summary {
-      margin-top: 1.5rem;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-    }
-
-    .summary-card {
-      border: 1px solid #e3e8ef;
-      border-radius: 0.75rem;
-      padding: 1rem;
-      background: #fdfdff;
-      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
-    }
-
-    .summary-label {
-      font-size: 0.9rem;
-      color: #64748b;
-      margin-bottom: 0.25rem;
+    .logo .slash { color: var(--accent); margin-right: .15em; }
+    .logo-sub {
+      font-family: var(--mono);
+      font-size: .7rem;
+      letter-spacing: .07em;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      color: var(--text-dim);
+      margin-top: .25rem;
     }
 
-    .summary-value {
-      font-size: 1.6rem;
-      font-weight: 600;
-      color: #0f172a;
-    }
-
-    .summary-delta {
-      margin-top: 0.3rem;
-      font-size: 0.95rem;
-      font-weight: 500;
-    }
-
-    #charts {
-      margin-top: 2rem;
-      display: grid;
-      gap: 2rem;
-    }
-
-    .chart-card {
-      border: 1px solid #e3e8ef;
-      border-radius: 0.75rem;
-      padding: 1.5rem;
-      padding-bottom: 2.5rem;
-      background: #fff;
-      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
-      position: relative;
+    .header-right {
       display: flex;
       flex-direction: column;
+      align-items: flex-end;
+      gap: .5rem;
     }
 
-    .chart-card-header {
+    #last-updated {
+      font-family: var(--mono);
+      font-size: .72rem;
+      letter-spacing: .04em;
+      padding: .28rem .65rem;
+      border-radius: var(--r);
+      border: 1px solid var(--border2);
+      background: var(--surface);
+      color: var(--text-dim);
+      transition: border-color .3s, color .3s;
+    }
+    #last-updated.fresh {
+      border-color: var(--positive);
+      color: var(--positive);
+    }
+    #last-updated.stale {
+      border-color: var(--negative);
+      color: var(--negative);
+    }
+
+    .lang-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 0.75rem;
+      gap: .4rem;
     }
-
-    .chart-card-header h2 {
-      margin: 0;
-      font-size: 1.25rem;
+    .lang-label {
+      font-family: var(--mono);
+      font-size: .68rem;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--text-dim);
     }
-
-    .fullscreen-toggle {
-      padding: 0.3rem 0.6rem;
-      border-radius: 0.4rem;
-      border: 1px solid #cbd5f5;
-      background: #eef2ff;
-      color: #1e3a8a;
+    .lang-select {
+      font-family: var(--mono);
+      font-size: .72rem;
+      padding: .28rem .5rem;
+      border: 1px solid var(--border2);
+      border-radius: var(--r);
+      background: var(--surface);
+      color: var(--text-dim);
       cursor: pointer;
-      transition: all 0.2s ease;
+      outline: none;
     }
+    .lang-select:focus { border-color: var(--accent); }
 
-    .fullscreen-toggle:hover {
-      background: #dbeafe;
-    }
-
-    .chart-card-body {
-      margin-top: 1rem;
+    /* ── Controls ───────────────────────────────────────────── */
+    #controls {
       display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      height: 420px;
-      width: calc(100vw - 5vw);
+      align-items: center;
+      gap: .45rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.4rem;
     }
-
-    .chart-card-body canvas {
-      flex: 1;
-      width: 100%;
+    .ctrl-label {
+      font-family: var(--mono);
+      font-size: .68rem;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-right: .2rem;
     }
+    .btn {
+      font-family: var(--mono);
+      font-size: .72rem;
+      padding: .3rem .72rem;
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      background: var(--surface);
+      color: var(--text-dim);
+      cursor: pointer;
+      letter-spacing: .03em;
+      transition: all .15s;
+    }
+    .btn:hover  { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+    .btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); font-weight: 700; }
 
+    /* ── Summary cards ──────────────────────────────────────── */
+    #summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.4rem;
+    }
+    .s-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-top: 2px solid var(--border2);
+      border-radius: var(--r);
+      padding: 1rem 1.15rem 1rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-top-color .3s;
+    }
+    .s-card.accent-bar  { border-top-color: var(--accent); }
+    .s-card.pos-bar     { border-top-color: var(--positive); }
+    .s-card.neg-bar     { border-top-color: var(--negative); }
+
+    .s-label {
+      font-family: var(--mono);
+      font-size: .67rem;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: .45rem;
+    }
+    .s-value {
+      font-family: var(--mono);
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--text-bright);
+      line-height: 1.1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .s-value.col-accent   { color: var(--accent); }
+    .s-value.col-positive { color: var(--positive); }
+    .s-value.col-negative { color: var(--negative); }
+    .s-value.sm           { font-size: 1.05rem; }
+    .s-delta {
+      font-family: var(--mono);
+      font-size: .78rem;
+      margin-top: .35rem;
+      color: var(--text-dim);
+    }
+    .s-delta.pos { color: var(--positive); }
+    .s-delta.neg { color: var(--negative); }
+
+    /* ── Chart card ─────────────────────────────────────────── */
+    .chart-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      padding: 1.2rem 1.2rem 1rem;
+      margin-bottom: 1.4rem;
+      position: relative;
+    }
     .chart-card.fullscreen {
       position: fixed;
       inset: 0;
-      width: 100vw;
-      height: 100vh;
-      padding: 2rem;
-      border-radius: 0;
-      box-shadow: none;
       z-index: 1000;
+      border-radius: 0;
+      padding: 1.5rem;
+      border: none;
     }
 
-    .chart-card.fullscreen .chart-card-body {
-      height: calc(100vh - 140px);
-      width: calc(100vw - 5vw);
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      gap: .75rem;
     }
-
-    .chart-card.fullscreen .fullscreen-toggle {
-      background: #1e3a8a;
-      color: #fff;
-      border-color: #1e3a8a;
+    .card-title {
+      font-family: var(--mono);
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .card-actions {
+      display: flex;
+      align-items: center;
+      gap: .75rem;
     }
 
     #daily-change {
-      font-size: 1rem;
+      font-family: var(--mono);
+      font-size: .78rem;
+      color: var(--text-dim);
     }
 
-    #meta {
-      color: #64748b;
-      font-size: 0.9rem;
+    .icon-btn {
+      font-family: var(--mono);
+      font-size: .68rem;
+      padding: .25rem .55rem;
+      border: 1px solid var(--border2);
+      border-radius: 4px;
+      background: transparent;
+      color: var(--text-dim);
+      cursor: pointer;
+      letter-spacing: .02em;
+      transition: all .15s;
+      white-space: nowrap;
+    }
+    .icon-btn:hover { border-color: var(--text-dim); color: var(--text); }
+
+    .chart-body {
+      position: relative;
+      height: 350px;
+    }
+    .chart-card.fullscreen .chart-body {
+      height: calc(100vh - 110px);
     }
 
-    @media (max-width: 640px) {
-      .language-picker {
-        margin-left: 0;
-        width: 100%;
-        justify-content: flex-start;
-      }
+    /* ── Items card ─────────────────────────────────────────── */
+    .items-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      overflow: hidden;
+    }
+    .items-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .95rem 1.15rem;
+      border-bottom: 1px solid var(--border);
+    }
+    #items-date {
+      font-family: var(--mono);
+      font-size: .7rem;
+      color: var(--text-dim);
+    }
+    .table-wrap { overflow-x: auto; }
 
-      .chart-card.fullscreen {
-        padding: 1rem;
-      }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .82rem;
+    }
+    th, td { padding: .6rem 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+    th {
+      font-family: var(--mono);
+      font-size: .65rem;
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      background: var(--surface2);
+      white-space: nowrap;
+      cursor: pointer;
+      user-select: none;
+    }
+    th:hover               { color: var(--text); }
+    th.sorted              { color: var(--accent); }
+    th .si                 { margin-left: .3em; opacity: .45; font-size: .68em; }
+    th.sorted .si          { opacity: 1; }
+    tbody tr:hover         { background: var(--surface2); }
+    tbody tr:last-child td { border-bottom: none; }
+
+    td.td-rank {
+      font-family: var(--mono);
+      font-size: .68rem;
+      color: var(--text-dim);
+      width: 2.5rem;
+      text-align: center;
+      padding-right: .5rem;
+    }
+    td.td-name { color: var(--text-bright); }
+    .item-qty-badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: .63rem;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 3px;
+      padding: 0 .35em;
+      margin-left: .45em;
+      color: var(--text-dim);
+      vertical-align: middle;
+    }
+    td.td-num {
+      font-family: var(--mono);
+      font-size: .78rem;
+      color: var(--text);
+      text-align: right;
+      white-space: nowrap;
+    }
+    td.td-total {
+      font-family: var(--mono);
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    #items-empty {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      font-family: var(--mono);
+      font-size: .78rem;
+      color: var(--text-dim);
+    }
+
+    /* ── Scrollbar ──────────────────────────────────────────── */
+    ::-webkit-scrollbar              { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track        { background: var(--surface); }
+    ::-webkit-scrollbar-thumb        { background: var(--border2); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover  { background: #3a4455; }
+
+    /* ── Responsive ─────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      .page         { padding: 1rem 1rem 3rem; }
+      .header-right { align-items: flex-start; }
+      .chart-body   { height: 250px; }
+      .item-qty-badge { display: none; }
+      td.td-num:nth-child(4) { display: none; } /* hide median col on mobile */
+      th:nth-child(4)        { display: none; }
     }
   </style>
 </head>
-
 <body>
-  <h1 data-i18n="title">CS Inventory Value</h1>
-  <p style="margin-top:.25rem;opacity:.7;" data-i18n="subtitle">Auto-updated daily :3</p>
+<div class="page">
 
+  <!-- ── Header ──────────────────────────────────────────────── -->
+  <header>
+    <div>
+      <div class="logo"><span class="slash">//</span> <span data-i18n="title">CS INVENTORY</span></div>
+      <div class="logo-sub" data-i18n="subtitle">Steam Market Value Tracker</div>
+    </div>
+    <div class="header-right">
+      <div id="last-updated">—</div>
+      <div class="lang-row">
+        <span class="lang-label" data-i18n="languageLabel">Lang</span>
+        <select id="lang-select" class="lang-select">
+          <option value="en" data-i18n="langEN">EN</option>
+          <option value="de" data-i18n="langDE">DE</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <!-- ── Span controls ───────────────────────────────────────── -->
   <div id="controls">
-    <span data-i18n="viewLabel">View:</span>
-    <button class="btn active" data-span="7" data-i18n="span7">7 days</button>
-    <button class="btn" data-span="30" data-i18n="span30">30 days</button>
-    <button class="btn" data-span="90" data-i18n="span90">90 days</button>
-    <button class="btn" data-span="all" data-i18n="spanAll">All</button>
-    <div class="language-picker">
-      <label for="language-select" data-i18n="languageLabel">Language:</label>
-      <select id="language-select">
-        <option value="en" data-i18n="languageEnglish">English</option>
-        <option value="de" data-i18n="languageGerman">Deutsch</option>
-      </select>
+    <span class="ctrl-label" data-i18n="viewLabel">View</span>
+    <button class="btn" data-span="7"   data-i18n="span7">7D</button>
+    <button class="btn" data-span="30"  data-i18n="span30">30D</button>
+    <button class="btn" data-span="90"  data-i18n="span90">90D</button>
+    <button class="btn active" data-span="all" data-i18n="spanAll">ALL</button>
+  </div>
+
+  <!-- ── Summary cards ───────────────────────────────────────── -->
+  <div id="summary">
+    <div class="s-card accent-bar">
+      <div class="s-label" data-i18n="sLatest">Latest Value</div>
+      <div class="s-value col-accent" id="s-latest">—</div>
+      <div class="s-delta" id="s-daily">—</div>
+    </div>
+    <div class="s-card" id="card-30d">
+      <div class="s-label" data-i18n="s30d">30-Day Change</div>
+      <div class="s-value" id="s-30d-val">—</div>
+      <div class="s-delta" id="s-30d-pct">—</div>
+    </div>
+    <div class="s-card">
+      <div class="s-label" data-i18n="sRange">All-Time Range</div>
+      <div class="s-value sm" id="s-range">—</div>
+      <div class="s-delta" id="s-spread">—</div>
+    </div>
+    <div class="s-card">
+      <div class="s-label" data-i18n="sVol">Volatility (30d σ)</div>
+      <div class="s-value" id="s-vol">—</div>
+      <div class="s-delta" id="s-vol-pct">—</div>
     </div>
   </div>
 
-  <section id="summary">
-    <article class="summary-card">
-      <div class="summary-label" data-i18n="summaryLatest">Latest Value</div>
-      <div class="summary-value" id="summary-latest">—</div>
-      <div class="summary-delta" id="summary-daily-delta">—</div>
-    </article>
-    <article class="summary-card">
-      <div class="summary-label" data-i18n="summary30d">30 Day Trend</div>
-      <div class="summary-value" id="summary-30d">—</div>
-      <div class="summary-delta" id="summary-30d-delta">—</div>
-    </article>
-    <article class="summary-card">
-      <div class="summary-label" data-i18n="summaryRange">All-Time Range</div>
-      <div class="summary-value" id="summary-range">—</div>
-      <div class="summary-delta" id="summary-at-delta">—</div>
-    </article>
-    <article class="summary-card">
-      <div class="summary-label" data-i18n="summaryVolatility">Volatility (30d)</div>
-      <div class="summary-value" id="summary-volatility">—</div>
-      <div class="summary-delta" id="summary-volatility-desc">—</div>
-    </article>
-  </section>
-
-  <section id="charts">
-    <div class="chart-card" data-chart="total">
-      <div class="chart-card-header">
-        <h2 data-i18n="totalValueHeading">Total Inventory Value</h2>
-        <button class="fullscreen-toggle" type="button" data-i18n="expand">Expand</button>
-      </div>
-      <div class="chart-card-body">
-        <canvas id="chart"></canvas>
-        <div id="daily-change"></div>
+  <!-- ── Chart ───────────────────────────────────────────────── -->
+  <div class="chart-card" id="chart-card">
+    <div class="card-header">
+      <span class="card-title" data-i18n="chartTitle">Total Inventory Value</span>
+      <div class="card-actions">
+        <span id="daily-change"></span>
+        <button class="icon-btn" id="fs-btn" data-i18n="expand">⤢ Expand</button>
       </div>
     </div>
+    <div class="chart-body"><canvas id="chart"></canvas></div>
+  </div>
 
-    <!-- 
-    <div class="chart-card" data-chart="accounts">
-      <div class="chart-card-header">
-        <h2 data-i18n="valueByAccountHeading">Value By Account</h2>
-        <button class="fullscreen-toggle" type="button" data-i18n="expand">Expand</button>
-      </div>
-      <div class="chart-card-body">
-        <canvas id="account-chart"></canvas>
-        <div id="meta"></div>
-      </div>
+  <!-- ── Top items ───────────────────────────────────────────── -->
+  <div class="items-card">
+    <div class="items-card-header">
+      <span class="card-title" data-i18n="itemsTitle">Top Items</span>
+      <span id="items-date"></span>
     </div>
-    -->
-  </section>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="js/chartjs-plugin-zoom.min.js"></script>
-  <script>
-    Chart.register(ChartZoom);
-  </script>
-  <script>
-    const translations = {
-      en: {
-        documentTitle: 'CS Inventory Value',
-        title: 'CS Inventory Value',
-        subtitle: 'Auto-updated daily :3',
-        viewLabel: 'View:',
-        span7: '7 days',
-        span30: '30 days',
-        span90: '90 days',
-        spanAll: 'All',
-        languageLabel: 'Language:',
-        languageEnglish: 'English',
-        languageGerman: 'German',
-        summaryLatest: 'Latest Value',
-        summary30d: '30 Day Trend',
-        summaryRange: 'All-Time Range',
-        summaryVolatility: 'Volatility (30d)',
-        totalValueHeading: 'Total Inventory Value',
-        valueByAccountHeading: 'Value By Account',
-        expand: 'Expand',
-        collapse: 'Exit Fullscreen',
-        changeSinceYesterday: 'Change since yesterday: {value}',
-        changeSinceYesterdayNA: 'Change since yesterday: —',
-        trackingAccounts: 'Tracking {count} account(s).',
-        noAccountHistory: 'No account-level history available yet.',
-        rangeSpread: 'Span: {value}',
-        volatilityPercent: '{value}% of current',
-        notAvailable: '—'
-      },
-      de: {
-        documentTitle: 'CS-Inventarwert',
-        title: 'CS-Inventarwert',
-        subtitle: 'Täglich automatisch aktualisiert :3',
-        viewLabel: 'Ansicht:',
-        span7: '7 Tage',
-        span30: '30 Tage',
-        span90: '90 Tage',
-        spanAll: 'Gesamt',
-        languageLabel: 'Sprache:',
-        languageEnglish: 'Englisch',
-        languageGerman: 'Deutsch',
-        summaryLatest: 'Aktueller Wert',
-        summary30d: 'Trend (30 Tage)',
-        summaryRange: 'Spanne (Gesamtzeitraum)',
-        summaryVolatility: 'Volatilität (30 Tage)',
-        totalValueHeading: 'Gesamtwert des Inventars',
-        valueByAccountHeading: 'Wert nach Konto',
-        expand: 'Vollbild',
-        collapse: 'Vollbild schließen',
-        changeSinceYesterday: 'Veränderung seit gestern: {value}',
-        changeSinceYesterdayNA: 'Veränderung seit gestern: —',
-        trackingAccounts: 'Verfolge {count} Konto(s).',
-        noAccountHistory: 'Noch keine Kontohistorie vorhanden.',
-        rangeSpread: 'Spanne: {value}',
-        volatilityPercent: '{value}% des aktuellen Werts',
-        notAvailable: '—'
-      }
+    <div class="table-wrap">
+      <div id="items-empty"></div>
+      <table id="items-table" style="display:none">
+        <thead>
+          <tr>
+            <th data-col="rank">#</th>
+            <th data-col="name"><span class="th-text" data-i18n="colName">Item</span></th>
+            <th data-col="qty"  style="text-align:right"><span class="th-text" data-i18n="colQty">Qty</span></th>
+            <th data-col="lowest"       style="text-align:right"><span class="th-text" data-i18n="colLowest">Lowest</span> <span class="si">↕</span></th>
+            <th data-col="median"       style="text-align:right"><span class="th-text" data-i18n="colMedian">Median</span> <span class="si">↕</span></th>
+            <th data-col="total_lowest" style="text-align:right" class="sorted"><span class="th-text" data-i18n="colTotal">Total</span> <span class="si">↓</span></th>
+          </tr>
+        </thead>
+        <tbody id="items-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<!-- Chart.js + zoom plugin (zoom requires hammerjs for touch pan) -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.2.0/dist/chartjs-plugin-zoom.min.js"></script>
+<script>
+'use strict';
+
+// ════════════════════════════════════════════════════════════
+// Translations
+// ════════════════════════════════════════════════════════════
+const TRANSLATIONS = {
+  en: {
+    documentTitle:  'CS Inventory',
+    title:          'CS INVENTORY',
+    subtitle:       'Steam Market Value Tracker',
+    viewLabel:      'View',
+    span7: '7D', span30: '30D', span90: '90D', spanAll: 'ALL',
+    languageLabel:  'Lang',
+    langEN: 'EN',  langDE: 'DE',
+    sLatest:        'Latest Value',
+    s30d:           '30-Day Change',
+    sRange:         'All-Time Range',
+    sVol:           'Volatility (30d σ)',
+    chartTitle:     'Total Inventory Value',
+    itemsTitle:     'Top Items',
+    colName:  'Item', colQty: 'Qty', colLowest: 'Lowest',
+    colMedian: 'Median', colTotal: 'Total',
+    expand:         '⤢ Expand',
+    collapse:       '⤡ Collapse',
+    noItems:        'No item data yet — run the fetch script first.',
+    updatedToday:   '✓ Updated today',
+    updatedAgo:     'Updated {n}d ago',
+    notAvail:       '—',
+    daily:          '24h: {v}',
+    dailyNA:        '24h: —',
+    spread:         'Spread: {v}',
+    volPct:         '{v}% of current value',
+    labelLowest:    'Lowest',
+    labelMedian:    'Median',
+    labelSMA:       '7-day avg',
+  },
+  de: {
+    documentTitle:  'CS-Inventar',
+    title:          'CS-INVENTAR',
+    subtitle:       'Steam-Markt Werttracker',
+    viewLabel:      'Ansicht',
+    span7: '7T', span30: '30T', span90: '90T', spanAll: 'ALLE',
+    languageLabel:  'Spr.',
+    langEN: 'EN',  langDE: 'DE',
+    sLatest:        'Aktueller Wert',
+    s30d:           'Änderung (30 Tage)',
+    sRange:         'Spanne (Gesamt)',
+    sVol:           'Volatilität (30d σ)',
+    chartTitle:     'Inventargesamtwert',
+    itemsTitle:     'Top-Items',
+    colName:  'Item', colQty: 'Anz.', colLowest: 'Niedrigst',
+    colMedian: 'Median', colTotal: 'Gesamt',
+    expand:         '⤢ Vollbild',
+    collapse:       '⤡ Schließen',
+    noItems:        'Keine Itemdaten — Skript zuerst ausführen.',
+    updatedToday:   '✓ Heute aktualisiert',
+    updatedAgo:     'Vor {n} Tagen',
+    notAvail:       '—',
+    daily:          '24h: {v}',
+    dailyNA:        '24h: —',
+    spread:         'Spanne: {v}',
+    volPct:         '{v}% des aktuellen Werts',
+    labelLowest:    'Niedrigst',
+    labelMedian:    'Median',
+    labelSMA:       '7-Tage-Ø',
+  },
+};
+
+const LANG_KEY = 'csinv_lang';
+let lang = (localStorage.getItem(LANG_KEY) || 'en').toLowerCase();
+if (!TRANSLATIONS[lang]) lang = 'en';
+
+const t = (key, params = {}) => {
+  const dict = TRANSLATIONS[lang] || TRANSLATIONS.en;
+  const tmpl = dict[key] ?? TRANSLATIONS.en[key] ?? key;
+  return String(tmpl).replace(/\{(\w+)\}/g, (_, k) => params[k] ?? _);
+};
+
+const i18nCallbacks = [];
+const onLangChange  = fn => i18nCallbacks.push(fn);
+
+function applyTranslations() {
+  document.title = t('documentTitle');
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    // Don't overwrite th elements with sort icons — handled in renderItems()
+    if (el.closest('th') && el.classList.contains('th-text')) {
+      el.textContent = t(el.dataset.i18n);
+      return;
+    }
+    if (!el.querySelector('.si') && !el.querySelector('.th-text')) {
+      el.textContent = t(el.dataset.i18n);
+    }
+  });
+  const sel = document.getElementById('lang-select');
+  if (sel) {
+    Array.from(sel.options).forEach(opt => {
+      if (opt.dataset.i18n) opt.textContent = t(opt.dataset.i18n);
+    });
+    sel.value = lang;
+  }
+  i18nCallbacks.forEach(fn => fn());
+}
+
+function setLang(l, save = true) {
+  if (!TRANSLATIONS[l]) l = 'en';
+  lang = l;
+  if (save) localStorage.setItem(LANG_KEY, l);
+  applyTranslations();
+}
+
+document.getElementById('lang-select').addEventListener('change', e => setLang(e.target.value));
+
+// ════════════════════════════════════════════════════════════
+// Currency
+// ════════════════════════════════════════════════════════════
+let CURRENCY = 'EUR';
+
+const fmt = v =>
+  Number.isFinite(v)
+    ? new Intl.NumberFormat(undefined, {
+        style: 'currency', currency: CURRENCY,
+        minimumFractionDigits: 2, maximumFractionDigits: 2,
+      }).format(v)
+    : t('notAvail');
+
+const fmtDelta = v => {
+  if (!Number.isFinite(v)) return t('notAvail');
+  return (v > 0 ? '+' : '') + fmt(v);
+};
+
+const pct = (cur, prev) =>
+  Number.isFinite(cur) && Number.isFinite(prev) && prev !== 0
+    ? ((cur - prev) / prev) * 100 : null;
+
+// ════════════════════════════════════════════════════════════
+// CSV parsing — treats 0 as null (Steam prices are never 0)
+// ════════════════════════════════════════════════════════════
+function parseCSV(text) {
+  const lines = text.trim().split('\n').filter(Boolean);
+  if (lines.length < 2) return { labels: [], lowest: [], median: [] };
+  const hdr = lines[0].split(',').map(s => s.trim().toLowerCase());
+  const di = hdr.indexOf('date');
+  const li = hdr.indexOf('lowest');
+  const mi = hdr.indexOf('median');
+
+  const labels = [], lowest = [], median = [];
+  for (const line of lines.slice(1)) {
+    const cols = line.split(',');
+    const date = (cols[di] || '').trim();
+    if (!date) continue;
+    const parseN = i => {
+      if (i < 0) return null;
+      const v = parseFloat((cols[i] || '').replace(/[^\d.-]/g, ''));
+      return Number.isFinite(v) && v > 0 ? v : null; // 0 treated as no-data
     };
+    labels.push(date);
+    lowest.push(parseN(li));
+    median.push(parseN(mi));
+  }
+  return { labels, lowest, median };
+}
 
-    const currencySymbols = {
-      AUD: 'A$',
-      CAD: 'C$',
-      CHF: 'Fr.',
-      CNY: '¥',
-      DKK: 'kr.',
-      EUR: '€',
-      GBP: '£',
-      HKD: 'HK$',
-      INR: '₹',
-      JPY: '¥',
-      MXN: '$',
-      NOK: 'kr',
-      NZD: 'NZ$',
-      PLN: 'zł',
-      SEK: 'kr',
-      SGD: 'S$',
-      THB: '฿',
-      TRY: '₺',
-      USD: '$',
-      ZAR: 'R'
-    };
+// ════════════════════════════════════════════════════════════
+// Simple Moving Average (null-aware)
+// ════════════════════════════════════════════════════════════
+function sma(data, w) {
+  return data.map((_, i) => {
+    if (i < w - 1) return null;
+    const slice = data.slice(i - w + 1, i + 1).filter(v => v !== null);
+    return slice.length ? slice.reduce((a, b) => a + b, 0) / slice.length : null;
+  });
+}
 
-    const translationUpdaters = [];
-    const languageStorageKey = 'inventory_language';
-    let currentLanguage = (localStorage.getItem(languageStorageKey) || 'en').toLowerCase();
-    const languageSelect = document.getElementById('language-select');
+// ════════════════════════════════════════════════════════════
+// State
+// ════════════════════════════════════════════════════════════
+let allLabels = [], allLowest = [], allMedian = [];
+let mainChart  = null;
+let lastDiff   = NaN;
 
-    function translate(key, params = {}) {
-      const dict = translations[currentLanguage] || translations.en;
-      const fallback = translations.en[key] !== undefined ? translations.en[key] : key;
-      const template = dict[key] !== undefined ? dict[key] : fallback;
-      return template.replace(/\{(\w+)\}/g, (match, name) => {
-        return params[name] !== undefined ? params[name] : match;
-      });
-    }
+function primarySeries() {
+  // Prefer median if we have any real (non-null) median values
+  return allMedian.some(v => v !== null) ? allMedian : allLowest;
+}
 
-    function registerTranslationUpdater(fn) {
-      translationUpdaters.push(fn);
-    }
+// ════════════════════════════════════════════════════════════
+// Chart build
+// ════════════════════════════════════════════════════════════
+const CHART_COLORS = {
+  lowest: '#e85252',
+  median: '#e8a730',
+  sma:    '#4fa8d8',
+  grid:   '#1c2129',
+  tick:   '#4e5a6e',
+};
 
-    function applyTranslations() {
-      document.querySelectorAll('[data-i18n]').forEach(el => {
-        const key = el.dataset.i18n;
-        if (key) {
-          el.textContent = translate(key);
-        }
-      });
-      if (languageSelect) {
-        Array.from(languageSelect.options).forEach(option => {
-          const key = option.dataset.i18n;
-          if (key) {
-            option.textContent = translate(key);
-          }
-        });
-      }
-      document.title = translate('documentTitle');
-      document.documentElement.setAttribute('lang', currentLanguage);
-      translationUpdaters.forEach(fn => fn());
-    }
-
-    function setLanguage(lang, { skipSave } = {}) {
-      if (!translations[lang]) {
-        lang = 'en';
-      }
-      currentLanguage = lang;
-      if (!skipSave) {
-        localStorage.setItem(languageStorageKey, currentLanguage);
-      }
-      if (languageSelect) {
-        languageSelect.value = currentLanguage;
-      }
-      applyTranslations();
-    }
-
-    if (languageSelect) {
-      languageSelect.addEventListener('change', event => {
-        setLanguage(event.target.value, { skipSave: false });
-      });
-    }
-
-    setLanguage(currentLanguage, { skipSave: true });
-
-    async function fetchText(url) {
-      const response = await fetch(url, { cache: 'no-store' });
-      if (!response.ok) {
-        throw new Error(`Failed to load ${url}: ${response.status}`);
-      }
-      return response.text();
-    }
-
-    function parseValuesCSV(text) {
-      const lines = text.trim().split('\n').filter(Boolean);
-      if (lines.length <= 1) {
-        return { labels: [], lowestValues: [], medianValues: [] };
-      }
-
-      const header = lines[0].split(',').map(v => v.trim().toLowerCase());
-      const rows = lines.slice(1);
-      const dateIdx = header.indexOf('date');
-      const lowestIdx = header.indexOf('lowest');
-      const medianIdx = header.indexOf('median');
-
-      const labels = [];
-      const lowestValues = [];
-      const medianValues = [];
-
-      rows.forEach(line => {
-        const cols = line.split(',');
-        if (!cols.length) return;
-        const date = (cols[dateIdx] || '').trim();
-        if (!date) return;
-
-        const parseNumeric = idx => {
-          if (idx === -1) return NaN;
-          const raw = (cols[idx] || '').replace(/[^\d.-]/g, '');
-          const value = parseFloat(raw);
-          return Number.isFinite(value) ? value : NaN;
-        };
-
-        labels.push(date);
-        lowestValues.push(parseNumeric(lowestIdx));
-        medianValues.push(parseNumeric(medianIdx));
-      });
-
-      return { labels, lowestValues, medianValues };
-    }
-
-    function parseAccountsCSV(text) {
-      const lines = text.trim().split('\n').filter(Boolean);
-      if (lines.length <= 1) {
-        return { labels: [], datasets: [], accountIds: [] };
-      }
-
-      const header = lines[0].split(',').map(v => v.trim().toLowerCase());
-      const dateIdx = header.indexOf('date');
-      const idIdx = header.indexOf('steam_id');
-      const valueIdx = header.indexOf('value_eur');
-
-      const latestByKey = new Map();
-
-      lines.slice(1).forEach(line => {
-        const cols = line.split(',').map(v => v.trim());
-        if (cols.length < 3) return;
-        const date = cols[dateIdx];
-        const steamId = cols[idIdx];
-        const rawValue = cols[valueIdx];
-        if (!date || !steamId) return;
-        const numeric = parseFloat(rawValue.replace(/[^\d.-]/g, ''));
-        if (!Number.isFinite(numeric)) return;
-        const key = `${date}::${steamId}`;
-        latestByKey.set(key, numeric);
-      });
-
-      const perDate = new Map();
-      latestByKey.forEach((value, key) => {
-        const [date, steamId] = key.split('::');
-        if (!perDate.has(date)) {
-          perDate.set(date, new Map());
-        }
-        perDate.get(date).set(steamId, value);
-      });
-
-      const labels = Array.from(perDate.keys()).sort();
-      const accountIds = new Set();
-      perDate.forEach(map => {
-        map.forEach((_, steamId) => accountIds.add(steamId));
-      });
-
-      const sortedAccountIds = Array.from(accountIds).sort();
-      const datasets = sortedAccountIds.map((steamId, index) => {
-        const data = labels.map(date => {
-          const value = perDate.get(date)?.get(steamId);
-          return value === undefined ? null : parseFloat(value.toFixed(2));
-        });
-        return { steamId, data, index };
-      });
-
-      return { labels, datasets, accountIds: sortedAccountIds };
-    }
-
-    function computeSMA(data, window) {
-      const sma = [];
-      for (let i = 0; i < data.length; i++) {
-        if (i < window - 1) {
-          sma.push(null);
-        } else {
-          const slice = data.slice(i - window + 1, i + 1);
-          const sum = slice.reduce((a, b) => a + b, 0);
-          sma.push(sum / window);
-        }
-      }
-      return sma;
-    }
-
-    function formatCurrency(value, currency, symbol) {
-      if (!Number.isFinite(value)) return translate('notAvailable');
-      const options = {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      };
-      if (symbol) {
-        options.style = 'currency';
-        options.currency = currency;
-      } else {
-        options.style = 'decimal';
-      }
-      const formatter = new Intl.NumberFormat(undefined, options);
-      const formatted = formatter.format(value);
-      return symbol ? formatted : `${formatted} ${currency}`;
-    }
-
-    function formatDelta(value, currency, symbol) {
-      if (!Number.isFinite(value)) return translate('notAvailable');
-      const prefix = value > 0 ? '+' : '';
-      return `${prefix}${formatCurrency(value, currency, symbol)}`;
-    }
-
-    function percentChange(current, previous) {
-      if (!Number.isFinite(current) || !Number.isFinite(previous) || previous === 0) return null;
-      return ((current - previous) / previous) * 100;
-    }
-
-    function setupFullscreen(card, chartInstance) {
-      const button = card?.querySelector('.fullscreen-toggle');
-      if (!button || !chartInstance) return;
-
-      const updateButtonLabel = () => {
-        const key = card.classList.contains('fullscreen') ? 'collapse' : 'expand';
-        button.textContent = translate(key);
-      };
-
-      const updateBodyLock = () => {
-        const isAnyFullscreen = document.querySelector('.chart-card.fullscreen');
-        document.body.classList.toggle('no-scroll', Boolean(isAnyFullscreen));
-      };
-
-      button.addEventListener('click', () => {
-        document.querySelectorAll('.chart-card.fullscreen').forEach(el => {
-          if (el !== card) {
-            el.classList.remove('fullscreen');
-            const otherButton = el.querySelector('.fullscreen-toggle');
-            if (otherButton) {
-              otherButton.textContent = translate('expand');
-            }
-          }
-        });
-
-        const isActive = card.classList.toggle('fullscreen');
-        updateBodyLock();
-        setTimeout(() => chartInstance.resize(), isActive ? 120 : 60);
-        updateButtonLabel();
-      });
-
-      registerTranslationUpdater(updateButtonLabel);
-      updateButtonLabel();
-    }
-
-    (async () => {
-      const [valuesText, accountsText, configResponse] = await Promise.all([
-        fetchText('values.csv'),
-        fetchText('accounts.csv').catch(() => ''),
-        fetch('config.json', { cache: 'no-store' }).then(r => (r.ok ? r.json() : { currency: 'EUR' })).catch(() => ({ currency: 'EUR' }))
-      ]);
-
-      const config = configResponse || {};
-      const accountLabels = config.account_labels || {};
-      const currency = (config.currency || 'EUR').toUpperCase();
-      const currencySymbol = currencySymbols[currency] || null;
-
-      if (!localStorage.getItem(languageStorageKey)) {
-        const configLanguage = (config.language || '').slice(0, 2).toLowerCase();
-        if (configLanguage && translations[configLanguage]) {
-          setLanguage(configLanguage, { skipSave: true });
-        }
-      }
-
-      const { labels, lowestValues, medianValues } = parseValuesCSV(valuesText);
-      const accountData = accountsText ? parseAccountsCSV(accountsText) : { labels: [], datasets: [], accountIds: [] };
-
-      const unit = currency;
-      const ctx = document.getElementById('chart').getContext('2d');
-      const primaryValues = medianValues.some(v => Number.isFinite(v) && v > 0) ? medianValues : lowestValues;
-
-      const latest = primaryValues[primaryValues.length - 1];
-      const previous = primaryValues[primaryValues.length - 2];
-
-      const delta = Number.isFinite(latest) && Number.isFinite(previous) ? latest - previous : NaN;
-      const deltaPct = percentChange(latest, previous);
-
-      const idx30 = primaryValues.length > 30 ? primaryValues.length - 31 : 0;
-      const base30 = primaryValues[idx30];
-      const delta30 = Number.isFinite(latest) && Number.isFinite(base30) ? latest - base30 : NaN;
-      const delta30Pct = percentChange(latest, base30);
-
-      const filteredValues = primaryValues.filter(Number.isFinite);
-      const high = filteredValues.length ? Math.max(...filteredValues) : NaN;
-      const low = filteredValues.length ? Math.min(...filteredValues) : NaN;
-      const rangeText = filteredValues.length ? `${formatCurrency(low, unit, currencySymbol)} → ${formatCurrency(high, unit, currencySymbol)}` : translate('notAvailable');
-      const rangeDelta = filteredValues.length ? translate('rangeSpread', { value: formatCurrency(high - low, unit, currencySymbol) }) : translate('notAvailable');
-
-      const windowValues = filteredValues.slice(-30);
-      let volatility = NaN;
-      if (windowValues.length > 1) {
-        const mean = windowValues.reduce((acc, val) => acc + val, 0) / windowValues.length;
-        const variance = windowValues.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / (windowValues.length - 1);
-        volatility = Math.sqrt(variance);
-      }
-      const volatilityDesc = Number.isFinite(volatility) && Number.isFinite(latest)
-        ? translate('volatilityPercent', { value: ((volatility / latest) * 100).toFixed(2) })
-        : translate('notAvailable');
-
-      document.getElementById('summary-latest').textContent = formatCurrency(latest, unit, currencySymbol);
-      document.getElementById('summary-daily-delta').textContent = [
-        formatDelta(delta, unit, currencySymbol),
-        deltaPct !== null ? `(${deltaPct.toFixed(2)}%)` : ''
-      ].filter(Boolean).join(' ') || translate('notAvailable');
-      document.getElementById('summary-30d').textContent = Number.isFinite(latest) ? formatCurrency(latest, unit, currencySymbol) : translate('notAvailable');
-      document.getElementById('summary-30d-delta').textContent = [
-        formatDelta(delta30, unit, currencySymbol),
-        delta30Pct !== null ? `(${delta30Pct.toFixed(2)}%)` : ''
-      ].filter(Boolean).join(' ') || translate('notAvailable');
-      document.getElementById('summary-range').textContent = rangeText;
-      document.getElementById('summary-at-delta').textContent = rangeDelta;
-      document.getElementById('summary-volatility').textContent = Number.isFinite(volatility) ? formatCurrency(volatility, unit, currencySymbol) : translate('notAvailable');
-      document.getElementById('summary-volatility-desc').textContent = volatilityDesc;
-
-      const chartConfig = {
-        type: 'line',
-        data: {
-          labels,
-          datasets: [
-            { label: `Lowest Price (${unit})`, data: lowestValues, borderColor: 'red', tension: 0.2, fill: false },
-            { label: `Median Price (${unit})`, data: medianValues, borderColor: 'blue', tension: 0.2, fill: false },
-            { label: '7-day Avg', data: computeSMA(medianValues, 7), borderColor: 'orange', borderDash: [5, 5], fill: false }
-          ]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          scales: {
-            x: { ticks: { autoSkip: true, maxTicksLimit: 12 } },
-            y: { beginAtZero: true }
-          },
-          plugins: {
-            legend: { position: 'top' },
-            zoom: {
-              zoom: {
-                wheel: { enabled: true },
-                drag: { enabled: true },
-                mode: 'x'
-              },
-              pan: {
-                enabled: true,
-                mode: 'x'
-              }
-            }
-          },
-          onDblClick: chart => chart.resetZoom()
-        }
-      };
-
-      const chart = new Chart(ctx, chartConfig);
-      const dailyChangeEl = document.getElementById('daily-change');
-      let lastDiffValue = NaN;
-
-      const setDailyChange = diff => {
-        if (Number.isFinite(diff)) {
-          const diffText = formatDelta(diff, unit, currencySymbol);
-          dailyChangeEl.textContent = translate('changeSinceYesterday', { value: diffText });
-          dailyChangeEl.style.color = diff >= 0 ? 'green' : 'red';
-        } else {
-          dailyChangeEl.textContent = translate('changeSinceYesterdayNA');
-          dailyChangeEl.style.color = '#334155';
-        }
-      };
-
-      registerTranslationUpdater(() => setDailyChange(lastDiffValue));
-
-      ctx.canvas.addEventListener('dblclick', () => {
-        chart.resetZoom();
-      });
-
-      function updateChart(span) {
-        const count = span === 'all' ? labels.length : Math.min(lowestValues.length, Number(span));
-
-        const labelsSlice = labels.slice(-count);
-        const valuesSlice = lowestValues.slice(-count);
-        const medianSlice = medianValues.slice(-count);
-        const smaSlice = computeSMA(medianValues, 7).slice(-count);
-
-        chart.data.labels = labelsSlice;
-        chart.data.datasets[0].data = valuesSlice;
-        chart.data.datasets[1].data = medianSlice;
-        chart.data.datasets[2].data = smaSlice;
-        chart.update();
-
-        const len = lowestValues.length;
-        if (len >= 2) {
-          const diff = lowestValues[len - 1] - lowestValues[len - 2];
-          lastDiffValue = diff;
-          setDailyChange(diff);
-        } else {
-          lastDiffValue = NaN;
-          setDailyChange(NaN);
-        }
-      }
-
-      document.querySelectorAll('.btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          chart.resetZoom();
-          const active = document.querySelector('.btn.active');
-          if (active) {
-            active.classList.remove('active');
-          }
-          btn.classList.add('active');
-          updateChart(btn.dataset.span);
-        });
-      });
-
-      updateChart('all');
-
-      const totalCard = document.querySelector('.chart-card[data-chart="total"]');
-      if (totalCard) {
-        setupFullscreen(totalCard, chart);
-      }
-
-      const accountCanvas = document.getElementById('account-chart');
-      const accountCard = document.querySelector('.chart-card[data-chart="accounts"]');
-      const metaEl = document.getElementById('meta');
-
-      if (accountData.labels.length && accountData.datasets.length && accountCanvas && accountCard) {
-        const accountCtx = accountCanvas.getContext('2d');
-        const palette = ['#2563eb', '#9333ea', '#26a269', '#d97706', '#ef4444', '#0ea5e9', '#8b5cf6'];
-        const datasets = accountData.datasets.map(ds => ({
-          label: accountLabels[ds.steamId] || ds.steamId,
-          data: ds.data,
-          borderColor: palette[ds.index % palette.length],
-          backgroundColor: `${palette[ds.index % palette.length]}33`,
-          tension: 0.25,
-          fill: true,
+function makeChartConfig(labels, lowest, median, smaData) {
+  return {
+    type: 'line',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: t('labelLowest'),
+          data: lowest,
+          borderColor: CHART_COLORS.lowest,
+          backgroundColor: 'transparent',
+          borderWidth: 1.5,
+          pointRadius: 0,
+          tension: 0.2,
           spanGaps: true,
-          stack: 'total'
-        }));
-
-        const accountChart = new Chart(accountCtx, {
-          type: 'line',
-          data: {
-            labels: accountData.labels,
-            datasets
+        },
+        {
+          label: t('labelMedian'),
+          data: median,
+          borderColor: CHART_COLORS.median,
+          backgroundColor: 'transparent',
+          borderWidth: 2,
+          pointRadius: 0,
+          tension: 0.2,
+          spanGaps: true,
+        },
+        {
+          label: t('labelSMA'),
+          data: smaData,
+          borderColor: CHART_COLORS.sma,
+          backgroundColor: 'transparent',
+          borderWidth: 1.5,
+          borderDash: [4, 4],
+          pointRadius: 0,
+          tension: 0.2,
+          spanGaps: true,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: { duration: 250 },
+      interaction: { mode: 'index', intersect: false },
+      scales: {
+        x: {
+          ticks: {
+            autoSkip: true,
+            maxTicksLimit: 10,
+            color: CHART_COLORS.tick,
+            font: { family: "'Space Mono', monospace", size: 10 },
           },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-              x: { ticks: { autoSkip: true, maxTicksLimit: 12 } },
-              y: { stacked: true, beginAtZero: true }
-            },
-            plugins: {
-              legend: { position: 'bottom' },
-              tooltip: {
-                callbacks: {
-                  label: tooltipCtx => {
-                    const value = tooltipCtx.parsed.y;
-                    return `${tooltipCtx.dataset.label}: ${formatCurrency(value, unit, currencySymbol)}`;
-                  }
-                }
-              }
-            },
-            interaction: { intersect: false, mode: 'index' }
-          }
-        });
+          grid:   { color: CHART_COLORS.grid },
+          border: { color: CHART_COLORS.grid },
+        },
+        y: {
+          beginAtZero: false,
+          ticks: {
+            color: CHART_COLORS.tick,
+            font: { family: "'Space Mono', monospace", size: 10 },
+            callback: v => fmt(v),
+          },
+          grid:   { color: CHART_COLORS.grid },
+          border: { color: CHART_COLORS.grid },
+        },
+      },
+      plugins: {
+        legend: {
+          labels: {
+            color: '#4e5a6e',
+            font: { family: "'Space Mono', monospace", size: 11 },
+            boxWidth: 18,
+            padding: 16,
+          },
+        },
+        tooltip: {
+          backgroundColor: '#0d1014',
+          borderColor: '#1c2129',
+          borderWidth: 1,
+          titleColor: '#b8c4d4',
+          bodyColor:  '#b8c4d4',
+          titleFont: { family: "'Space Mono', monospace", size: 11 },
+          bodyFont:  { family: "'Space Mono', monospace", size: 11 },
+          callbacks: {
+            label: ctx => `${ctx.dataset.label}: ${fmt(ctx.parsed.y)}`,
+          },
+        },
+        zoom: {
+          zoom: { wheel: { enabled: true }, drag: { enabled: true }, mode: 'x' },
+          pan:  { enabled: true, mode: 'x' },
+        },
+      },
+    },
+  };
+}
 
-        const updateMeta = () => {
-          metaEl.textContent = translate('trackingAccounts', { count: accountData.datasets.length });
-        };
-        updateMeta();
-        registerTranslationUpdater(updateMeta);
-        setupFullscreen(accountCard, accountChart);
-      } else {
-        if (accountCanvas) {
-          accountCanvas.style.display = 'none';
-        }
-        const accountButton = accountCard?.querySelector('.fullscreen-toggle');
-        if (accountButton) {
-          accountButton.style.display = 'none';
-        }
-        const updatePlaceholder = () => {
-          metaEl.textContent = translate('noAccountHistory');
-        };
-        updatePlaceholder();
-        registerTranslationUpdater(updatePlaceholder);
-      }
-    })();
-  </script>
+// ════════════════════════════════════════════════════════════
+// Summary cards
+// ════════════════════════════════════════════════════════════
+function updateSummary() {
+  const primary  = primarySeries();
+  const validAll = primary.filter(v => v !== null);
+  const latest   = primary.findLast ? primary.findLast(v => v !== null) : [...primary].reverse().find(v => v !== null);
+  const prev     = primary.slice(0, -1).findLast ? primary.slice(0, -1).findLast(v => v !== null)
+                    : [...primary.slice(0, -1)].reverse().find(v => v !== null);
+
+  const delta    = (latest != null && prev != null) ? latest - prev : NaN;
+  const deltaPct = pct(latest, prev);
+
+  const idx30 = Math.max(0, primary.length - 31);
+  const base30 = primary.slice(0, idx30 + 1).findLast ? primary.slice(0, idx30 + 1).findLast(v => v !== null)
+                   : [...primary.slice(0, idx30 + 1)].reverse().find(v => v !== null);
+  const d30    = (latest != null && base30 != null) ? latest - base30 : NaN;
+  const d30pct = pct(latest, base30);
+
+  const high = validAll.length ? Math.max(...validAll) : NaN;
+  const low  = validAll.length ? Math.min(...validAll) : NaN;
+
+  const w30  = validAll.slice(-30);
+  let vol    = NaN;
+  if (w30.length > 1) {
+    const mean = w30.reduce((a, b) => a + b, 0) / w30.length;
+    vol = Math.sqrt(w30.reduce((a, b) => a + (b - mean) ** 2, 0) / (w30.length - 1));
+  }
+
+  // ── Latest value
+  document.getElementById('s-latest').textContent = latest != null ? fmt(latest) : t('notAvail');
+
+  // ── 24h delta
+  const dailyEl = document.getElementById('s-daily');
+  if (Number.isFinite(delta)) {
+    const pctStr = deltaPct !== null ? ` (${deltaPct.toFixed(2)}%)` : '';
+    dailyEl.textContent = t('daily', { v: fmtDelta(delta) + pctStr });
+    dailyEl.className   = 's-delta ' + (delta >= 0 ? 'pos' : 'neg');
+  } else {
+    dailyEl.textContent = t('dailyNA');
+    dailyEl.className   = 's-delta';
+  }
+
+  // ── 30d change
+  const card30 = document.getElementById('card-30d');
+  const val30  = document.getElementById('s-30d-val');
+  const pct30  = document.getElementById('s-30d-pct');
+  if (Number.isFinite(d30)) {
+    val30.textContent    = fmtDelta(d30);
+    val30.className      = 's-value ' + (d30 >= 0 ? 'col-positive' : 'col-negative');
+    pct30.textContent    = d30pct !== null ? `${d30pct.toFixed(2)}%` : '';
+    pct30.className      = 's-delta ' + (d30 >= 0 ? 'pos' : 'neg');
+    card30.className     = 's-card ' + (d30 >= 0 ? 'pos-bar' : 'neg-bar');
+  } else {
+    val30.textContent = t('notAvail');
+    val30.className   = 's-value';
+    pct30.textContent = '';
+    card30.className  = 's-card';
+  }
+
+  // ── Range
+  document.getElementById('s-range').textContent =
+    (Number.isFinite(high) && Number.isFinite(low))
+      ? `${fmt(low)} → ${fmt(high)}`
+      : t('notAvail');
+  document.getElementById('s-spread').textContent =
+    (Number.isFinite(high) && Number.isFinite(low))
+      ? t('spread', { v: fmt(high - low) })
+      : '';
+
+  // ── Volatility
+  document.getElementById('s-vol').textContent      = Number.isFinite(vol) ? fmt(vol) : t('notAvail');
+  document.getElementById('s-vol-pct').textContent  =
+    (Number.isFinite(vol) && latest != null && latest > 0)
+      ? t('volPct', { v: ((vol / latest) * 100).toFixed(2) })
+      : '';
+}
+
+// ════════════════════════════════════════════════════════════
+// Daily change label (under chart)
+// ════════════════════════════════════════════════════════════
+function refreshDailyLabel() {
+  const el = document.getElementById('daily-change');
+  if (Number.isFinite(lastDiff)) {
+    el.textContent  = t('daily', { v: fmtDelta(lastDiff) });
+    el.style.color  = lastDiff >= 0 ? 'var(--positive)' : 'var(--negative)';
+  } else {
+    el.textContent  = t('dailyNA');
+    el.style.color  = 'var(--text-dim)';
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+// Chart span update
+// ════════════════════════════════════════════════════════════
+let activeSpan = 'all';
+
+function updateSpan(span) {
+  activeSpan = span;
+  if (!mainChart) return;
+
+  const count  = span === 'all' ? allLabels.length : Math.min(allLabels.length, Number(span));
+  const labSl  = allLabels.slice(-count);
+  const loSl   = allLowest.slice(-count);
+  const medSl  = allMedian.slice(-count);
+  const smaSl  = sma(allMedian, 7).slice(-count);
+
+  mainChart.data.labels = labSl;
+  mainChart.data.datasets[0].data  = loSl;
+  mainChart.data.datasets[1].data  = medSl;
+  mainChart.data.datasets[2].data  = smaSl;
+  mainChart.data.datasets[0].label = t('labelLowest');
+  mainChart.data.datasets[1].label = t('labelMedian');
+  mainChart.data.datasets[2].label = t('labelSMA');
+  mainChart.resetZoom();
+  mainChart.update();
+
+  // Recompute lastDiff from the active primary slice
+  const primSl = (allMedian.some(v => v !== null) ? allMedian : allLowest).slice(-count);
+  const valid  = primSl.filter(v => v !== null);
+  lastDiff = valid.length >= 2 ? valid[valid.length - 1] - valid[valid.length - 2] : NaN;
+  refreshDailyLabel();
+}
+
+// ════════════════════════════════════════════════════════════
+// Fullscreen
+// ════════════════════════════════════════════════════════════
+function setupFullscreen() {
+  const card = document.getElementById('chart-card');
+  const btn  = document.getElementById('fs-btn');
+
+  const refreshLabel = () => {
+    btn.textContent = card.classList.contains('fullscreen') ? t('collapse') : t('expand');
+  };
+
+  btn.addEventListener('click', () => {
+    card.classList.toggle('fullscreen');
+    document.body.classList.toggle('no-scroll', card.classList.contains('fullscreen'));
+    setTimeout(() => mainChart?.resize(), 80);
+    refreshLabel();
+  });
+
+  onLangChange(refreshLabel);
+  refreshLabel();
+}
+
+// ════════════════════════════════════════════════════════════
+// Items table
+// ════════════════════════════════════════════════════════════
+let itemsData = null;
+let sortCol   = 'total_lowest';
+let sortAsc   = false;
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function renderItems() {
+  const table  = document.getElementById('items-table');
+  const empty  = document.getElementById('items-empty');
+  const tbody  = document.getElementById('items-tbody');
+  const dateEl = document.getElementById('items-date');
+
+  if (!itemsData || !Array.isArray(itemsData.items) || !itemsData.items.length) {
+    table.style.display = 'none';
+    empty.style.display = '';
+    empty.textContent   = t('noItems');
+    return;
+  }
+
+  empty.style.display = 'none';
+  table.style.display = '';
+  dateEl.textContent  = itemsData.date || '';
+
+  // Update sortable column header text (th-text spans)
+  document.querySelectorAll('#items-table th .th-text').forEach(el => {
+    el.textContent = t(el.dataset.i18n);
+  });
+
+  // Sort
+  const rows = [...itemsData.items].sort((a, b) => {
+    let av = a[sortCol] ?? (typeof a[sortCol] === 'string' ? '' : -Infinity);
+    let bv = b[sortCol] ?? (typeof b[sortCol] === 'string' ? '' : -Infinity);
+    if (typeof av === 'string') av = av.toLowerCase();
+    if (typeof bv === 'string') bv = bv.toLowerCase();
+    if (av < bv) return sortAsc ? -1 : 1;
+    if (av > bv) return sortAsc ? 1 : -1;
+    return 0;
+  });
+
+  // Refresh sort icons
+  document.querySelectorAll('#items-table th[data-col]').forEach(th => {
+    const ic = th.querySelector('.si');
+    if (!ic) return;
+    th.classList.remove('sorted');
+    ic.textContent = '↕';
+    if (th.dataset.col === sortCol) {
+      th.classList.add('sorted');
+      ic.textContent = sortAsc ? '↑' : '↓';
+    }
+  });
+
+  tbody.innerHTML = rows.map((item, i) => `
+    <tr>
+      <td class="td-rank">${i + 1}</td>
+      <td class="td-name">${esc(item.name)}${item.qty > 1
+        ? `<span class="item-qty-badge">×${item.qty}</span>` : ''}</td>
+      <td class="td-num">${item.qty}</td>
+      <td class="td-num">${item.lowest != null ? fmt(item.lowest) : '—'}</td>
+      <td class="td-num">${item.median != null ? fmt(item.median) : '—'}</td>
+      <td class="td-total">${fmt(item.total_lowest || 0)}</td>
+    </tr>`).join('');
+}
+
+// Sort on header click
+document.querySelectorAll('#items-table th[data-col]').forEach(th => {
+  if (!th.querySelector('.si')) return;
+  th.addEventListener('click', () => {
+    if (sortCol === th.dataset.col) {
+      sortAsc = !sortAsc;
+    } else {
+      sortCol = th.dataset.col;
+      sortAsc = false;
+    }
+    renderItems();
+  });
+});
+
+// ════════════════════════════════════════════════════════════
+// Last updated badge
+// ════════════════════════════════════════════════════════════
+function setLastUpdated(dateStr) {
+  const el    = document.getElementById('last-updated');
+  if (!dateStr) { el.textContent = '—'; el.className = ''; return; }
+  const today = new Date().toISOString().slice(0, 10);
+  const diff  = Math.round((new Date(today) - new Date(dateStr)) / 86400000);
+  if (diff <= 0) {
+    el.textContent = t('updatedToday');
+    el.className   = 'fresh';
+  } else if (diff <= 2) {
+    el.textContent = t('updatedAgo', { n: diff });
+    el.className   = '';
+  } else {
+    el.textContent = t('updatedAgo', { n: diff });
+    el.className   = 'stale';
+  }
+}
+
+// ════════════════════════════════════════════════════════════
+// Bootstrap
+// ════════════════════════════════════════════════════════════
+(async () => {
+
+  // Load config.json for currency & language defaults
+  let config = { currency: 'EUR', language: 'en' };
+  try {
+    const r = await fetch('config.json', { cache: 'no-store' });
+    if (r.ok) config = await r.json();
+  } catch (_) {}
+
+  CURRENCY = (config.currency || 'EUR').toUpperCase();
+
+  // Apply language (config default only if no saved preference)
+  if (!localStorage.getItem(LANG_KEY)) {
+    const cfgLang = (config.language || 'en').slice(0, 2).toLowerCase();
+    if (TRANSLATIONS[cfgLang]) setLang(cfgLang, false);
+  }
+  setLang(lang, false);
+
+  // ── Load values.csv ──────────────────────────────────────
+  const csvText = await fetch('values.csv', { cache: 'no-store' })
+    .then(r => r.ok ? r.text() : '').catch(() => '');
+  const { labels, lowest, median } = parseCSV(csvText);
+  allLabels = labels;
+  allLowest = lowest;
+  allMedian = median;
+
+  // ── Build chart ──────────────────────────────────────────
+  const ctx = document.getElementById('chart').getContext('2d');
+  mainChart = new Chart(ctx, makeChartConfig(
+    allLabels, allLowest, allMedian, sma(allMedian, 7)
+  ));
+  ctx.canvas.addEventListener('dblclick', () => mainChart.resetZoom());
+  setupFullscreen();
+
+  // Span buttons
+  document.querySelectorAll('.btn[data-span]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.btn[data-span]').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      updateSpan(btn.dataset.span);
+    });
+  });
+  updateSpan('all'); // triggers initial render with ALL data
+
+  // ── Summary ──────────────────────────────────────────────
+  updateSummary();
+  setLastUpdated(allLabels[allLabels.length - 1] || null);
+
+  // Register lang-change callbacks
+  onLangChange(() => {
+    updateSummary();
+    refreshDailyLabel();
+    updateSpan(activeSpan); // re-labels chart datasets
+  });
+
+  // ── Load items.json ──────────────────────────────────────
+  try {
+    const ir = await fetch('items.json', { cache: 'no-store' });
+    if (ir.ok) {
+      itemsData = await ir.json();
+      if (itemsData.currency) CURRENCY = itemsData.currency.toUpperCase();
+    }
+  } catch (_) {}
+
+  renderItems();
+  onLangChange(renderItems);
+
+})();
+</script>
 </body>
-
 </html>
