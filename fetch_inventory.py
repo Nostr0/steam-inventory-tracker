@@ -62,7 +62,7 @@ def read_csv_dicts(path: Path):
     """Returns (fieldnames: list[str], rows: list[dict])."""
     if not path.exists():
         return [], []
-    with open(path, newline="", encoding="utf-8") as f:
+    with open(path, newline="", encoding="utf-8-sig") as f:
         reader = csv.DictReader(f)
         return list(reader.fieldnames or []), list(reader)
 
