@@ -62,16 +62,19 @@ def read_csv_dicts(path: Path):
     """Returns (fieldnames: list[str], rows: list[dict])."""
     if not path.exists():
         return [], []
-    with open(path, newline="", encoding="utf-8-sig") as f:
+    with open(path, newline="", encoding="utf-8-sig") as f:  # utf-8-sig strips BOM
         reader = csv.DictReader(f)
         return list(reader.fieldnames or []), list(reader)
 
 
 def write_csv_dicts(path: Path, fieldnames: list, rows: list) -> None:
-    with open(path, "w", newline="", encoding="utf-8") as f:
+    """Atomically write CSV by staging to a .tmp file first."""
+    tmp = path.with_suffix(".tmp")
+    with open(tmp, "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=fieldnames)
         w.writeheader()
         w.writerows(rows)
+    tmp.replace(path)  # atomic on POSIX; best-effort on Windows
 
 
 def upsert_rows(path: Path, fieldnames: list, new_rows: list, key_fields: list) -> None:
@@ -80,18 +83,12 @@ def upsert_rows(path: Path, fieldnames: list, new_rows: list, key_fields: list) 
     match. New rows are appended at the end. Safe to call multiple times per day.
     """
     existing_fields, existing = read_csv_dicts(path)
-    all_fields = existing_fields or fieldnames
+    # Always include every required fieldname; existing columns keep their order.
+    all_fields = list(dict.fromkeys((existing_fields or fieldnames) + fieldnames))
     new_keys = {tuple(r[k] for k in key_fields) for r in new_rows}
     kept = [r for r in existing
             if tuple(r.get(k, "") for k in key_fields) not in new_keys]
     write_csv_dicts(path, all_fields, kept + new_rows)
-
-
-def ensure_headers() -> None:
-    if not VALUES_CSV.exists():
-        write_csv_dicts(VALUES_CSV, ["date", "lowest", "median"], [])
-    if not ACCOUNTS_CSV.exists():
-        write_csv_dicts(ACCOUNTS_CSV, ["date", "steam_id", "value_eur"], [])
 
 # ---------------------------------------------------------------------------
 # HTTP with exponential backoff retry
@@ -259,9 +256,9 @@ def value_for_account(steam_id: str) -> list:
         lowest, median = fetch_price(name)
         items.append({"name": name, "qty": qty, "lowest": lowest, "median": median})
 
-        lo_s  = f"{lowest:.2f}"      if lowest  is not None else "N/A"
-        med_s = f"{median:.2f}"      if median  is not None else "N/A"
-        tot_s = f"{lowest * qty:.2f}" if lowest is not None else "N/A"
+        lo_s  = f"{lowest:.2f}"       if lowest  is not None else "N/A"
+        med_s = f"{median:.2f}"       if median  is not None else "N/A"
+        tot_s = f"{lowest * qty:.2f}" if lowest  is not None else "N/A"
         dbg(f"  [{i}/{total}] {name!r} ×{qty} → L:{lo_s} M:{med_s} total:{tot_s}")
 
         time.sleep(SLEEP_MS / 1000.0)
@@ -270,9 +267,19 @@ def value_for_account(steam_id: str) -> list:
 
 
 def sum_values(items: list) -> tuple:
-    """Returns (total_lowest, total_median) as rounded floats."""
-    lowest = sum((d["lowest"] or 0.0) * d["qty"] for d in items)
-    median = sum((d["median"] or 0.0) * d["qty"] for d in items)
+    """
+    Returns (total_lowest, total_median) as rounded floats.
+    Items with no price are skipped and a warning is printed — they are NOT
+    counted as zero so the total is not silently understated.
+    """
+    no_price = [d["name"] for d in items if d["lowest"] is None]
+    if no_price:
+        print(f"  WARNING: {len(no_price)} item(s) had no price and are excluded "
+              f"from the total: {', '.join(no_price[:5])}"
+              f"{'…' if len(no_price) > 5 else ''}")
+
+    lowest = sum(d["lowest"] * d["qty"] for d in items if d["lowest"] is not None)
+    median = sum(d["median"] * d["qty"] for d in items if d["median"] is not None)
     return round(lowest, 2), round(median, 2)
 
 # ---------------------------------------------------------------------------
@@ -281,10 +288,10 @@ def sum_values(items: list) -> tuple:
 
 def main() -> None:
     today = dt.date.today().isoformat()
-    ensure_headers()
 
     all_items:    list = []
     acc_rows:     list = []
+    failed_ids:   list = []
     total_lowest: float = 0.0
     total_median: float = 0.0
 
@@ -299,22 +306,28 @@ def main() -> None:
             print(f"  {ACCOUNT_LABELS.get(sid, sid)}: "
                   f"lowest={lo} {CURRENCY}, median={med} {CURRENCY}")
         except Exception as exc:
-            # Do NOT write a 0-row — skip this account for today so we don't
-            # corrupt the historical record with a transient API failure.
+            failed_ids.append(sid)
             print(f"ERROR processing {sid}: {exc}")
 
     total_lowest = round(total_lowest, 2)
     total_median = round(total_median, 2)
+    partial = len(failed_ids) > 0
 
     # --- values.csv ---
-    upsert_rows(
-        VALUES_CSV,
-        ["date", "lowest", "median"],
-        [{"date": today, "lowest": total_lowest, "median": total_median}],
-        key_fields=["date"],
-    )
+    # Do not write a combined total if any account failed — a partial sum
+    # would silently corrupt the historical record.
+    if partial:
+        print(f"\nWARNING: Skipping values.csv write — "
+              f"{len(failed_ids)} account(s) failed: {failed_ids}")
+    else:
+        upsert_rows(
+            VALUES_CSV,
+            ["date", "lowest", "median"],
+            [{"date": today, "lowest": total_lowest, "median": total_median}],
+            key_fields=["date"],
+        )
 
-    # --- accounts.csv ---
+    # --- accounts.csv — write only the rows that succeeded ---
     if acc_rows:
         upsert_rows(
             ACCOUNTS_CSV,
@@ -334,8 +347,8 @@ def main() -> None:
             }
         else:
             # Keep the freshest non-None price
-            if d["lowest"]  is not None: merged[n]["lowest"]  = d["lowest"]
-            if d["median"]  is not None: merged[n]["median"]  = d["median"]
+            if d["lowest"] is not None: merged[n]["lowest"] = d["lowest"]
+            if d["median"] is not None: merged[n]["median"] = d["median"]
         merged[n]["qty"] += d["qty"]
 
     sorted_items = sorted(
@@ -343,12 +356,14 @@ def main() -> None:
         key=lambda x: (x["lowest"] or 0) * x["qty"],
         reverse=True,
     )
+    top = sorted_items[:TOP_ITEMS]
 
     ITEMS_JSON.write_text(
         json.dumps(
             {
                 "date":     today,
                 "currency": CURRENCY,
+                "partial":  partial,
                 "items": [
                     {
                         "name":         it["name"],
@@ -358,7 +373,7 @@ def main() -> None:
                         "total_lowest": round((it["lowest"] or 0) * it["qty"], 2),
                         "total_median": round((it["median"] or 0) * it["qty"], 2),
                     }
-                    for it in sorted_items[:TOP_ITEMS]
+                    for it in top
                 ],
             },
             ensure_ascii=False,
@@ -367,8 +382,17 @@ def main() -> None:
         encoding="utf-8",
     )
 
+    # --- Console summary ---
     print(f"\n✓ {today}: "
-          f"lowest={total_lowest} {CURRENCY}, median={total_median} {CURRENCY}")
+          f"lowest={total_lowest} {CURRENCY}, median={total_median} {CURRENCY}"
+          + (" [PARTIAL]" if partial else ""))
+
+    print(f"\nTop {len(top)} items by lowest total value:")
+    for it in top:
+        lo_total = (it["lowest"] or 0) * it["qty"]
+        lo_s = f"{it['lowest']:.2f}" if it["lowest"] is not None else "N/A"
+        print(f"  {it['name']!r:60s} ×{it['qty']}  "
+              f"unit={lo_s}  total={lo_total:.2f} {CURRENCY}")
 
 
 if __name__ == "__main__":
