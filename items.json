@@ -1,103 +1,103 @@
 {
-  "date": "2026-03-26",
+  "date": "2026-03-27",
   "currency": "EUR",
   "partial": false,
   "items": [
     {
       "name": "Spectrum 2 Case",
       "qty": 46,
-      "lowest": 3.63,
-      "median": 3.66,
-      "total_lowest": 166.98,
-      "total_median": 168.36
+      "lowest": 3.71,
+      "median": 3.71,
+      "total_lowest": 170.66,
+      "total_median": 170.66
     },
     {
       "name": "Gamma 2 Case",
       "qty": 28,
-      "lowest": 3.99,
-      "median": 3.99,
-      "total_lowest": 111.72,
-      "total_median": 111.72
+      "lowest": 3.96,
+      "median": 3.96,
+      "total_lowest": 110.88,
+      "total_median": 110.88
     },
     {
       "name": "Gamma Case",
       "qty": 14,
-      "lowest": 4.22,
-      "median": 4.18,
-      "total_lowest": 59.08,
-      "total_median": 58.52
+      "lowest": 4.23,
+      "median": 4.23,
+      "total_lowest": 59.22,
+      "total_median": 59.22
     },
     {
       "name": "Chroma 2 Case",
       "qty": 8,
-      "lowest": 5.1,
-      "median": 4.92,
-      "total_lowest": 40.8,
-      "total_median": 39.36
+      "lowest": 5.17,
+      "median": 5.27,
+      "total_lowest": 41.36,
+      "total_median": 42.16
     },
     {
       "name": "StatTrak™ SSG 08 | Turbo Peek (Field-Tested)",
       "qty": 1,
-      "lowest": 34.89,
-      "median": 29.85,
-      "total_lowest": 34.89,
-      "total_median": 29.85
+      "lowest": 31.0,
+      "median": 30.45,
+      "total_lowest": 31.0,
+      "total_median": 30.45
     },
     {
       "name": "Clutch Case",
       "qty": 26,
-      "lowest": 0.94,
-      "median": 0.94,
-      "total_lowest": 24.44,
-      "total_median": 24.44
+      "lowest": 0.96,
+      "median": 0.95,
+      "total_lowest": 24.96,
+      "total_median": 24.7
     },
     {
       "name": "Danger Zone Case",
       "qty": 13,
-      "lowest": 1.79,
-      "median": 1.81,
-      "total_lowest": 23.27,
-      "total_median": 23.53
+      "lowest": 1.81,
+      "median": 1.83,
+      "total_lowest": 23.53,
+      "total_median": 23.79
     },
     {
       "name": "Prisma 2 Case",
       "qty": 10,
-      "lowest": 1.8,
-      "median": 1.83,
-      "total_lowest": 18.0,
-      "total_median": 18.3
+      "lowest": 1.84,
+      "median": 1.84,
+      "total_lowest": 18.4,
+      "total_median": 18.4
     },
     {
       "name": "Prisma Case",
       "qty": 7,
-      "lowest": 1.79,
-      "median": 1.79,
-      "total_lowest": 12.53,
-      "total_median": 12.53
+      "lowest": 1.84,
+      "median": 1.82,
+      "total_lowest": 12.88,
+      "total_median": 12.74
     },
     {
       "name": "Horizon Case",
       "qty": 6,
-      "lowest": 2.01,
-      "median": 2.02,
-      "total_lowest": 12.06,
-      "total_median": 12.12
+      "lowest": 2.07,
+      "median": 2.07,
+      "total_lowest": 12.42,
+      "total_median": 12.42
     },
     {
       "name": "Fracture Case",
       "qty": 17,
-      "lowest": 0.7,
-      "median": 0.7,
-      "total_lowest": 11.9,
-      "total_median": 11.9
+      "lowest": 0.71,
+      "median": 0.72,
+      "total_lowest": 12.07,
+      "total_median": 12.24
     },
     {
       "name": "Operation Breakout Weapon Case",
       "qty": 1,
-      "lowest": 10.59,
-      "median": 10.74,
-      "total_lowest": 10.59,
-      "total_median": 10.74
+      "lowest": 10.52,
+      "median": 10.88,
+      "total_lowest": 10.52,
+      "total_median": 10.88
     },
     {
       "name": "Snakebite Case",
@@ -108,76 +108,76 @@
       "total_median": 9.12
     },
     {
-      "name": "Revolver Case",
-      "qty": 2,
-      "lowest": 3.52,
-      "median": 3.54,
-      "total_lowest": 7.04,
-      "total_median": 7.08
-    },
-    {
       "name": "Dreams & Nightmares Case",
       "qty": 4,
-      "lowest": 1.75,
-      "median": 1.8,
-      "total_lowest": 7.0,
-      "total_median": 7.2
+      "lowest": 1.86,
+      "median": 1.85,
+      "total_lowest": 7.44,
+      "total_median": 7.4
+    },
+    {
+      "name": "Revolver Case",
+      "qty": 2,
+      "lowest": 3.64,
+      "median": 3.65,
+      "total_lowest": 7.28,
+      "total_median": 7.3
     },
     {
       "name": "CS20 Case",
       "qty": 4,
       "lowest": 1.47,
-      "median": 1.49,
+      "median": 1.48,
       "total_lowest": 5.88,
-      "total_median": 5.96
+      "total_median": 5.92
     },
     {
       "name": "Operation Wildfire Case",
       "qty": 1,
-      "lowest": 4.88,
-      "median": 4.89,
-      "total_lowest": 4.88,
-      "total_median": 4.89
+      "lowest": 5.06,
+      "median": 5.11,
+      "total_lowest": 5.06,
+      "total_median": 5.11
     },
     {
       "name": "Music Kit | bbno$, u mad!",
       "qty": 1,
-      "lowest": 4.64,
-      "median": 4.27,
-      "total_lowest": 4.64,
-      "total_median": 4.27
+      "lowest": 4.69,
+      "median": 4.26,
+      "total_lowest": 4.69,
+      "total_median": 4.26
     },
     {
       "name": "SSG 08 | Ghost Crusader (Minimal Wear)",
       "qty": 1,
-      "lowest": 2.57,
-      "median": 2.68,
-      "total_lowest": 2.57,
-      "total_median": 2.68
+      "lowest": 2.6,
+      "median": 2.65,
+      "total_lowest": 2.6,
+      "total_median": 2.65
     },
     {
       "name": "Five-SeveN | Silver Quartz (Factory New)",
       "qty": 1,
-      "lowest": 1.98,
-      "median": 2.13,
-      "total_lowest": 1.98,
-      "total_median": 2.13
+      "lowest": 1.68,
+      "median": 1.69,
+      "total_lowest": 1.68,
+      "total_median": 1.69
     },
     {
       "name": "Revolution Case",
       "qty": 4,
-      "lowest": 0.37,
-      "median": 0.38,
-      "total_lowest": 1.48,
-      "total_median": 1.52
+      "lowest": 0.39,
+      "median": 0.4,
+      "total_lowest": 1.56,
+      "total_median": 1.6
     },
     {
       "name": "P2000 | Amber Fade (Minimal Wear)",
       "qty": 1,
-      "lowest": 1.38,
-      "median": 1.37,
-      "total_lowest": 1.38,
-      "total_median": 1.37
+      "lowest": 1.39,
+      "median": 1.4,
+      "total_lowest": 1.39,
+      "total_median": 1.4
     },
     {
       "name": "Recoil Case",
@@ -190,18 +190,18 @@
     {
       "name": "Glock-18 | High Beam (Factory New)",
       "qty": 2,
-      "lowest": 0.28,
-      "median": 0.27,
-      "total_lowest": 0.56,
-      "total_median": 0.54
+      "lowest": 0.29,
+      "median": 0.28,
+      "total_lowest": 0.58,
+      "total_median": 0.56
     },
     {
-      "name": "Sticker | Shattered Web",
+      "name": "R8 Revolver | Junk Yard (Field-Tested)",
       "qty": 1,
-      "lowest": 0.4,
-      "median": 0.42,
-      "total_lowest": 0.4,
-      "total_median": 0.42
+      "lowest": 0.38,
+      "median": 0.37,
+      "total_lowest": 0.38,
+      "total_median": 0.37
     }
   ]
 }
