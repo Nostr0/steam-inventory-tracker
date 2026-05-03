@@ -66,21 +66,6 @@ def read_csv_dicts(path: Path):
         reader = csv.DictReader(f)
         return list(reader.fieldnames or []), list(reader)
 
-    def get_item_counts(self, inv_json: dict) -> Dict[str, int]:
-        """Extract item counts from inventory JSON."""
-        desc_map = {
-            (str(d.get("classid")), str(d.get("instanceid", "0"))): d
-            for d in inv_json.get("descriptions", [])
-        }
-        counts = {}
-        for asset in inv_json.get("assets", []):
-            key = (str(asset.get("classid")), str(asset.get("instanceid", "0")))
-            desc = desc_map.get(key)
-            if desc:
-                name = desc.get("market_hash_name")
-                if name:
-                    counts[name] = counts.get(name, 0) + 1
-        return counts
 
 def write_csv_dicts(path: Path, fieldnames: list, rows: list) -> None:
     """Atomically write CSV by staging to a .tmp file first."""
@@ -280,10 +265,6 @@ def value_for_account(steam_id: str) -> list:
 
     return items
 
-        with open(self.values_csv, "a", newline="", encoding="utf-8") as f:
-            csv.writer(f).writerow([today, lowest, median])
-
-        print(f"Recorded {today} lowest={lowest}; median={median}; accounts={per_account}")
 
 def sum_values(items: list) -> tuple:
     """
