@@ -24,7 +24,7 @@ jobs:
         run: pip install requests
 
       - name: Run inventory tracker
-        run: python inventory_tracker.py
+        run: python fetch_inventory.py
         env:
           STEAM_API_KEY: ${{ secrets.KEY }}
 
