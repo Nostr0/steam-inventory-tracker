@@ -2,7 +2,6 @@ name: Daily Inventory Fetch
 
 on:
   schedule:
-    # Runs at 05:00 UTC every day. That's 07:00 in Berlin during CEST, 06:00 during CET.
     - cron: "0 5 * * *"
   workflow_dispatch:
 
@@ -24,13 +23,20 @@ jobs:
       - name: Install deps
         run: pip install requests
 
-      - name: Fetch and append value
-        run: python fetch_inventory.py
+      - name: Run inventory tracker
+        run: python inventory_tracker.py
+        env:
+          STEAM_API_KEY: ${{ secrets.KEY }}
 
       - name: Commit CSV updates
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add values.csv accounts.csv items.json
-          git commit -m "Data: $(date -u +'%Y-%m-%d')" || echo "No changes to commit"
-          git push
+          git add values.csv accounts.csv items.json price_cache.json
+          
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Update CS2 inventory values $(date -u +'%Y-%m-%d')"
+            git push
+          fi
