@@ -6,7 +6,7 @@
   "account_labels": {
     "76561198059817397": "Main Account"
   },
-  "sleep_between_price_requests_ms": 1000,
+  "sleep_between_price_requests_ms": 5000,
   "price_cache_ttl_hours": 12,
   "top_items_count": 25,
   "debug": true

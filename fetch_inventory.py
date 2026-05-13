@@ -204,28 +204,41 @@ def get_with_retry(
     raise RuntimeError(f"All {max_retries} retries exhausted for {url}")
 
 # ---------------------------------------------------------------------------
-# Steam inventory via Steam Web API
+# Steam inventory — Web API with community fallback
 # ---------------------------------------------------------------------------
-
-def require_steam_api_key() -> str:
-    if not STEAM_API_KEY:
-        raise RuntimeError(
-            "STEAM_API_KEY is missing. Add it as an environment variable "
-            "or GitHub Actions secret."
-        )
-
-    return str(STEAM_API_KEY)
-
 
 def fetch_inventory(steam_id: str) -> dict[str, list[dict[str, Any]]]:
     """
-    Fetches the full CS2 inventory via Steam Web API.
+    Tries Steam Web API first.
+    If it returns 0 assets, falls back to Steam Community inventory endpoint.
 
-    Returns:
-        {
-            "assets": [...],
-            "descriptions": [...]
-        }
+    This is intentional: CS2 inventories often work more reliably through
+    steamcommunity.com/inventory than through IEconService.
+    """
+    try:
+        inv = fetch_inventory_web_api(steam_id)
+
+        amount = sum(parse_amount(asset.get("amount", 1)) for asset in inv.get("assets", []))
+
+        if amount > 0:
+            dbg(f"  Web API inventory accepted: {len(inv['assets'])} asset rows, amount={amount}")
+            return inv
+
+        dbg("  Web API returned 0 assets; falling back to Steam Community inventory endpoint")
+
+    except Exception as exc:
+        dbg(f"  Web API inventory failed: {exc}")
+        dbg("  Falling back to Steam Community inventory endpoint")
+
+    return fetch_inventory_community(steam_id)
+
+
+def fetch_inventory_web_api(steam_id: str) -> dict[str, list[dict[str, Any]]]:
+    """
+    Fetches inventory via IEconService/GetInventoryItemsWithDescriptions.
+
+    This may return 0 assets for CS2 inventories even when the public
+    community inventory endpoint works.
     """
     api_key = require_steam_api_key()
 
@@ -236,22 +249,25 @@ def fetch_inventory(steam_id: str) -> dict[str, list[dict[str, Any]]]:
     previous_last_assetid: Optional[str] = None
 
     while True:
-        params: dict[str, Any] = {
-            "key": api_key,
+        request_body: dict[str, Any] = {
             "steamid": steam_id,
             "appid": APPID,
             "contextid": CONTEXTID,
-            "get_descriptions": 1,
+            "get_descriptions": True,
             "language": LANGUAGE,
             "count": INVENTORY_PAGE_SIZE,
         }
 
         if last_assetid:
-            params["start_assetid"] = last_assetid
+            request_body["start_assetid"] = last_assetid
 
+        # IEconService is a service interface. Use input_json.
         response = get_with_retry(
             "https://api.steampowered.com/IEconService/GetInventoryItemsWithDescriptions/v1/",
-            params=params,
+            params={
+                "key": api_key,
+                "input_json": json.dumps(request_body),
+            },
         )
 
         raw = response.json()
@@ -285,7 +301,7 @@ def fetch_inventory(steam_id: str) -> dict[str, list[dict[str, Any]]]:
         total_amount = sum(parse_amount(asset.get("amount", 1)) for asset in assets)
 
         dbg(
-            f"  Inventory page: +{len(page_assets)} asset rows, "
+            f"  Web API page: +{len(page_assets)} asset rows, "
             f"+{page_amount} item amount, total_amount={total_amount}"
         )
 
@@ -315,6 +331,101 @@ def fetch_inventory(steam_id: str) -> dict[str, list[dict[str, Any]]]:
         "descriptions": list(descriptions_by_key.values()),
     }
 
+
+def fetch_inventory_community(steam_id: str) -> dict[str, list[dict[str, Any]]]:
+    """
+    Fetches full CS2 inventory from the Steam Community inventory endpoint.
+
+    This is usually the more reliable endpoint for public CS2 inventories.
+    """
+    assets: list[dict[str, Any]] = []
+    descriptions_by_key: dict[tuple[str, str], dict[str, Any]] = {}
+
+    last_assetid: Optional[str] = None
+    previous_last_assetid: Optional[str] = None
+
+    while True:
+        params: dict[str, Any] = {
+            "l": LANGUAGE,
+            "count": 2000,
+        }
+
+        if last_assetid:
+            params["start_assetid"] = last_assetid
+
+        response = get_with_retry(
+            f"https://steamcommunity.com/inventory/{steam_id}/{APPID}/{CONTEXTID}",
+            params=params,
+        )
+
+        data = response.json()
+
+        if data.get("success") not in (1, True, None):
+            raise RuntimeError(f"Steam Community inventory request failed: {data}")
+
+        page_assets = data.get("assets", [])
+        page_descriptions = data.get("descriptions", [])
+
+        if not isinstance(page_assets, list):
+            raise RuntimeError(f"Unexpected community assets value: {page_assets}")
+
+        if not isinstance(page_descriptions, list):
+            raise RuntimeError(f"Unexpected community descriptions value: {page_descriptions}")
+
+        assets.extend(page_assets)
+
+        for desc in page_descriptions:
+            classid = str(desc.get("classid", ""))
+            instanceid = str(desc.get("instanceid", "0"))
+
+            if classid:
+                descriptions_by_key[(classid, instanceid)] = desc
+
+        page_amount = sum(parse_amount(asset.get("amount", 1)) for asset in page_assets)
+        total_amount = sum(parse_amount(asset.get("amount", 1)) for asset in assets)
+
+        dbg(
+            f"  Community page: +{len(page_assets)} asset rows, "
+            f"+{page_amount} item amount, "
+            f"total_amount={total_amount}, "
+            f"reported_total={data.get('total_inventory_count')}"
+        )
+
+        more_items = parse_boolish(data.get("more_items", False))
+
+        if not more_items:
+            break
+
+        previous_last_assetid = last_assetid
+        last_assetid = data.get("last_assetid")
+
+        if not last_assetid and page_assets:
+            last_assetid = str(page_assets[-1].get("assetid", ""))
+
+        if not last_assetid:
+            raise RuntimeError("Community endpoint returned more_items=true but no last_assetid.")
+
+        if previous_last_assetid == last_assetid:
+            raise RuntimeError(
+                f"Community pagination did not advance. last_assetid={last_assetid}"
+            )
+
+        dbg(f"  Paginating community inventory after assetid={last_assetid}")
+        time.sleep(1.5)
+
+    return {
+        "assets": assets,
+        "descriptions": list(descriptions_by_key.values()),
+    }
+
+def require_steam_api_key() -> str:
+    if not STEAM_API_KEY:
+        raise RuntimeError(
+            "STEAM_API_KEY is missing. Add it as an environment variable "
+            "or GitHub Actions secret."
+        )
+
+    return str(STEAM_API_KEY)
 
 def get_marketable_counts(inv: dict[str, list[dict[str, Any]]]) -> Counter[str]:
     """
@@ -363,7 +474,7 @@ def get_marketable_counts(inv: dict[str, list[dict[str, Any]]]) -> Counter[str]:
 
 def counts_for_account(steam_id: str) -> Counter[str]:
     label = ACCOUNT_LABELS.get(steam_id, steam_id)
-    dbg(f"Fetching inventory via Steam Web API: {label} ({steam_id})")
+    dbg(f"Fetching inventory: {label} ({steam_id})")
 
     inv = fetch_inventory(steam_id)
     counts = get_marketable_counts(inv)
