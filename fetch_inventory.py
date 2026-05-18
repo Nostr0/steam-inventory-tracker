@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-CS:GO Inventory Value Tracker
+CS2 Inventory Value Tracker
 Fetches Steam Market prices for all configured accounts, records daily
 totals to values.csv and accounts.csv (overwriting same-day rows on re-runs),
 and writes top items to items.json.
@@ -47,12 +47,33 @@ ACCOUNTS_CSV = ROOT / "accounts.csv"
 ITEMS_JSON   = ROOT / "items.json"
 
 # ---------------------------------------------------------------------------
-# Logging
+# Logging and generic helpers
 # ---------------------------------------------------------------------------
 
 def dbg(msg: str) -> None:
     if DEBUG:
         print(f"[DEBUG] {msg}")
+
+
+def parse_amount(value) -> int:
+    """Steam inventory assets may represent stackable items via amount."""
+    try:
+        amount = int(value)
+        return amount if amount > 0 else 1
+    except (TypeError, ValueError):
+        return 1
+
+
+def parse_csv_float(value) -> Optional[float]:
+    try:
+        number = float(str(value).strip())
+        return number if number > 0 else None
+    except (TypeError, ValueError):
+        return None
+
+
+def format_csv_float(value: float) -> str:
+    return f"{value:.2f}"
 
 # ---------------------------------------------------------------------------
 # CSV helpers — read/write as dicts, upsert by key
@@ -89,6 +110,72 @@ def upsert_rows(path: Path, fieldnames: list, new_rows: list, key_fields: list) 
     kept = [r for r in existing
             if tuple(r.get(k, "") for k in key_fields) not in new_keys]
     write_csv_dicts(path, all_fields, kept + new_rows)
+
+
+def backfill_missing_daily_rows(path: Path, numeric_fields: tuple[str, ...]) -> None:
+    """
+    Fill date gaps by linear interpolation between neighboring real rows.
+
+    This is only used for display continuity after skipped workflow days. It does
+    not invent future values and only fills dates that are bracketed by existing
+    earlier and later rows.
+    """
+    fieldnames, rows = read_csv_dicts(path)
+    if not rows or "date" not in fieldnames:
+        return
+
+    by_date = {}
+    for row in rows:
+        date_str = str(row.get("date", "")).strip()
+        if date_str:
+            by_date[date_str] = row
+
+    dated_rows = []
+    for date_str, row in by_date.items():
+        try:
+            dated_rows.append((dt.date.fromisoformat(date_str), row))
+        except ValueError:
+            continue
+
+    dated_rows.sort(key=lambda pair: pair[0])
+    if len(dated_rows) < 2:
+        return
+
+    out = []
+    added = 0
+    all_fields = list(dict.fromkeys(fieldnames + ["currency"]))
+
+    for idx, (left_date, left_row) in enumerate(dated_rows[:-1]):
+        right_date, right_row = dated_rows[idx + 1]
+        out.append(left_row)
+
+        gap = (right_date - left_date).days
+        if gap <= 1:
+            continue
+
+        for offset in range(1, gap):
+            ratio = offset / gap
+            new_row = {field: "" for field in all_fields}
+            new_row["date"] = (left_date + dt.timedelta(days=offset)).isoformat()
+
+            for field in numeric_fields:
+                left_value = parse_csv_float(left_row.get(field))
+                right_value = parse_csv_float(right_row.get(field))
+                if left_value is None or right_value is None:
+                    continue
+                new_row[field] = format_csv_float(left_value + (right_value - left_value) * ratio)
+
+            if "currency" in all_fields:
+                new_row["currency"] = right_row.get("currency") or left_row.get("currency") or CURRENCY
+
+            out.append(new_row)
+            added += 1
+
+    out.append(dated_rows[-1][1])
+
+    if added:
+        write_csv_dicts(path, all_fields, out)
+        dbg(f"Backfilled {added} missing daily row(s) in {path.name}")
 
 # ---------------------------------------------------------------------------
 # HTTP with exponential backoff retry
@@ -169,15 +256,16 @@ def get_marketable_counts(inv: dict) -> dict:
     skipped = 0
     for asset in inv.get("assets", []):
         key = (str(asset["classid"]), str(asset.get("instanceid", "0")))
+        amount = parse_amount(asset.get("amount", 1))
         desc = desc_map.get(key)
         if not desc:
             continue
         if not desc.get("marketable", 0):
-            skipped += 1
+            skipped += amount
             continue
         name = desc.get("market_hash_name")
         if name:
-            counts[name] = counts.get(name, 0) + 1
+            counts[name] = counts.get(name, 0) + amount
 
     if skipped:
         dbg(f"  Skipped {skipped} non-marketable item(s)")
@@ -258,8 +346,8 @@ def value_for_account(steam_id: str) -> list:
 
         lo_s  = f"{lowest:.2f}"       if lowest  is not None else "N/A"
         med_s = f"{median:.2f}"       if median  is not None else "N/A"
-        tot_s = f"{lowest * qty:.2f}" if lowest  is not None else "N/A"
-        dbg(f"  [{i}/{total}] {name!r} ×{qty} → L:{lo_s} M:{med_s} total:{tot_s}")
+        tot_s = f"{median * qty:.2f}" if median  is not None else "N/A"
+        dbg(f"  [{i}/{total}] {name!r} ×{qty} → L:{lo_s} M:{med_s} median_total:{tot_s}")
 
         time.sleep(SLEEP_MS / 1000.0)
 
@@ -269,14 +357,21 @@ def value_for_account(steam_id: str) -> list:
 def sum_values(items: list) -> tuple:
     """
     Returns (total_lowest, total_median) as rounded floats.
-    Items with no price are skipped and a warning is printed — they are NOT
-    counted as zero so the total is not silently understated.
+    Lowest prices are often missing from Steam for some items; median is the
+    primary value used by the dashboard and account totals.
     """
-    no_price = [d["name"] for d in items if d["lowest"] is None]
-    if no_price:
-        print(f"  WARNING: {len(no_price)} item(s) had no price and are excluded "
-              f"from the total: {', '.join(no_price[:5])}"
-              f"{'…' if len(no_price) > 5 else ''}")
+    no_lowest = [d["name"] for d in items if d["lowest"] is None]
+    no_median = [d["name"] for d in items if d["median"] is None]
+
+    if no_lowest:
+        print(f"  NOTE: {len(no_lowest)} item(s) had no lowest price and are excluded "
+              f"from the lowest total: {', '.join(no_lowest[:5])}"
+              f"{'…' if len(no_lowest) > 5 else ''}")
+
+    if no_median:
+        print(f"  WARNING: {len(no_median)} item(s) had no median price and are excluded "
+              f"from the median total: {', '.join(no_median[:5])}"
+              f"{'…' if len(no_median) > 5 else ''}")
 
     lowest = sum(d["lowest"] * d["qty"] for d in items if d["lowest"] is not None)
     median = sum(d["median"] * d["qty"] for d in items if d["median"] is not None)
@@ -302,9 +397,9 @@ def main() -> None:
             lo, med = sum_values(items)
             total_lowest += lo
             total_median += med
-            acc_rows.append({"date": today, "steam_id": sid, "value_eur": round(lo, 2)})
+            acc_rows.append({"date": today, "steam_id": sid, "value_eur": round(med, 2)})
             print(f"  {ACCOUNT_LABELS.get(sid, sid)}: "
-                  f"lowest={lo} {CURRENCY}, median={med} {CURRENCY}")
+                  f"median={med} {CURRENCY}, lowest={lo} {CURRENCY}")
         except Exception as exc:
             failed_ids.append(sid)
             print(f"ERROR processing {sid}: {exc}")
@@ -322,21 +417,22 @@ def main() -> None:
     else:
         upsert_rows(
             VALUES_CSV,
-            ["date", "lowest", "median"],
-            [{"date": today, "lowest": total_lowest, "median": total_median}],
+            ["date", "lowest", "median", "currency"],
+            [{"date": today, "lowest": total_lowest, "median": total_median, "currency": CURRENCY}],
             key_fields=["date"],
         )
+        backfill_missing_daily_rows(VALUES_CSV, numeric_fields=("lowest", "median"))
 
     # --- accounts.csv — write only the rows that succeeded ---
     if acc_rows:
         upsert_rows(
             ACCOUNTS_CSV,
-            ["date", "steam_id", "value_eur"],
-            acc_rows,
+            ["date", "steam_id", "value_eur", "currency"],
+            [{**row, "currency": CURRENCY} for row in acc_rows],
             key_fields=["date", "steam_id"],
         )
 
-    # --- items.json: aggregate across all accounts, sort by total value ---
+    # --- items.json: aggregate across all accounts, sort by median total value ---
     merged: dict = {}
     for d in all_items:
         n = d["name"]
@@ -353,7 +449,7 @@ def main() -> None:
 
     sorted_items = sorted(
         merged.values(),
-        key=lambda x: (x["lowest"] or 0) * x["qty"],
+        key=lambda x: (x["median"] or x["lowest"] or 0) * x["qty"],
         reverse=True,
     )
     top = sorted_items[:TOP_ITEMS]
@@ -364,6 +460,7 @@ def main() -> None:
                 "date":     today,
                 "currency": CURRENCY,
                 "partial":  partial,
+                "primary_value": "median",
                 "items": [
                     {
                         "name":         it["name"],
@@ -384,15 +481,15 @@ def main() -> None:
 
     # --- Console summary ---
     print(f"\n✓ {today}: "
-          f"lowest={total_lowest} {CURRENCY}, median={total_median} {CURRENCY}"
+          f"median={total_median} {CURRENCY}, lowest={total_lowest} {CURRENCY}"
           + (" [PARTIAL]" if partial else ""))
 
-    print(f"\nTop {len(top)} items by lowest total value:")
+    print(f"\nTop {len(top)} items by median total value:")
     for it in top:
-        lo_total = (it["lowest"] or 0) * it["qty"]
-        lo_s = f"{it['lowest']:.2f}" if it["lowest"] is not None else "N/A"
+        med_total = (it["median"] or 0) * it["qty"]
+        med_s = f"{it['median']:.2f}" if it["median"] is not None else "N/A"
         print(f"  {it['name']!r:60s} ×{it['qty']}  "
-              f"unit={lo_s}  total={lo_total:.2f} {CURRENCY}")
+              f"median_unit={med_s}  median_total={med_total:.2f} {CURRENCY}")
 
 
 if __name__ == "__main__":
