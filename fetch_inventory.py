@@ -14,6 +14,7 @@ import re
 import time
 from pathlib import Path
 from typing import Optional
+from urllib.parse import quote
 
 import requests
 
@@ -46,6 +47,12 @@ VALUES_CSV   = ROOT / "values.csv"
 ACCOUNTS_CSV = ROOT / "accounts.csv"
 ITEMS_JSON   = ROOT / "items.json"
 
+SESSION = requests.Session()
+SESSION.headers.update({
+    "User-Agent": "Mozilla/5.0 inventory-value-tracker/1.0",
+    "Accept": "application/json,text/javascript,*/*;q=0.01",
+})
+
 # ---------------------------------------------------------------------------
 # Logging and generic helpers
 # ---------------------------------------------------------------------------
@@ -74,6 +81,14 @@ def parse_csv_float(value) -> Optional[float]:
 
 def format_csv_float(value: float) -> str:
     return f"{value:.2f}"
+
+
+def cents_to_currency(value) -> Optional[float]:
+    try:
+        cents = int(value)
+        return round(cents / 100.0, 2) if cents > 0 else None
+    except (TypeError, ValueError):
+        return None
 
 # ---------------------------------------------------------------------------
 # CSV helpers — read/write as dicts, upsert by key
@@ -190,7 +205,7 @@ def get_with_retry(
 ) -> requests.Response:
     for attempt in range(max_retries):
         try:
-            r = requests.get(url, params=params, timeout=timeout)
+            r = SESSION.get(url, params=params, timeout=timeout)
             if r.status_code == 429:
                 wait = base_delay * (2 ** attempt)
                 dbg(f"429 rate-limited → waiting {wait:.0f}s "
@@ -302,6 +317,74 @@ def parse_price(text: str) -> Optional[float]:
         return None
 
 
+def fetch_lowest_from_listing_render(name: str) -> Optional[float]:
+    """
+    Fallback for missing priceoverview lowest_price.
+
+    priceoverview can return success=true with median_price but no lowest_price.
+    The listings render endpoint exposes active sell listings; we take the
+    cheapest converted listing price including Steam fees.
+    """
+    try:
+        url_name = quote(name, safe="")
+        r = get_with_retry(
+            f"https://steamcommunity.com/market/listings/730/{url_name}/render/",
+            params={
+                "query": "",
+                "start": 0,
+                "count": 10,
+                "country": "DE",
+                "language": "english",
+                "currency": CURRENCY_CODE,
+            },
+            max_retries=3,
+            base_delay=3.0,
+        )
+        data = r.json()
+        listinginfo = data.get("listinginfo", {})
+        if not isinstance(listinginfo, dict) or not listinginfo:
+            dbg(f"  listings fallback found no active sell listings for '{name}'")
+            return None
+
+        prices = []
+        for listing in listinginfo.values():
+            if not isinstance(listing, dict):
+                continue
+
+            price = (
+                listing.get("converted_price_per_unit")
+                or listing.get("converted_price")
+                or listing.get("price")
+            )
+            fee = (
+                listing.get("converted_fee_per_unit")
+                or listing.get("converted_fee")
+                or listing.get("fee")
+                or 0
+            )
+
+            try:
+                total = int(price) + int(fee)
+            except (TypeError, ValueError):
+                continue
+
+            parsed = cents_to_currency(total)
+            if parsed is not None:
+                prices.append(parsed)
+
+        if not prices:
+            dbg(f"  listings fallback had no parseable prices for '{name}'")
+            return None
+
+        lowest = min(prices)
+        dbg(f"  lowest fallback from active listings for '{name}': {lowest:.2f}")
+        return lowest
+
+    except Exception as exc:
+        dbg(f"  listings fallback failed for '{name}': {exc}")
+        return None
+
+
 def fetch_price(name: str) -> tuple:
     """Returns (lowest: Optional[float], median: Optional[float])."""
     try:
@@ -317,10 +400,14 @@ def fetch_price(name: str) -> tuple:
         if not data.get("success"):
             dbg(f"  success=false for '{name}'")
             return None, None
-        return (
-            parse_price(data.get("lowest_price")),
-            parse_price(data.get("median_price")),
-        )
+
+        lowest = parse_price(data.get("lowest_price"))
+        median = parse_price(data.get("median_price"))
+
+        if lowest is None:
+            lowest = fetch_lowest_from_listing_render(name)
+
+        return lowest, median
     except Exception as exc:
         dbg(f"  Price fetch failed for '{name}': {exc}")
         return None, None
@@ -346,8 +433,8 @@ def value_for_account(steam_id: str) -> list:
 
         lo_s  = f"{lowest:.2f}"       if lowest  is not None else "N/A"
         med_s = f"{median:.2f}"       if median  is not None else "N/A"
-        tot_s = f"{median * qty:.2f}" if median  is not None else "N/A"
-        dbg(f"  [{i}/{total}] {name!r} ×{qty} → L:{lo_s} M:{med_s} median_total:{tot_s}")
+        tot_s = f"median={median * qty:.2f}" if median is not None else "median=N/A"
+        dbg(f"  [{i}/{total}] {name!r} ×{qty} → L:{lo_s} M:{med_s} {tot_s}")
 
         time.sleep(SLEEP_MS / 1000.0)
 
@@ -357,15 +444,15 @@ def value_for_account(steam_id: str) -> list:
 def sum_values(items: list) -> tuple:
     """
     Returns (total_lowest, total_median) as rounded floats.
-    Lowest prices are often missing from Steam for some items; median is the
-    primary value used by the dashboard and account totals.
+    Lowest uses priceoverview first, then active listing fallback.
+    Median remains the primary value used by dashboard and account totals.
     """
     no_lowest = [d["name"] for d in items if d["lowest"] is None]
     no_median = [d["name"] for d in items if d["median"] is None]
 
     if no_lowest:
-        print(f"  NOTE: {len(no_lowest)} item(s) had no lowest price and are excluded "
-              f"from the lowest total: {', '.join(no_lowest[:5])}"
+        print(f"  NOTE: {len(no_lowest)} item(s) still had no active listing lowest price: "
+              f"{', '.join(no_lowest[:5])}"
               f"{'…' if len(no_lowest) > 5 else ''}")
 
     if no_median:
