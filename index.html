@@ -3,1101 +3,1068 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>CS Inventory</title>
+  <title>Steam Inventory Tracker</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet" />
   <style>
-    /* ── Reset & Variables ──────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
+    *, *::before, *::after { box-sizing: border-box; }
     :root {
-      --bg:          #070809;
-      --surface:     #0d1014;
-      --surface2:    #12161b;
-      --border:      #1c2129;
-      --border2:     #252c38;
-      --text:        #b8c4d4;
-      --text-dim:    #4e5a6e;
-      --text-bright: #e4ecf7;
-      --accent:      #e8a730;
-      --accent-dim:  rgba(232,167,48,.11);
-      --positive:    #2ec97a;
-      --pos-dim:     rgba(46,201,122,.10);
-      --negative:    #e85252;
-      --neg-dim:     rgba(232,82,82,.10);
-      --mono: 'Space Mono', monospace;
-      --sans: 'DM Sans', sans-serif;
-      --r:    7px;
+      --bg: #090b10;
+      --panel: #10141c;
+      --panel2: #151b25;
+      --panel3: #1b2430;
+      --line: #273141;
+      --line2: #344155;
+      --text: #edf3fb;
+      --muted: #8a98aa;
+      --soft: #b8c4d2;
+      --accent: #f0b84f;
+      --accent2: #72c7ff;
+      --good: #42d392;
+      --bad: #ff6673;
+      --warn: #ffcf66;
+      --mono: "JetBrains Mono", ui-monospace, monospace;
+      --sans: Inter, system-ui, sans-serif;
+      --r: 8px;
     }
-
-    html { font-size: 15px; }
-
+    html { color-scheme: dark; }
     body {
-      font-family: var(--sans);
-      background: var(--bg);
-      color: var(--text);
+      margin: 0;
       min-height: 100vh;
-      /* subtle dot grid */
-      background-image: radial-gradient(circle, #151b24 1px, transparent 1px);
-      background-size: 26px 26px;
+      font-family: var(--sans);
+      color: var(--text);
+      background:
+        linear-gradient(180deg, rgba(37,47,62,.72), transparent 340px),
+        radial-gradient(circle at 70% 0%, rgba(114,199,255,.14), transparent 360px),
+        var(--bg);
     }
-
-    body.no-scroll { overflow: hidden; }
-
-    /* ── Layout ─────────────────────────────────────────────── */
-    .page {
-      max-width: 1160px;
+    button, input, select { font: inherit; }
+    button, select { cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+    .app {
+      max-width: 1480px;
       margin: 0 auto;
-      padding: 2rem 1.5rem 5rem;
+      padding: 22px;
     }
-
-    /* ── Header ─────────────────────────────────────────────── */
-    header {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 1rem;
-      margin-bottom: 1.75rem;
-      flex-wrap: wrap;
+    .topbar {
+      display: grid;
+      grid-template-columns: minmax(260px, 1fr) auto;
+      align-items: start;
+      gap: 16px;
+      margin-bottom: 18px;
     }
-
-    .logo {
-      font-family: var(--mono);
-      font-size: 1.35rem;
-      font-weight: 700;
-      color: var(--text-bright);
-      letter-spacing: -.02em;
-    }
-    .logo .slash { color: var(--accent); margin-right: .15em; }
-    .logo-sub {
-      font-family: var(--mono);
-      font-size: .7rem;
-      letter-spacing: .07em;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      margin-top: .25rem;
-    }
-
-    .header-right {
+    .brand {
       display: flex;
       flex-direction: column;
-      align-items: flex-end;
-      gap: .5rem;
+      gap: 5px;
     }
-
-    #last-updated {
+    .kicker {
+      color: var(--accent);
       font-family: var(--mono);
-      font-size: .72rem;
-      letter-spacing: .04em;
-      padding: .28rem .65rem;
-      border-radius: var(--r);
-      border: 1px solid var(--border2);
-      background: var(--surface);
-      color: var(--text-dim);
-      transition: border-color .3s, color .3s;
-    }
-    #last-updated.fresh {
-      border-color: var(--positive);
-      color: var(--positive);
-    }
-    #last-updated.stale {
-      border-color: var(--negative);
-      color: var(--negative);
-    }
-
-    .lang-row {
-      display: flex;
-      align-items: center;
-      gap: .4rem;
-    }
-    .lang-label {
-      font-family: var(--mono);
-      font-size: .68rem;
-      letter-spacing: .05em;
-      text-transform: uppercase;
-      color: var(--text-dim);
-    }
-    .lang-select {
-      font-family: var(--mono);
-      font-size: .72rem;
-      padding: .28rem .5rem;
-      border: 1px solid var(--border2);
-      border-radius: var(--r);
-      background: var(--surface);
-      color: var(--text-dim);
-      cursor: pointer;
-      outline: none;
-    }
-    .lang-select:focus { border-color: var(--accent); }
-
-    /* ── Controls ───────────────────────────────────────────── */
-    #controls {
-      display: flex;
-      align-items: center;
-      gap: .45rem;
-      flex-wrap: wrap;
-      margin-bottom: 1.4rem;
-    }
-    .ctrl-label {
-      font-family: var(--mono);
-      font-size: .68rem;
-      letter-spacing: .07em;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      margin-right: .2rem;
-    }
-    .btn {
-      font-family: var(--mono);
-      font-size: .72rem;
-      padding: .3rem .72rem;
-      border: 1px solid var(--border2);
-      border-radius: 4px;
-      background: var(--surface);
-      color: var(--text-dim);
-      cursor: pointer;
-      letter-spacing: .03em;
-      transition: all .15s;
-    }
-    .btn:hover  { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
-    .btn.active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); font-weight: 700; }
-
-    /* ── Summary cards ──────────────────────────────────────── */
-    #summary {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 1rem;
-      margin-bottom: 1.4rem;
-    }
-    .s-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-top: 2px solid var(--border2);
-      border-radius: var(--r);
-      padding: 1rem 1.15rem 1rem;
-      position: relative;
-      overflow: hidden;
-      transition: border-top-color .3s;
-    }
-    .s-card.accent-bar  { border-top-color: var(--accent); }
-    .s-card.pos-bar     { border-top-color: var(--positive); }
-    .s-card.neg-bar     { border-top-color: var(--negative); }
-
-    .s-label {
-      font-family: var(--mono);
-      font-size: .67rem;
+      font-size: 11px;
+      font-weight: 700;
       letter-spacing: .08em;
       text-transform: uppercase;
-      color: var(--text-dim);
-      margin-bottom: .45rem;
     }
-    .s-value {
+    h1 {
+      margin: 0;
+      font-size: clamp(30px, 4vw, 54px);
+      line-height: .95;
+      letter-spacing: 0;
+    }
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: var(--muted);
       font-family: var(--mono);
-      font-size: 1.55rem;
+      font-size: 12px;
+    }
+    .pill, .tab, .icon-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: rgba(16,20,28,.78);
+      color: var(--soft);
+    }
+    .pill { padding: 0 10px; gap: 7px; }
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .icon-btn {
+      width: 38px;
+      color: var(--muted);
+    }
+    .icon-btn:hover, .tab:hover, select:hover { border-color: var(--line2); color: var(--text); }
+    .icon-btn.active, .tab.active {
+      border-color: rgba(240,184,79,.8);
+      color: var(--accent);
+      background: rgba(240,184,79,.1);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 320px minmax(0, 1fr);
+      gap: 16px;
+      align-items: start;
+    }
+    .side, .panel {
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      background: rgba(16,20,28,.88);
+      box-shadow: 0 18px 60px rgba(0,0,0,.18);
+    }
+    .side {
+      position: sticky;
+      top: 16px;
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+    .control {
+      display: grid;
+      gap: 7px;
+    }
+    .label {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
       font-weight: 700;
-      color: var(--text-bright);
-      line-height: 1.1;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .input, select {
+      width: 100%;
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #0b0f15;
+      color: var(--text);
+      padding: 0 10px;
+      outline: none;
+    }
+    .input:focus, select:focus { border-color: var(--accent2); }
+    .seg {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+    }
+    .tab {
+      padding: 0 10px;
+      font-family: var(--mono);
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .range {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+    .content { display: grid; gap: 16px; min-width: 0; }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      background: rgba(16,20,28,.88);
+      padding: 14px;
+      min-width: 0;
+    }
+    .stat .label { margin-bottom: 8px; }
+    .value {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-    }
-    .s-value.col-accent   { color: var(--accent); }
-    .s-value.col-positive { color: var(--positive); }
-    .s-value.col-negative { color: var(--negative); }
-    .s-value.sm           { font-size: 1.05rem; }
-    .s-delta {
       font-family: var(--mono);
-      font-size: .78rem;
-      margin-top: .35rem;
-      color: var(--text-dim);
-    }
-    .s-delta.pos { color: var(--positive); }
-    .s-delta.neg { color: var(--negative); }
-
-    /* ── Chart card ─────────────────────────────────────────── */
-    .chart-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
-      padding: 1.2rem 1.2rem 1rem;
-      margin-bottom: 1.4rem;
-      position: relative;
-    }
-    .chart-card.fullscreen {
-      position: fixed;
-      inset: 0;
-      z-index: 1000;
-      border-radius: 0;
-      padding: 1.5rem;
-      border: none;
-    }
-
-    .card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1rem;
-      gap: .75rem;
-    }
-    .card-title {
-      font-family: var(--mono);
-      font-size: .75rem;
+      font-size: 23px;
       font-weight: 700;
-      letter-spacing: .07em;
-      text-transform: uppercase;
-      color: var(--text-dim);
+      color: var(--text);
     }
-    .card-actions {
-      display: flex;
-      align-items: center;
-      gap: .75rem;
-    }
-
-    #daily-change {
+    .sub {
+      margin-top: 6px;
+      color: var(--muted);
       font-family: var(--mono);
-      font-size: .78rem;
-      color: var(--text-dim);
-    }
-
-    .icon-btn {
-      font-family: var(--mono);
-      font-size: .68rem;
-      padding: .25rem .55rem;
-      border: 1px solid var(--border2);
-      border-radius: 4px;
-      background: transparent;
-      color: var(--text-dim);
-      cursor: pointer;
-      letter-spacing: .02em;
-      transition: all .15s;
+      font-size: 12px;
       white-space: nowrap;
-    }
-    .icon-btn:hover { border-color: var(--text-dim); color: var(--text); }
-
-    .chart-body {
-      position: relative;
-      height: 350px;
-    }
-    .chart-card.fullscreen .chart-body {
-      height: calc(100vh - 110px);
-    }
-
-    /* ── Items card ─────────────────────────────────────────── */
-    .items-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--r);
       overflow: hidden;
+      text-overflow: ellipsis;
     }
-    .items-card-header {
+    .pos { color: var(--good); }
+    .neg { color: var(--bad); }
+    .accent { color: var(--accent); }
+    .blue { color: var(--accent2); }
+    .panel-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: .95rem 1.15rem;
-      border-bottom: 1px solid var(--border);
+      gap: 10px;
+      padding: 14px 14px 0;
     }
-    #items-date {
+    .panel-title {
       font-family: var(--mono);
-      font-size: .7rem;
-      color: var(--text-dim);
+      color: var(--soft);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
     }
-    .table-wrap { overflow-x: auto; }
-
+    .chart-wrap {
+      height: 330px;
+      padding: 12px 14px 14px;
+    }
+    .market-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(280px, .6fr);
+      gap: 16px;
+    }
+    .insights {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+    }
+    .bar-row {
+      display: grid;
+      grid-template-columns: minmax(90px, 1fr) 90px;
+      gap: 10px;
+      align-items: center;
+      color: var(--soft);
+      font-size: 13px;
+    }
+    .bar {
+      height: 7px;
+      border-radius: 99px;
+      background: #0a0e14;
+      overflow: hidden;
+      margin-top: 5px;
+    }
+    .bar > span {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+    }
+    .items-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 14px;
+      border-bottom: 1px solid var(--line);
+    }
+    .items-count {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+    .table-wrap { overflow: auto; }
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: .82rem;
+      min-width: 920px;
     }
-    th, td { padding: .6rem 1rem; text-align: left; border-bottom: 1px solid var(--border); }
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 10px 12px;
+      text-align: left;
+    }
     th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      background: #111722;
+      color: var(--muted);
       font-family: var(--mono);
-      font-size: .65rem;
-      letter-spacing: .07em;
+      font-size: 11px;
+      letter-spacing: .05em;
       text-transform: uppercase;
-      color: var(--text-dim);
-      background: var(--surface2);
-      white-space: nowrap;
-      cursor: pointer;
       user-select: none;
     }
-    th:hover               { color: var(--text); }
-    th.sorted              { color: var(--accent); }
-    th .si                 { margin-left: .3em; opacity: .45; font-size: .68em; }
-    th.sorted .si          { opacity: 1; }
-    tbody tr:hover         { background: var(--surface2); }
-    tbody tr:last-child td { border-bottom: none; }
-
-    td.td-rank {
-      font-family: var(--mono);
-      font-size: .68rem;
-      color: var(--text-dim);
-      width: 2.5rem;
-      text-align: center;
-      padding-right: .5rem;
+    th[data-sort] { cursor: pointer; }
+    th[data-sort]:hover { color: var(--text); }
+    td { color: var(--soft); font-size: 14px; }
+    tr:hover td { background: rgba(255,255,255,.025); }
+    .item-cell {
+      display: grid;
+      grid-template-columns: 54px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      min-width: 320px;
     }
-    td.td-name { color: var(--text-bright); }
-    .item-qty-badge {
-      display: inline-block;
-      font-family: var(--mono);
-      font-size: .63rem;
-      background: var(--surface2);
-      border: 1px solid var(--border2);
-      border-radius: 3px;
-      padding: 0 .35em;
-      margin-left: .45em;
-      color: var(--text-dim);
-      vertical-align: middle;
+    .thumb {
+      width: 54px;
+      height: 40px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: #0a0e14;
+      object-fit: contain;
     }
-    td.td-num {
-      font-family: var(--mono);
-      font-size: .78rem;
+    .item-name {
       color: var(--text);
-      text-align: right;
-      white-space: nowrap;
-    }
-    td.td-total {
-      font-family: var(--mono);
-      font-size: .82rem;
       font-weight: 700;
-      color: var(--accent);
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .chips {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+      margin-top: 5px;
+    }
+    .chip {
+      max-width: 150px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 2px 6px;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 11px;
+    }
+    .num {
       text-align: right;
+      font-family: var(--mono);
       white-space: nowrap;
     }
-
-    #items-empty {
-      text-align: center;
-      padding: 2.5rem 1rem;
-      font-family: var(--mono);
-      font-size: .78rem;
-      color: var(--text-dim);
+    .row-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
     }
-
-    /* ── Scrollbar ──────────────────────────────────────────── */
-    ::-webkit-scrollbar              { width: 5px; height: 5px; }
-    ::-webkit-scrollbar-track        { background: var(--surface); }
-    ::-webkit-scrollbar-thumb        { background: var(--border2); border-radius: 3px; }
-    ::-webkit-scrollbar-thumb:hover  { background: #3a4455; }
-
-    /* ── Responsive ─────────────────────────────────────────── */
-    @media (max-width: 600px) {
-      .page         { padding: 1rem 1rem 3rem; }
-      .header-right { align-items: flex-start; }
-      .chart-body   { height: 250px; }
-      .item-qty-badge { display: none; }
-      td.td-num:nth-child(4) { display: none; } /* hide median col on mobile */
-      th:nth-child(4)        { display: none; }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 10px;
+      padding: 14px;
+    }
+    .item-card {
+      border: 1px solid var(--line);
+      border-radius: var(--r);
+      background: rgba(21,27,37,.75);
+      padding: 12px;
+      display: grid;
+      grid-template-columns: 74px minmax(0, 1fr);
+      gap: 12px;
+    }
+    .item-card .thumb { width: 74px; height: 58px; }
+    .card-price {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 12px;
+    }
+    .empty {
+      padding: 42px 14px;
+      text-align: center;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 13px;
+    }
+    .hidden { display: none !important; }
+    @media (max-width: 1180px) {
+      .grid { grid-template-columns: 1fr; }
+      .side { position: static; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .market-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 720px) {
+      .app { padding: 14px; }
+      .topbar, .items-head { grid-template-columns: 1fr; }
+      .toolbar { justify-content: flex-start; }
+      .side { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .value { font-size: 19px; }
+      .chart-wrap { height: 270px; }
     }
   </style>
 </head>
 <body>
-<div class="page">
-
-  <!-- ── Header ──────────────────────────────────────────────── -->
-  <header>
-    <div>
-      <div class="logo"><span class="slash">//</span> <span data-i18n="title">CS INVENTORY</span></div>
-      <div class="logo-sub" data-i18n="subtitle">Steam Market Value Tracker</div>
-    </div>
-    <div class="header-right">
-      <div id="last-updated">—</div>
-      <div class="lang-row">
-        <span class="lang-label" data-i18n="languageLabel">Lang</span>
-        <select id="lang-select" class="lang-select">
-          <option value="en" data-i18n="langEN">EN</option>
-          <option value="de" data-i18n="langDE">DE</option>
-        </select>
+  <main class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="kicker" data-i18n="kicker">Counter-Strike 2 Market Portfolio</div>
+        <h1 data-i18n="title">Steam Inventory Tracker</h1>
+        <div class="meta">
+          <span id="updated-pill" class="pill">-</span>
+          <span id="currency-pill" class="pill">EUR</span>
+          <span id="partial-pill" class="pill hidden">Partial</span>
+        </div>
       </div>
-    </div>
-  </header>
-
-  <!-- ── Span controls ───────────────────────────────────────── -->
-  <div id="controls">
-    <span class="ctrl-label" data-i18n="viewLabel">View</span>
-    <button class="btn" data-span="7"   data-i18n="span7">7D</button>
-    <button class="btn" data-span="30"  data-i18n="span30">30D</button>
-    <button class="btn" data-span="90"  data-i18n="span90">90D</button>
-    <button class="btn active" data-span="all" data-i18n="spanAll">ALL</button>
-  </div>
-
-  <!-- ── Summary cards ───────────────────────────────────────── -->
-  <div id="summary">
-    <div class="s-card accent-bar">
-      <div class="s-label" data-i18n="sLatest">Latest Value</div>
-      <div class="s-value col-accent" id="s-latest">—</div>
-      <div class="s-delta" id="s-daily">—</div>
-    </div>
-    <div class="s-card" id="card-30d">
-      <div class="s-label" data-i18n="s30d">30-Day Change</div>
-      <div class="s-value" id="s-30d-val">—</div>
-      <div class="s-delta" id="s-30d-pct">—</div>
-    </div>
-    <div class="s-card">
-      <div class="s-label" data-i18n="sRange">All-Time Range</div>
-      <div class="s-value sm" id="s-range">—</div>
-      <div class="s-delta" id="s-spread">—</div>
-    </div>
-    <div class="s-card">
-      <div class="s-label" data-i18n="sVol">Volatility (30d σ)</div>
-      <div class="s-value" id="s-vol">—</div>
-      <div class="s-delta" id="s-vol-pct">—</div>
-    </div>
-  </div>
-
-  <!-- ── Chart ───────────────────────────────────────────────── -->
-  <div class="chart-card" id="chart-card">
-    <div class="card-header">
-      <span class="card-title" data-i18n="chartTitle">Total Inventory Value</span>
-      <div class="card-actions">
-        <span id="daily-change"></span>
-        <button class="icon-btn" id="fs-btn" data-i18n="expand">⤢ Expand</button>
+      <div class="toolbar">
+        <button class="icon-btn" id="lang-btn" title="Language">DE</button>
+        <button class="icon-btn" id="export-btn" title="Export CSV">CSV</button>
+        <button class="icon-btn" id="copy-btn" title="Copy market links">URL</button>
       </div>
-    </div>
-    <div class="chart-body"><canvas id="chart"></canvas></div>
-  </div>
+    </header>
 
-  <!-- ── Top items ───────────────────────────────────────────── -->
-  <div class="items-card">
-    <div class="items-card-header">
-      <span class="card-title" data-i18n="itemsTitle">Top Items</span>
-      <span id="items-date"></span>
-    </div>
-    <div class="table-wrap">
-      <div id="items-empty"></div>
-      <table id="items-table" style="display:none">
-        <thead>
-          <tr>
-            <th data-col="rank">#</th>
-            <th data-col="name"><span class="th-text" data-i18n="colName">Item</span></th>
-            <th data-col="qty"  style="text-align:right"><span class="th-text" data-i18n="colQty">Qty</span></th>
-            <th data-col="lowest"       style="text-align:right"><span class="th-text" data-i18n="colLowest">Lowest</span> <span class="si">↕</span></th>
-            <th data-col="median"       style="text-align:right"><span class="th-text" data-i18n="colMedian">Median</span> <span class="si">↕</span></th>
-            <th data-col="total_lowest" style="text-align:right" class="sorted"><span class="th-text" data-i18n="colTotal">Total</span> <span class="si">↓</span></th>
-          </tr>
-        </thead>
-        <tbody id="items-tbody"></tbody>
-      </table>
-    </div>
-  </div>
+    <section class="grid">
+      <aside class="side">
+        <div class="control">
+          <span class="label" data-i18n="search">Search</span>
+          <input id="search" class="input" type="search" autocomplete="off" />
+        </div>
+        <div class="control">
+          <span class="label" data-i18n="priceBasis">Price Basis</span>
+          <div class="seg">
+            <button class="tab active" data-basis="median" data-i18n="median">Median</button>
+            <button class="tab" data-basis="lowest" data-i18n="lowest">Lowest</button>
+          </div>
+        </div>
+        <div class="control">
+          <span class="label" data-i18n="view">View</span>
+          <div class="seg">
+            <button class="tab active" data-view="table" data-i18n="table">Table</button>
+            <button class="tab" data-view="cards" data-i18n="cards">Cards</button>
+          </div>
+        </div>
+        <div class="control">
+          <span class="label" data-i18n="sort">Sort</span>
+          <select id="sort-select">
+            <option value="total_desc" data-i18n="sortTotalDesc">Total value</option>
+            <option value="unit_desc" data-i18n="sortUnitDesc">Unit price</option>
+            <option value="qty_desc" data-i18n="sortQtyDesc">Quantity</option>
+            <option value="name_asc" data-i18n="sortNameAsc">Name</option>
+            <option value="watch_desc" data-i18n="sortWatch">Watchlist first</option>
+          </select>
+        </div>
+        <div class="control">
+          <span class="label" data-i18n="filters">Filters</span>
+          <select id="type-filter"></select>
+          <select id="exterior-filter"></select>
+          <select id="rarity-filter"></select>
+          <select id="account-filter"></select>
+        </div>
+        <div class="control">
+          <span class="label" data-i18n="unitRange">Unit Range</span>
+          <div class="range">
+            <input id="min-price" class="input" inputmode="decimal" />
+            <input id="max-price" class="input" inputmode="decimal" />
+          </div>
+        </div>
+        <div class="control">
+          <span class="label" data-i18n="quick">Quick</span>
+          <div class="seg">
+            <button class="tab" id="watch-filter" data-i18n="watchlist">Watchlist</button>
+            <button class="tab" id="missing-filter" data-i18n="missing">No price</button>
+          </div>
+        </div>
+      </aside>
 
-</div><!-- /page -->
+      <div class="content">
+        <section class="stats" id="stats"></section>
 
-<!-- Chart.js + zoom plugin (zoom requires hammerjs for touch pan) -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.2.0/dist/chartjs-plugin-zoom.min.js"></script>
-<script>
-'use strict';
+        <section class="market-grid">
+          <div class="panel">
+            <div class="panel-head">
+              <div class="panel-title" data-i18n="chartTitle">Portfolio Value</div>
+              <div class="toolbar">
+                <button class="tab active" data-span="30">30D</button>
+                <button class="tab" data-span="90">90D</button>
+                <button class="tab" data-span="365">1Y</button>
+                <button class="tab" data-span="all">ALL</button>
+                <button class="tab active" id="backtrack-toggle">BT</button>
+                <button class="tab active" id="events-toggle">POI</button>
+              </div>
+            </div>
+            <div class="chart-wrap"><canvas id="value-chart"></canvas></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head">
+              <div class="panel-title" data-i18n="allocation">Allocation</div>
+              <select id="allocation-mode">
+                <option value="type" data-i18n="byType">Type</option>
+                <option value="exterior" data-i18n="byExterior">Exterior</option>
+                <option value="rarity" data-i18n="byRarity">Rarity</option>
+                <option value="account" data-i18n="byAccount">Account</option>
+              </select>
+            </div>
+            <div class="insights" id="allocation-list"></div>
+          </div>
+        </section>
 
-// ════════════════════════════════════════════════════════════
-// Translations
-// ════════════════════════════════════════════════════════════
-const TRANSLATIONS = {
-  en: {
-    documentTitle:  'CS Inventory',
-    title:          'CS INVENTORY',
-    subtitle:       'Steam Market Value Tracker',
-    viewLabel:      'View',
-    span7: '7D', span30: '30D', span90: '90D', spanAll: 'ALL',
-    languageLabel:  'Lang',
-    langEN: 'EN',  langDE: 'DE',
-    sLatest:        'Latest Value',
-    s30d:           '30-Day Change',
-    sRange:         'All-Time Range',
-    sVol:           'Volatility (30d σ)',
-    chartTitle:     'Total Inventory Value',
-    itemsTitle:     'Top Items',
-    colName:  'Item', colQty: 'Qty', colLowest: 'Lowest',
-    colMedian: 'Median', colTotal: 'Total',
-    expand:         '⤢ Expand',
-    collapse:       '⤡ Collapse',
-    noItems:        'No item data yet — run the fetch script first.',
-    updatedToday:   '✓ Updated today',
-    updatedAgo:     'Updated {n}d ago',
-    notAvail:       '—',
-    daily:          '24h: {v}',
-    dailyNA:        '24h: —',
-    spread:         'Spread: {v}',
-    volPct:         '{v}% of current value',
-    labelLowest:    'Lowest',
-    labelMedian:    'Median',
-    labelSMA:       '7-day avg',
-  },
-  de: {
-    documentTitle:  'CS-Inventar',
-    title:          'CS-INVENTAR',
-    subtitle:       'Steam-Markt Werttracker',
-    viewLabel:      'Ansicht',
-    span7: '7T', span30: '30T', span90: '90T', spanAll: 'ALLE',
-    languageLabel:  'Spr.',
-    langEN: 'EN',  langDE: 'DE',
-    sLatest:        'Aktueller Wert',
-    s30d:           'Änderung (30 Tage)',
-    sRange:         'Spanne (Gesamt)',
-    sVol:           'Volatilität (30d σ)',
-    chartTitle:     'Inventargesamtwert',
-    itemsTitle:     'Top-Items',
-    colName:  'Item', colQty: 'Anz.', colLowest: 'Niedrigst',
-    colMedian: 'Median', colTotal: 'Gesamt',
-    expand:         '⤢ Vollbild',
-    collapse:       '⤡ Schließen',
-    noItems:        'Keine Itemdaten — Skript zuerst ausführen.',
-    updatedToday:   '✓ Heute aktualisiert',
-    updatedAgo:     'Vor {n} Tagen',
-    notAvail:       '—',
-    daily:          '24h: {v}',
-    dailyNA:        '24h: —',
-    spread:         'Spanne: {v}',
-    volPct:         '{v}% des aktuellen Werts',
-    labelLowest:    'Niedrigst',
-    labelMedian:    'Median',
-    labelSMA:       '7-Tage-Ø',
-  },
-};
+        <section class="panel">
+          <div class="items-head">
+            <div>
+              <div class="panel-title" data-i18n="itemsTitle">Market Items</div>
+              <div class="items-count" id="items-count"></div>
+            </div>
+            <div class="toolbar">
+              <button class="tab" id="clear-btn" data-i18n="clear">Clear</button>
+            </div>
+          </div>
+          <div id="table-view" class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th data-sort="watch">★</th>
+                  <th data-sort="name" data-i18n="item">Item</th>
+                  <th data-sort="qty" class="num" data-i18n="qty">Qty</th>
+                  <th data-sort="unit" class="num" data-i18n="unit">Unit</th>
+                  <th data-sort="total" class="num" data-i18n="total">Total</th>
+                  <th data-i18n="market">Market</th>
+                </tr>
+              </thead>
+              <tbody id="items-tbody"></tbody>
+            </table>
+          </div>
+          <div id="card-view" class="cards hidden"></div>
+          <div id="empty" class="empty hidden" data-i18n="empty">No matching items.</div>
+        </section>
+      </div>
+    </section>
+  </main>
 
-const LANG_KEY = 'csinv_lang';
-let lang = (localStorage.getItem(LANG_KEY) || 'en').toLowerCase();
-if (!TRANSLATIONS[lang]) lang = 'en';
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8/hammer.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@2.2.0/dist/chartjs-plugin-zoom.min.js"></script>
+  <script>
+  'use strict';
 
-const t = (key, params = {}) => {
-  const dict = TRANSLATIONS[lang] || TRANSLATIONS.en;
-  const tmpl = dict[key] ?? TRANSLATIONS.en[key] ?? key;
-  return String(tmpl).replace(/\{(\w+)\}/g, (_, k) => params[k] ?? _);
-};
+  const I18N = {
+    en: {
+      kicker: 'Counter-Strike 2 Market Portfolio',
+      title: 'Steam Inventory Tracker',
+      search: 'Search', priceBasis: 'Price Basis', median: 'Median', lowest: 'Lowest',
+      view: 'View', table: 'Table', cards: 'Cards', sort: 'Sort', filters: 'Filters',
+      unitRange: 'Unit Range', quick: 'Quick', watchlist: 'Watchlist', missing: 'No price',
+      sortTotalDesc: 'Total value', sortUnitDesc: 'Unit price', sortQtyDesc: 'Quantity',
+      sortNameAsc: 'Name', sortWatch: 'Watchlist first', chartTitle: 'Portfolio Value',
+      allocation: 'Allocation', byType: 'Type', byExterior: 'Exterior', byRarity: 'Rarity',
+      byAccount: 'Account', itemsTitle: 'Market Items', clear: 'Clear',
+      item: 'Item', qty: 'Qty', unit: 'Unit', total: 'Total', market: 'Market',
+      empty: 'No matching items.', all: 'All', typeAll: 'All types', exteriorAll: 'All exteriors',
+      rarityAll: 'All rarities', accountAll: 'All accounts', latest: 'Latest Value',
+      daily: '24h', month: '30D', itemCount: 'Items', topItem: 'Top Item',
+      priced: 'Priced', liquidity: 'Commodity', updatedToday: 'Updated today',
+      updatedAgo: 'Updated {n}d ago', noDate: 'No history', partial: 'Partial',
+      linksCopied: 'Copied', noLinks: 'No links',
+      backtracked: 'Backtracked current inventory',
+    },
+    de: {
+      kicker: 'Counter-Strike 2 Marktportfolio',
+      title: 'Steam Inventar Tracker',
+      search: 'Suche', priceBasis: 'Preisquelle', median: 'Median', lowest: 'Niedrigst',
+      view: 'Ansicht', table: 'Tabelle', cards: 'Karten', sort: 'Sortierung', filters: 'Filter',
+      unitRange: 'Stückpreis', quick: 'Schnell', watchlist: 'Watchlist', missing: 'Ohne Preis',
+      sortTotalDesc: 'Gesamtwert', sortUnitDesc: 'Stückpreis', sortQtyDesc: 'Anzahl',
+      sortNameAsc: 'Name', sortWatch: 'Watchlist zuerst', chartTitle: 'Portfoliowert',
+      allocation: 'Aufteilung', byType: 'Typ', byExterior: 'Zustand', byRarity: 'Seltenheit',
+      byAccount: 'Account', itemsTitle: 'Marktitems', clear: 'Zurücksetzen',
+      item: 'Item', qty: 'Anz.', unit: 'Stück', total: 'Gesamt', market: 'Markt',
+      empty: 'Keine passenden Items.', all: 'Alle', typeAll: 'Alle Typen', exteriorAll: 'Alle Zustände',
+      rarityAll: 'Alle Seltenheiten', accountAll: 'Alle Accounts', latest: 'Aktueller Wert',
+      daily: '24h', month: '30T', itemCount: 'Items', topItem: 'Top Item',
+      priced: 'Bepreist', liquidity: 'Commodity', updatedToday: 'Heute aktualisiert',
+      updatedAgo: 'Vor {n} Tagen', noDate: 'Keine Historie', partial: 'Teilweise',
+      linksCopied: 'Kopiert', noLinks: 'Keine Links',
+      backtracked: 'Aktuelles Inventar rückgerechnet',
+    },
+  };
 
-const i18nCallbacks = [];
-const onLangChange  = fn => i18nCallbacks.push(fn);
+  const LS = {
+    lang: 'steam_tracker_lang',
+    basis: 'steam_tracker_basis',
+    view: 'steam_tracker_view',
+    watch: 'steam_tracker_watch',
+  };
+  let lang = localStorage.getItem(LS.lang) || 'en';
+  let basis = localStorage.getItem(LS.basis) || 'median';
+  let view = localStorage.getItem(LS.view) || 'table';
+  let currency = 'EUR';
+  let itemsData = { items: [] };
+  let history = { labels: [], lowest: [], median: [] };
+  let backtracked = { labels: [], value: [], coverage: [] };
+  let accounts = [];
+  let chart = null;
+  let span = '30';
+  let showBacktrack = true;
+  let showEvents = true;
+  let onlyWatch = false;
+  let onlyMissing = false;
+  let watch = new Set(JSON.parse(localStorage.getItem(LS.watch) || '[]'));
 
-function applyTranslations() {
-  document.title = t('documentTitle');
-  document.documentElement.lang = lang;
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    // Don't overwrite th elements with sort icons — handled in renderItems()
-    if (el.closest('th') && el.classList.contains('th-text')) {
-      el.textContent = t(el.dataset.i18n);
+  const $ = s => document.querySelector(s);
+  const $$ = s => Array.from(document.querySelectorAll(s));
+  const tr = (key, params = {}) => {
+    const str = (I18N[lang] || I18N.en)[key] || I18N.en[key] || key;
+    return str.replace(/\{(\w+)\}/g, (_, k) => params[k] ?? '');
+  };
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  const money = v => Number.isFinite(v) ? new Intl.NumberFormat(undefined, { style: 'currency', currency }).format(v) : '-';
+  const num = v => Number.isFinite(v) ? new Intl.NumberFormat(undefined).format(v) : '-';
+  const pct = (a, b) => Number.isFinite(a) && Number.isFinite(b) && b ? ((a - b) / b) * 100 : null;
+  const itemUnit = it => Number(it[basis] ?? 0) || null;
+  const itemTotal = it => Number(it[`total_${basis}`] ?? ((itemUnit(it) || 0) * (it.qty || 0))) || 0;
+  const clean = v => (v == null || v === '') ? '-' : String(v);
+  const family = it => [it.type, it.exterior, it.rarity].filter(Boolean).slice(0, 3);
+  const EVENTS = [
+    { date: '2023-09-27', label: 'CS2 launch', type: 'major' },
+    { date: '2024-02-07', label: 'A Call To Arms / Kilowatt Case', type: 'case' },
+    { date: '2024-10-03', label: 'The Armory / Gallery Case', type: 'major' },
+    { date: '2025-03-31', label: 'Fever Case', type: 'case' },
+    { date: '2025-09-16', label: 'Genesis Terminal', type: 'terminal' },
+    { date: '2026-03-12', label: 'Dead Hand Terminal', type: 'terminal' },
+    { date: '2026-05-12', label: 'Steam Market overhaul', type: 'market' },
+  ];
+
+  const eventPlugin = {
+    id: 'csEvents',
+    afterDatasetsDraw(chart) {
+      if (!chart.options.plugins.csEvents?.enabled) return;
+      const labels = chart.data.labels || [];
+      const visible = EVENTS.filter(ev => labels.includes(ev.date));
+      if (!visible.length) return;
+      const { ctx, chartArea, scales } = chart;
+      ctx.save();
+      ctx.font = '11px JetBrains Mono, monospace';
+      ctx.textBaseline = 'top';
+      visible.forEach((ev, idx) => {
+        const x = scales.x.getPixelForValue(labels.indexOf(ev.date));
+        if (x < chartArea.left || x > chartArea.right) return;
+        ctx.strokeStyle = ev.type === 'case' ? 'rgba(240,184,79,.72)' : 'rgba(114,199,255,.72)';
+        ctx.fillStyle = ctx.strokeStyle;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(x, chartArea.top);
+        ctx.lineTo(x, chartArea.bottom);
+        ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.translate(x + 5, chartArea.top + 8 + (idx % 4) * 16);
+        ctx.rotate(-Math.PI / 8);
+        ctx.fillText(ev.label, 0, 0);
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+      });
+      ctx.restore();
+    },
+  };
+  Chart.register(eventPlugin);
+
+  function applyI18n() {
+    document.documentElement.lang = lang;
+    document.title = tr('title');
+    $$('[data-i18n]').forEach(el => el.textContent = tr(el.dataset.i18n));
+    $$('#sort-select option, #allocation-mode option').forEach(el => el.textContent = tr(el.dataset.i18n));
+    $('#lang-btn').textContent = lang === 'en' ? 'DE' : 'EN';
+    $('#partial-pill').textContent = tr('partial');
+  }
+
+  function parseCSV(text) {
+    const rows = text.trim().split(/\r?\n/).filter(Boolean);
+    if (rows.length < 2) return [];
+    const head = rows[0].split(',').map(v => v.trim());
+    return rows.slice(1).map(row => {
+      const obj = {};
+      row.split(',').forEach((v, i) => obj[head[i]] = v.trim());
+      return obj;
+    });
+  }
+
+  async function loadText(path) {
+    try {
+      const res = await fetch(path, { cache: 'no-store' });
+      return res.ok ? await res.text() : '';
+    } catch (_) {
+      return '';
+    }
+  }
+
+  function normalizeHistory(rows) {
+    const labels = [], lowest = [], median = [];
+    rows.forEach(r => {
+      labels.push(r.date);
+      lowest.push(Number(r.lowest) > 0 ? Number(r.lowest) : null);
+      median.push(Number(r.median) > 0 ? Number(r.median) : null);
+      if (r.currency) currency = r.currency.toUpperCase();
+    });
+    return { labels, lowest, median };
+  }
+
+  function normalizeBacktracked(rows) {
+    const labels = [], value = [], coverage = [];
+    rows.forEach(r => {
+      labels.push(r.date);
+      value.push(Number(r.value) > 0 ? Number(r.value) : null);
+      coverage.push(Number(r.coverage_items) || 0);
+      if (r.currency) currency = r.currency.toUpperCase();
+    });
+    return { labels, value, coverage };
+  }
+
+  function fillSelect(id, allKey, values) {
+    const el = $(id);
+    const current = el.value;
+    el.innerHTML = `<option value="">${esc(tr(allKey))}</option>` +
+      values.filter(Boolean).sort((a, b) => String(a).localeCompare(String(b)))
+        .map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join('');
+    el.value = values.includes(current) ? current : '';
+  }
+
+  function refreshFilters() {
+    const items = itemsData.items || [];
+    fillSelect('#type-filter', 'typeAll', [...new Set(items.map(i => i.type || i.family))]);
+    fillSelect('#exterior-filter', 'exteriorAll', [...new Set(items.map(i => i.exterior))]);
+    fillSelect('#rarity-filter', 'rarityAll', [...new Set(items.map(i => i.rarity || i.quality))]);
+    fillSelect('#account-filter', 'accountAll', [...new Set(items.flatMap(i => Object.keys(i.accounts || {})))]);
+  }
+
+  function selectedItems() {
+    const q = $('#search').value.trim().toLowerCase();
+    const type = $('#type-filter').value;
+    const exterior = $('#exterior-filter').value;
+    const rarity = $('#rarity-filter').value;
+    const account = $('#account-filter').value;
+    const min = Number($('#min-price').value.replace(',', '.'));
+    const max = Number($('#max-price').value.replace(',', '.'));
+    let rows = [...(itemsData.items || [])].filter(it => {
+      const hay = [it.name, it.type, it.exterior, it.rarity, it.quality, it.collection, it.weapon, it.family].join(' ').toLowerCase();
+      const unit = itemUnit(it);
+      if (q && !hay.includes(q)) return false;
+      if (type && (it.type || it.family) !== type) return false;
+      if (exterior && it.exterior !== exterior) return false;
+      if (rarity && (it.rarity || it.quality) !== rarity) return false;
+      if (account && !(it.accounts || {})[account]) return false;
+      if (Number.isFinite(min) && unit != null && unit < min) return false;
+      if (Number.isFinite(max) && unit != null && unit > max) return false;
+      if (onlyWatch && !watch.has(it.name)) return false;
+      if (onlyMissing && unit != null) return false;
+      return true;
+    });
+    const sort = $('#sort-select').value;
+    rows.sort((a, b) => {
+      if (sort === 'unit_desc') return (itemUnit(b) || 0) - (itemUnit(a) || 0);
+      if (sort === 'qty_desc') return (b.qty || 0) - (a.qty || 0);
+      if (sort === 'name_asc') return a.name.localeCompare(b.name);
+      if (sort === 'watch_desc') return Number(watch.has(b.name)) - Number(watch.has(a.name)) || itemTotal(b) - itemTotal(a);
+      return itemTotal(b) - itemTotal(a);
+    });
+    return rows;
+  }
+
+  function historyLatest(series) {
+    return [...series].reverse().find(v => v != null);
+  }
+
+  function renderStats(rows) {
+    const series = history[basis].some(v => v != null) ? history[basis] : history.median.concat(history.lowest);
+    const latest = historyLatest(series);
+    const prev = [...series.slice(0, -1)].reverse().find(v => v != null);
+    const base30 = series.length > 30 ? series[series.length - 31] : null;
+    const daily = latest != null && prev != null ? latest - prev : null;
+    const dailyPct = pct(latest, prev);
+    const month = latest != null && base30 != null ? latest - base30 : null;
+    const monthPct = pct(latest, base30);
+    const qty = rows.reduce((a, b) => a + (Number(b.qty) || 0), 0);
+    const priced = rows.filter(i => itemUnit(i) != null).length;
+    const commodity = rows.filter(i => i.commodity).reduce((a, b) => a + itemTotal(b), 0);
+    const total = rows.reduce((a, b) => a + itemTotal(b), 0);
+    const top = rows[0];
+    const cards = [
+      [tr('latest'), money(latest ?? total), `${basis}`],
+      [tr('daily'), daily == null ? '-' : money(daily), dailyPct == null ? '' : `${dailyPct.toFixed(2)}%`, daily >= 0 ? 'pos' : 'neg'],
+      [tr('month'), month == null ? '-' : money(month), monthPct == null ? '' : `${monthPct.toFixed(2)}%`, month >= 0 ? 'pos' : 'neg'],
+      [tr('itemCount'), num(qty), `${num(rows.length)} names`],
+      [tr('topItem'), top ? money(itemTotal(top)) : '-', top ? top.name : '-'],
+      [tr('priced'), `${priced}/${rows.length}`, `${total ? ((commodity / total) * 100).toFixed(1) : '0.0'}% ${tr('liquidity')}`],
+    ];
+    $('#stats').innerHTML = cards.map(([label, value, sub, tone]) => `
+      <article class="stat">
+        <div class="label">${esc(label)}</div>
+        <div class="value ${tone || ''}">${esc(value)}</div>
+        <div class="sub">${esc(sub || '')}</div>
+      </article>`).join('');
+  }
+
+  function renderItems() {
+    const rows = selectedItems();
+    renderStats(rows);
+    renderAllocation(rows);
+    $('#items-count').textContent = `${num(rows.length)} / ${num((itemsData.items || []).length)}`;
+    $('#empty').classList.toggle('hidden', rows.length > 0);
+    $('#table-view').classList.toggle('hidden', view !== 'table' || rows.length === 0);
+    $('#card-view').classList.toggle('hidden', view !== 'cards' || rows.length === 0);
+
+    $('#items-tbody').innerHTML = rows.map(it => `
+      <tr>
+        <td><button class="icon-btn ${watch.has(it.name) ? 'active' : ''}" data-watch="${esc(it.name)}" title="Watch">★</button></td>
+        <td>
+          <div class="item-cell">
+            <img class="thumb" loading="lazy" src="${esc(it.icon_url || it.icon_url_large || '')}" alt="" />
+            <div>
+              <div class="item-name">${esc(it.name)}</div>
+              <div class="chips">${family(it).map(v => `<span class="chip">${esc(v)}</span>`).join('')}</div>
+            </div>
+          </div>
+        </td>
+        <td class="num">${num(it.qty || 0)}</td>
+        <td class="num">${money(itemUnit(it))}</td>
+        <td class="num accent">${money(itemTotal(it))}</td>
+        <td>
+          <div class="row-actions">
+            ${it.market_url ? `<a class="icon-btn" href="${esc(it.market_url)}" target="_blank" rel="noreferrer" title="Market">M</a>` : ''}
+            ${it.inspect_url ? `<a class="icon-btn" href="${esc(it.inspect_url)}" title="Inspect">I</a>` : ''}
+          </div>
+        </td>
+      </tr>`).join('');
+
+    $('#card-view').innerHTML = rows.map(it => `
+      <article class="item-card">
+        <img class="thumb" loading="lazy" src="${esc(it.icon_url || it.icon_url_large || '')}" alt="" />
+        <div>
+          <div class="item-name">${esc(it.name)}</div>
+          <div class="chips">${family(it).map(v => `<span class="chip">${esc(v)}</span>`).join('')}</div>
+          <div class="card-price"><span>${num(it.qty || 0)}x ${money(itemUnit(it))}</span><b class="accent">${money(itemTotal(it))}</b></div>
+          <div class="row-actions" style="margin-top:10px;justify-content:flex-start">
+            <button class="icon-btn ${watch.has(it.name) ? 'active' : ''}" data-watch="${esc(it.name)}" title="Watch">★</button>
+            ${it.market_url ? `<a class="icon-btn" href="${esc(it.market_url)}" target="_blank" rel="noreferrer" title="Market">M</a>` : ''}
+            ${it.inspect_url ? `<a class="icon-btn" href="${esc(it.inspect_url)}" title="Inspect">I</a>` : ''}
+          </div>
+        </div>
+      </article>`).join('');
+
+    $$('[data-watch]').forEach(btn => btn.addEventListener('click', () => toggleWatch(btn.dataset.watch)));
+  }
+
+  function renderAllocation(rows) {
+    const mode = $('#allocation-mode').value;
+    const totals = new Map();
+    rows.forEach(it => {
+      if (mode === 'account') {
+        const accounts = it.accounts && Object.keys(it.accounts).length ? it.accounts : { [tr('all')]: it.qty || 0 };
+        Object.entries(accounts).forEach(([name, qty]) => {
+          totals.set(name, (totals.get(name) || 0) + itemTotal(it) * (Number(qty) / Math.max(1, it.qty || 1)));
+        });
+      } else {
+        const key = clean(it[mode] || (mode === 'rarity' ? it.quality : null) || it.family);
+        totals.set(key, (totals.get(key) || 0) + itemTotal(it));
+      }
+    });
+    const all = [...totals.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8);
+    const max = Math.max(...all.map(([, v]) => v), 1);
+    $('#allocation-list').innerHTML = all.length ? all.map(([name, value]) => `
+      <div class="bar-row">
+        <div>
+          <div>${esc(name)}</div>
+          <div class="bar"><span style="width:${Math.max(2, (value / max) * 100)}%"></span></div>
+        </div>
+        <div class="num">${money(value)}</div>
+      </div>`).join('') : `<div class="empty">${esc(tr('empty'))}</div>`;
+  }
+
+  function buildChartSeries() {
+    const byDate = new Map();
+    history.labels.forEach((date, i) => {
+      if (!byDate.has(date)) byDate.set(date, {});
+      byDate.get(date).median = history.median[i];
+      byDate.get(date).lowest = history.lowest[i];
+    });
+    backtracked.labels.forEach((date, i) => {
+      if (!byDate.has(date)) byDate.set(date, {});
+      byDate.get(date).backtracked = backtracked.value[i];
+    });
+
+    const allLabels = [...byDate.keys()].sort();
+    const count = span === 'all' ? allLabels.length : Math.min(Number(span), allLabels.length);
+    const labels = allLabels.slice(-count);
+    return {
+      labels,
+      median: labels.map(date => byDate.get(date)?.median ?? null),
+      lowest: labels.map(date => byDate.get(date)?.lowest ?? null),
+      backtracked: labels.map(date => byDate.get(date)?.backtracked ?? null),
+    };
+  }
+
+  function renderChart() {
+    const series = buildChartSeries();
+    const datasets = [
+      { label: tr('median'), data: series.median, borderColor: '#f0b84f', borderWidth: 2, pointRadius: 0, tension: .25, spanGaps: true },
+      { label: tr('lowest'), data: series.lowest, borderColor: '#72c7ff', borderWidth: 1.5, pointRadius: 0, tension: .25, spanGaps: true },
+    ];
+    if (showBacktrack && series.backtracked.some(v => v != null)) {
+      datasets.push({
+        label: tr('backtracked'),
+        data: series.backtracked,
+        borderColor: '#42d392',
+        borderWidth: 2,
+        borderDash: [7, 5],
+        pointRadius: 0,
+        tension: .2,
+        spanGaps: true,
+      });
+    }
+    const ctx = $('#value-chart').getContext('2d');
+    if (chart) chart.destroy();
+    chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: series.labels,
+        datasets,
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        scales: {
+          x: { ticks: { color: '#8a98aa', maxTicksLimit: 8 }, grid: { color: '#273141' } },
+          y: { ticks: { color: '#8a98aa', callback: v => money(v) }, grid: { color: '#273141' } },
+        },
+        plugins: {
+          legend: { labels: { color: '#b8c4d2' } },
+          tooltip: { callbacks: { label: c => `${c.dataset.label}: ${money(c.parsed.y)}` } },
+          zoom: { zoom: { wheel: { enabled: true }, drag: { enabled: true }, mode: 'x' }, pan: { enabled: true, mode: 'x' } },
+          csEvents: { enabled: showEvents },
+        },
+      },
+    });
+  }
+
+  function setUpdated() {
+    const date = itemsData.date || history.labels.at(-1);
+    $('#currency-pill').textContent = currency;
+    $('#partial-pill').classList.toggle('hidden', !itemsData.partial);
+    if (!date) {
+      $('#updated-pill').textContent = tr('noDate');
       return;
     }
-    if (!el.querySelector('.si') && !el.querySelector('.th-text')) {
-      el.textContent = t(el.dataset.i18n);
-    }
-  });
-  const sel = document.getElementById('lang-select');
-  if (sel) {
-    Array.from(sel.options).forEach(opt => {
-      if (opt.dataset.i18n) opt.textContent = t(opt.dataset.i18n);
-    });
-    sel.value = lang;
-  }
-  i18nCallbacks.forEach(fn => fn());
-}
-
-function setLang(l, save = true) {
-  if (!TRANSLATIONS[l]) l = 'en';
-  lang = l;
-  if (save) localStorage.setItem(LANG_KEY, l);
-  applyTranslations();
-}
-
-document.getElementById('lang-select').addEventListener('change', e => setLang(e.target.value));
-
-// ════════════════════════════════════════════════════════════
-// Currency
-// ════════════════════════════════════════════════════════════
-let CURRENCY = 'EUR';
-
-const fmt = v =>
-  Number.isFinite(v)
-    ? new Intl.NumberFormat(undefined, {
-        style: 'currency', currency: CURRENCY,
-        minimumFractionDigits: 2, maximumFractionDigits: 2,
-      }).format(v)
-    : t('notAvail');
-
-const fmtDelta = v => {
-  if (!Number.isFinite(v)) return t('notAvail');
-  return (v > 0 ? '+' : '') + fmt(v);
-};
-
-const pct = (cur, prev) =>
-  Number.isFinite(cur) && Number.isFinite(prev) && prev !== 0
-    ? ((cur - prev) / prev) * 100 : null;
-
-// ════════════════════════════════════════════════════════════
-// CSV parsing — treats 0 as null (Steam prices are never 0)
-// ════════════════════════════════════════════════════════════
-function parseCSV(text) {
-  const lines = text.trim().split('\n').filter(Boolean);
-  if (lines.length < 2) return { labels: [], lowest: [], median: [] };
-  const hdr = lines[0].split(',').map(s => s.trim().toLowerCase());
-  const di = hdr.indexOf('date');
-  const li = hdr.indexOf('lowest');
-  const mi = hdr.indexOf('median');
-
-  const labels = [], lowest = [], median = [];
-  for (const line of lines.slice(1)) {
-    const cols = line.split(',');
-    const date = (cols[di] || '').trim();
-    if (!date) continue;
-    const parseN = i => {
-      if (i < 0) return null;
-      const v = parseFloat((cols[i] || '').replace(/[^\d.-]/g, ''));
-      return Number.isFinite(v) && v > 0 ? v : null; // 0 treated as no-data
-    };
-    labels.push(date);
-    lowest.push(parseN(li));
-    median.push(parseN(mi));
-  }
-  return { labels, lowest, median };
-}
-
-// ════════════════════════════════════════════════════════════
-// Simple Moving Average (null-aware)
-// ════════════════════════════════════════════════════════════
-function sma(data, w) {
-  return data.map((_, i) => {
-    if (i < w - 1) return null;
-    const slice = data.slice(i - w + 1, i + 1).filter(v => v !== null);
-    return slice.length ? slice.reduce((a, b) => a + b, 0) / slice.length : null;
-  });
-}
-
-// ════════════════════════════════════════════════════════════
-// State
-// ════════════════════════════════════════════════════════════
-let allLabels = [], allLowest = [], allMedian = [];
-let mainChart  = null;
-let lastDiff   = NaN;
-
-function primarySeries() {
-  // Prefer median if we have any real (non-null) median values
-  return allMedian.some(v => v !== null) ? allMedian : allLowest;
-}
-
-// ════════════════════════════════════════════════════════════
-// Chart build
-// ════════════════════════════════════════════════════════════
-const CHART_COLORS = {
-  lowest: '#e85252',
-  median: '#e8a730',
-  sma:    '#4fa8d8',
-  grid:   '#1c2129',
-  tick:   '#4e5a6e',
-};
-
-function makeChartConfig(labels, lowest, median, smaData) {
-  return {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [
-        {
-          label: t('labelLowest'),
-          data: lowest,
-          borderColor: CHART_COLORS.lowest,
-          backgroundColor: 'transparent',
-          borderWidth: 1.5,
-          pointRadius: 0,
-          tension: 0.2,
-          spanGaps: true,
-        },
-        {
-          label: t('labelMedian'),
-          data: median,
-          borderColor: CHART_COLORS.median,
-          backgroundColor: 'transparent',
-          borderWidth: 2,
-          pointRadius: 0,
-          tension: 0.2,
-          spanGaps: true,
-        },
-        {
-          label: t('labelSMA'),
-          data: smaData,
-          borderColor: CHART_COLORS.sma,
-          backgroundColor: 'transparent',
-          borderWidth: 1.5,
-          borderDash: [4, 4],
-          pointRadius: 0,
-          tension: 0.2,
-          spanGaps: true,
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: { duration: 250 },
-      interaction: { mode: 'index', intersect: false },
-      scales: {
-        x: {
-          ticks: {
-            autoSkip: true,
-            maxTicksLimit: 10,
-            color: CHART_COLORS.tick,
-            font: { family: "'Space Mono', monospace", size: 10 },
-          },
-          grid:   { color: CHART_COLORS.grid },
-          border: { color: CHART_COLORS.grid },
-        },
-        y: {
-          beginAtZero: false,
-          ticks: {
-            color: CHART_COLORS.tick,
-            font: { family: "'Space Mono', monospace", size: 10 },
-            callback: v => fmt(v),
-          },
-          grid:   { color: CHART_COLORS.grid },
-          border: { color: CHART_COLORS.grid },
-        },
-      },
-      plugins: {
-        legend: {
-          labels: {
-            color: '#4e5a6e',
-            font: { family: "'Space Mono', monospace", size: 11 },
-            boxWidth: 18,
-            padding: 16,
-          },
-        },
-        tooltip: {
-          backgroundColor: '#0d1014',
-          borderColor: '#1c2129',
-          borderWidth: 1,
-          titleColor: '#b8c4d4',
-          bodyColor:  '#b8c4d4',
-          titleFont: { family: "'Space Mono', monospace", size: 11 },
-          bodyFont:  { family: "'Space Mono', monospace", size: 11 },
-          callbacks: {
-            label: ctx => `${ctx.dataset.label}: ${fmt(ctx.parsed.y)}`,
-          },
-        },
-        zoom: {
-          zoom: { wheel: { enabled: true }, drag: { enabled: true }, mode: 'x' },
-          pan:  { enabled: true, mode: 'x' },
-        },
-      },
-    },
-  };
-}
-
-// ════════════════════════════════════════════════════════════
-// Summary cards
-// ════════════════════════════════════════════════════════════
-function updateSummary() {
-  const primary  = primarySeries();
-  const validAll = primary.filter(v => v !== null);
-  const latest   = primary.findLast ? primary.findLast(v => v !== null) : [...primary].reverse().find(v => v !== null);
-  const prev     = primary.slice(0, -1).findLast ? primary.slice(0, -1).findLast(v => v !== null)
-                    : [...primary.slice(0, -1)].reverse().find(v => v !== null);
-
-  const delta    = (latest != null && prev != null) ? latest - prev : NaN;
-  const deltaPct = pct(latest, prev);
-
-  const idx30 = Math.max(0, primary.length - 31);
-  const base30 = primary.slice(0, idx30 + 1).findLast ? primary.slice(0, idx30 + 1).findLast(v => v !== null)
-                   : [...primary.slice(0, idx30 + 1)].reverse().find(v => v !== null);
-  const d30    = (latest != null && base30 != null) ? latest - base30 : NaN;
-  const d30pct = pct(latest, base30);
-
-  const high = validAll.length ? Math.max(...validAll) : NaN;
-  const low  = validAll.length ? Math.min(...validAll) : NaN;
-
-  const w30  = validAll.slice(-30);
-  let vol    = NaN;
-  if (w30.length > 1) {
-    const mean = w30.reduce((a, b) => a + b, 0) / w30.length;
-    vol = Math.sqrt(w30.reduce((a, b) => a + (b - mean) ** 2, 0) / (w30.length - 1));
+    const diff = Math.round((new Date(new Date().toISOString().slice(0, 10)) - new Date(date)) / 86400000);
+    $('#updated-pill').textContent = diff <= 0 ? tr('updatedToday') : tr('updatedAgo', { n: diff });
   }
 
-  // ── Latest value
-  document.getElementById('s-latest').textContent = latest != null ? fmt(latest) : t('notAvail');
-
-  // ── 24h delta
-  const dailyEl = document.getElementById('s-daily');
-  if (Number.isFinite(delta)) {
-    const pctStr = deltaPct !== null ? ` (${deltaPct.toFixed(2)}%)` : '';
-    dailyEl.textContent = t('daily', { v: fmtDelta(delta) + pctStr });
-    dailyEl.className   = 's-delta ' + (delta >= 0 ? 'pos' : 'neg');
-  } else {
-    dailyEl.textContent = t('dailyNA');
-    dailyEl.className   = 's-delta';
-  }
-
-  // ── 30d change
-  const card30 = document.getElementById('card-30d');
-  const val30  = document.getElementById('s-30d-val');
-  const pct30  = document.getElementById('s-30d-pct');
-  if (Number.isFinite(d30)) {
-    val30.textContent    = fmtDelta(d30);
-    val30.className      = 's-value ' + (d30 >= 0 ? 'col-positive' : 'col-negative');
-    pct30.textContent    = d30pct !== null ? `${d30pct.toFixed(2)}%` : '';
-    pct30.className      = 's-delta ' + (d30 >= 0 ? 'pos' : 'neg');
-    card30.className     = 's-card ' + (d30 >= 0 ? 'pos-bar' : 'neg-bar');
-  } else {
-    val30.textContent = t('notAvail');
-    val30.className   = 's-value';
-    pct30.textContent = '';
-    card30.className  = 's-card';
-  }
-
-  // ── Range
-  document.getElementById('s-range').textContent =
-    (Number.isFinite(high) && Number.isFinite(low))
-      ? `${fmt(low)} → ${fmt(high)}`
-      : t('notAvail');
-  document.getElementById('s-spread').textContent =
-    (Number.isFinite(high) && Number.isFinite(low))
-      ? t('spread', { v: fmt(high - low) })
-      : '';
-
-  // ── Volatility
-  document.getElementById('s-vol').textContent      = Number.isFinite(vol) ? fmt(vol) : t('notAvail');
-  document.getElementById('s-vol-pct').textContent  =
-    (Number.isFinite(vol) && latest != null && latest > 0)
-      ? t('volPct', { v: ((vol / latest) * 100).toFixed(2) })
-      : '';
-}
-
-// ════════════════════════════════════════════════════════════
-// Daily change label (under chart)
-// ════════════════════════════════════════════════════════════
-function refreshDailyLabel() {
-  const el = document.getElementById('daily-change');
-  if (Number.isFinite(lastDiff)) {
-    el.textContent  = t('daily', { v: fmtDelta(lastDiff) });
-    el.style.color  = lastDiff >= 0 ? 'var(--positive)' : 'var(--negative)';
-  } else {
-    el.textContent  = t('dailyNA');
-    el.style.color  = 'var(--text-dim)';
-  }
-}
-
-// ════════════════════════════════════════════════════════════
-// Chart span update
-// ════════════════════════════════════════════════════════════
-let activeSpan = 'all';
-
-function updateSpan(span) {
-  activeSpan = span;
-  if (!mainChart) return;
-
-  const count  = span === 'all' ? allLabels.length : Math.min(allLabels.length, Number(span));
-  const labSl  = allLabels.slice(-count);
-  const loSl   = allLowest.slice(-count);
-  const medSl  = allMedian.slice(-count);
-  const smaSl  = sma(allMedian, 7).slice(-count);
-
-  mainChart.data.labels = labSl;
-  mainChart.data.datasets[0].data  = loSl;
-  mainChart.data.datasets[1].data  = medSl;
-  mainChart.data.datasets[2].data  = smaSl;
-  mainChart.data.datasets[0].label = t('labelLowest');
-  mainChart.data.datasets[1].label = t('labelMedian');
-  mainChart.data.datasets[2].label = t('labelSMA');
-  mainChart.resetZoom();
-  mainChart.update();
-
-  // Recompute lastDiff from the active primary slice
-  const primSl = (allMedian.some(v => v !== null) ? allMedian : allLowest).slice(-count);
-  const valid  = primSl.filter(v => v !== null);
-  lastDiff = valid.length >= 2 ? valid[valid.length - 1] - valid[valid.length - 2] : NaN;
-  refreshDailyLabel();
-}
-
-// ════════════════════════════════════════════════════════════
-// Fullscreen
-// ════════════════════════════════════════════════════════════
-function setupFullscreen() {
-  const card = document.getElementById('chart-card');
-  const btn  = document.getElementById('fs-btn');
-
-  const refreshLabel = () => {
-    btn.textContent = card.classList.contains('fullscreen') ? t('collapse') : t('expand');
-  };
-
-  btn.addEventListener('click', () => {
-    card.classList.toggle('fullscreen');
-    document.body.classList.toggle('no-scroll', card.classList.contains('fullscreen'));
-    setTimeout(() => mainChart?.resize(), 80);
-    refreshLabel();
-  });
-
-  onLangChange(refreshLabel);
-  refreshLabel();
-}
-
-// ════════════════════════════════════════════════════════════
-// Items table
-// ════════════════════════════════════════════════════════════
-let itemsData = null;
-let sortCol   = 'total_lowest';
-let sortAsc   = false;
-
-function esc(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-function renderItems() {
-  const table  = document.getElementById('items-table');
-  const empty  = document.getElementById('items-empty');
-  const tbody  = document.getElementById('items-tbody');
-  const dateEl = document.getElementById('items-date');
-
-  if (!itemsData || !Array.isArray(itemsData.items) || !itemsData.items.length) {
-    table.style.display = 'none';
-    empty.style.display = '';
-    empty.textContent   = t('noItems');
-    return;
-  }
-
-  empty.style.display = 'none';
-  table.style.display = '';
-  dateEl.textContent  = itemsData.date || '';
-
-  // Update sortable column header text (th-text spans)
-  document.querySelectorAll('#items-table th .th-text').forEach(el => {
-    el.textContent = t(el.dataset.i18n);
-  });
-
-  // Sort
-  const rows = [...itemsData.items].sort((a, b) => {
-    let av = a[sortCol] ?? (typeof a[sortCol] === 'string' ? '' : -Infinity);
-    let bv = b[sortCol] ?? (typeof b[sortCol] === 'string' ? '' : -Infinity);
-    if (typeof av === 'string') av = av.toLowerCase();
-    if (typeof bv === 'string') bv = bv.toLowerCase();
-    if (av < bv) return sortAsc ? -1 : 1;
-    if (av > bv) return sortAsc ? 1 : -1;
-    return 0;
-  });
-
-  // Refresh sort icons
-  document.querySelectorAll('#items-table th[data-col]').forEach(th => {
-    const ic = th.querySelector('.si');
-    if (!ic) return;
-    th.classList.remove('sorted');
-    ic.textContent = '↕';
-    if (th.dataset.col === sortCol) {
-      th.classList.add('sorted');
-      ic.textContent = sortAsc ? '↑' : '↓';
-    }
-  });
-
-  tbody.innerHTML = rows.map((item, i) => `
-    <tr>
-      <td class="td-rank">${i + 1}</td>
-      <td class="td-name">${esc(item.name)}${item.qty > 1
-        ? `<span class="item-qty-badge">×${item.qty}</span>` : ''}</td>
-      <td class="td-num">${item.qty}</td>
-      <td class="td-num">${item.lowest != null ? fmt(item.lowest) : '—'}</td>
-      <td class="td-num">${item.median != null ? fmt(item.median) : '—'}</td>
-      <td class="td-total">${fmt(item.total_lowest || 0)}</td>
-    </tr>`).join('');
-}
-
-// Sort on header click
-document.querySelectorAll('#items-table th[data-col]').forEach(th => {
-  if (!th.querySelector('.si')) return;
-  th.addEventListener('click', () => {
-    if (sortCol === th.dataset.col) {
-      sortAsc = !sortAsc;
-    } else {
-      sortCol = th.dataset.col;
-      sortAsc = false;
-    }
+  function toggleWatch(name) {
+    if (watch.has(name)) watch.delete(name); else watch.add(name);
+    localStorage.setItem(LS.watch, JSON.stringify([...watch]));
     renderItems();
-  });
-});
-
-// ════════════════════════════════════════════════════════════
-// Last updated badge
-// ════════════════════════════════════════════════════════════
-function setLastUpdated(dateStr) {
-  const el    = document.getElementById('last-updated');
-  if (!dateStr) { el.textContent = '—'; el.className = ''; return; }
-  const today = new Date().toISOString().slice(0, 10);
-  const diff  = Math.round((new Date(today) - new Date(dateStr)) / 86400000);
-  if (diff <= 0) {
-    el.textContent = t('updatedToday');
-    el.className   = 'fresh';
-  } else if (diff <= 2) {
-    el.textContent = t('updatedAgo', { n: diff });
-    el.className   = '';
-  } else {
-    el.textContent = t('updatedAgo', { n: diff });
-    el.className   = 'stale';
   }
-}
 
-// ════════════════════════════════════════════════════════════
-// Bootstrap
-// ════════════════════════════════════════════════════════════
-(async () => {
-
-  // Load config.json for currency & language defaults
-  let config = { currency: 'EUR', language: 'en' };
-  try {
-    const r = await fetch('config.json', { cache: 'no-store' });
-    if (r.ok) config = await r.json();
-  } catch (_) {}
-
-  CURRENCY = (config.currency || 'EUR').toUpperCase();
-
-  // Apply language (config default only if no saved preference)
-  if (!localStorage.getItem(LANG_KEY)) {
-    const cfgLang = (config.language || 'en').slice(0, 2).toLowerCase();
-    if (TRANSLATIONS[cfgLang]) setLang(cfgLang, false);
+  function exportCSV() {
+    const rows = selectedItems();
+    const cols = ['name','qty',basis,`total_${basis}`,'type','exterior','rarity','quality','collection','market_url'];
+    const csv = [cols.join(',')].concat(rows.map(it => cols.map(k => `"${String(it[k] ?? '').replaceAll('"', '""')}"`).join(','))).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `steam-inventory-${itemsData.date || 'export'}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
   }
-  setLang(lang, false);
 
-  // ── Load values.csv ──────────────────────────────────────
-  const csvText = await fetch('values.csv', { cache: 'no-store' })
-    .then(r => r.ok ? r.text() : '').catch(() => '');
-  const { labels, lowest, median } = parseCSV(csvText);
-  allLabels = labels;
-  allLowest = lowest;
-  allMedian = median;
-
-  // ── Build chart ──────────────────────────────────────────
-  const ctx = document.getElementById('chart').getContext('2d');
-  mainChart = new Chart(ctx, makeChartConfig(
-    allLabels, allLowest, allMedian, sma(allMedian, 7)
-  ));
-  ctx.canvas.addEventListener('dblclick', () => mainChart.resetZoom());
-  setupFullscreen();
-
-  // Span buttons
-  document.querySelectorAll('.btn[data-span]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.btn[data-span]').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      updateSpan(btn.dataset.span);
-    });
-  });
-  updateSpan('all'); // triggers initial render with ALL data
-
-  // ── Summary ──────────────────────────────────────────────
-  updateSummary();
-  setLastUpdated(allLabels[allLabels.length - 1] || null);
-
-  // Register lang-change callbacks
-  onLangChange(() => {
-    updateSummary();
-    refreshDailyLabel();
-    updateSpan(activeSpan); // re-labels chart datasets
-  });
-
-  // ── Load items.json ──────────────────────────────────────
-  try {
-    const ir = await fetch('items.json', { cache: 'no-store' });
-    if (ir.ok) {
-      itemsData = await ir.json();
-      if (itemsData.currency) CURRENCY = itemsData.currency.toUpperCase();
+  async function copyLinks() {
+    const links = selectedItems().map(i => i.market_url).filter(Boolean).join('\n');
+    if (!links) return flash('#copy-btn', tr('noLinks'));
+    try {
+      await navigator.clipboard.writeText(links);
+      flash('#copy-btn', tr('linksCopied'));
+    } catch (_) {
+      flash('#copy-btn', 'ERR');
     }
-  } catch (_) {}
+  }
 
-  renderItems();
-  onLangChange(renderItems);
+  function flash(sel, text) {
+    const el = $(sel);
+    const old = el.textContent;
+    el.textContent = text;
+    setTimeout(() => el.textContent = old, 1200);
+  }
 
-})();
-</script>
+  function bind() {
+    $('#lang-btn').addEventListener('click', () => {
+      lang = lang === 'en' ? 'de' : 'en';
+      localStorage.setItem(LS.lang, lang);
+      applyI18n(); refreshFilters(); renderItems(); renderChart(); setUpdated();
+    });
+    $$('[data-basis]').forEach(btn => btn.addEventListener('click', () => {
+      basis = btn.dataset.basis; localStorage.setItem(LS.basis, basis);
+      $$('[data-basis]').forEach(b => b.classList.toggle('active', b.dataset.basis === basis));
+      renderItems();
+    }));
+    $$('[data-view]').forEach(btn => btn.addEventListener('click', () => {
+      view = btn.dataset.view; localStorage.setItem(LS.view, view);
+      $$('[data-view]').forEach(b => b.classList.toggle('active', b.dataset.view === view));
+      renderItems();
+    }));
+    $$('[data-span]').forEach(btn => btn.addEventListener('click', () => {
+      span = btn.dataset.span;
+      $$('[data-span]').forEach(b => b.classList.toggle('active', b.dataset.span === span));
+      renderChart();
+    }));
+    $('#backtrack-toggle').addEventListener('click', () => {
+      showBacktrack = !showBacktrack;
+      $('#backtrack-toggle').classList.toggle('active', showBacktrack);
+      renderChart();
+    });
+    $('#events-toggle').addEventListener('click', () => {
+      showEvents = !showEvents;
+      $('#events-toggle').classList.toggle('active', showEvents);
+      renderChart();
+    });
+    ['#search','#sort-select','#type-filter','#exterior-filter','#rarity-filter','#account-filter','#min-price','#max-price','#allocation-mode']
+      .forEach(sel => $(sel).addEventListener('input', renderItems));
+    $('#watch-filter').addEventListener('click', () => {
+      onlyWatch = !onlyWatch; $('#watch-filter').classList.toggle('active', onlyWatch); renderItems();
+    });
+    $('#missing-filter').addEventListener('click', () => {
+      onlyMissing = !onlyMissing; $('#missing-filter').classList.toggle('active', onlyMissing); renderItems();
+    });
+    $('#clear-btn').addEventListener('click', () => {
+      ['#search','#type-filter','#exterior-filter','#rarity-filter','#account-filter','#min-price','#max-price'].forEach(sel => $(sel).value = '');
+      onlyWatch = false; onlyMissing = false; $('#watch-filter').classList.remove('active'); $('#missing-filter').classList.remove('active');
+      renderItems();
+    });
+    $('#export-btn').addEventListener('click', exportCSV);
+    $('#copy-btn').addEventListener('click', copyLinks);
+    $$('th[data-sort]').forEach(th => th.addEventListener('click', () => {
+      const map = { name: 'name_asc', qty: 'qty_desc', unit: 'unit_desc', total: 'total_desc', watch: 'watch_desc' };
+      $('#sort-select').value = map[th.dataset.sort] || 'total_desc';
+      renderItems();
+    }));
+  }
+
+  (async function init() {
+    applyI18n();
+    const cfg = await loadText('config.json');
+    try {
+      const parsed = JSON.parse(cfg || '{}');
+      if (parsed.currency) currency = parsed.currency.toUpperCase();
+      if (!localStorage.getItem(LS.lang) && parsed.language) lang = parsed.language.slice(0, 2).toLowerCase();
+    } catch (_) {}
+
+    const [valuesText, accountsText, itemsText, backtrackedText] = await Promise.all([
+      loadText('values.csv'), loadText('accounts.csv'), loadText('items.json'), loadText('backtracked_values.csv'),
+    ]);
+    history = normalizeHistory(parseCSV(valuesText));
+    backtracked = normalizeBacktracked(parseCSV(backtrackedText));
+    accounts = parseCSV(accountsText);
+    try { itemsData = JSON.parse(itemsText || '{"items":[]}'); } catch (_) { itemsData = { items: [] }; }
+    if (itemsData.currency) currency = itemsData.currency.toUpperCase();
+    itemsData.items = (itemsData.items || []).map(it => ({
+      market_url: it.market_url || `https://steamcommunity.com/market/listings/730/${encodeURIComponent(it.name || '')}?l=german`,
+      family: it.family || clean((it.name || '').split('|')[0]),
+      ...it,
+    }));
+
+    applyI18n();
+    setUpdated();
+    refreshFilters();
+    bind();
+    $$('[data-basis]').forEach(b => b.classList.toggle('active', b.dataset.basis === basis));
+    $$('[data-view]').forEach(b => b.classList.toggle('active', b.dataset.view === view));
+    renderChart();
+    renderItems();
+  })();
+  </script>
 </body>
 </html>
