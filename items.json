@@ -276,7 +276,6 @@
       "qty": 13,
       "lowest": null,
       "median": 2.11,
-      "median": 2.11,
       "total_lowest": 0,
       "total_median": 27.43,
       "type": "Container",
@@ -996,7 +995,6 @@
       "name": "Revolution Case",
       "qty": 5,
       "lowest": null,
-      "lowest": null,
       "median": 0.37,
       "total_lowest": 0,
       "total_median": 1.85,
@@ -1096,7 +1094,7 @@
       }
     },
     {
-      "name": "Sticker | Shattered Web",
+      "name": "Five-SeveN | Silver Quartz (Factory New)",
       "qty": 1,
       "lowest": 1.16,
       "median": 1.22,
