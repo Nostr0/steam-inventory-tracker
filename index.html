@@ -422,6 +422,7 @@
           <div class="seg">
             <button class="tab active" data-basis="median" data-i18n="median">Median</button>
             <button class="tab" data-basis="lowest" data-i18n="lowest">Lowest</button>
+            <button class="tab" data-basis="history" data-i18n="history">History</button>
           </div>
         </div>
         <div class="control">
@@ -472,10 +473,10 @@
             <div class="panel-head">
               <div class="panel-title" data-i18n="chartTitle">Portfolio Value</div>
               <div class="toolbar">
-                <button class="tab active" data-span="30">30D</button>
+                <button class="tab" data-span="30">30D</button>
                 <button class="tab" data-span="90">90D</button>
                 <button class="tab" data-span="365">1Y</button>
-                <button class="tab" data-span="all">ALL</button>
+                <button class="tab active" data-span="all">ALL</button>
                 <button class="tab active" id="backtrack-toggle">BT</button>
                 <button class="tab active" id="events-toggle">POI</button>
               </div>
@@ -538,7 +539,7 @@
     en: {
       kicker: 'Counter-Strike 2 Market Portfolio',
       title: 'Steam Inventory Tracker',
-      search: 'Search', priceBasis: 'Price Basis', median: 'Median', lowest: 'Lowest',
+      search: 'Search', priceBasis: 'Price Basis', median: 'Median', lowest: 'Lowest', history: 'History',
       view: 'View', table: 'Table', cards: 'Cards', sort: 'Sort', filters: 'Filters',
       unitRange: 'Unit Range', quick: 'Quick', watchlist: 'Watchlist', missing: 'No price',
       sortTotalDesc: 'Total value', sortUnitDesc: 'Unit price', sortQtyDesc: 'Quantity',
@@ -557,7 +558,7 @@
     de: {
       kicker: 'Counter-Strike 2 Marktportfolio',
       title: 'Steam Inventar Tracker',
-      search: 'Suche', priceBasis: 'Preisquelle', median: 'Median', lowest: 'Niedrigst',
+      search: 'Suche', priceBasis: 'Preisquelle', median: 'Median', lowest: 'Niedrigst', history: 'Historie',
       view: 'Ansicht', table: 'Tabelle', cards: 'Karten', sort: 'Sortierung', filters: 'Filter',
       unitRange: 'Stückpreis', quick: 'Schnell', watchlist: 'Watchlist', missing: 'Ohne Preis',
       sortTotalDesc: 'Gesamtwert', sortUnitDesc: 'Stückpreis', sortQtyDesc: 'Anzahl',
@@ -588,9 +589,10 @@
   let itemsData = { items: [] };
   let history = { labels: [], lowest: [], median: [] };
   let backtracked = { labels: [], value: [], coverage: [] };
+  let historyByItem = new Map();
   let accounts = [];
   let chart = null;
-  let span = '30';
+  let span = 'all';
   let showBacktrack = true;
   let showEvents = true;
   let onlyWatch = false;
@@ -607,8 +609,44 @@
   const money = v => Number.isFinite(v) ? new Intl.NumberFormat(undefined, { style: 'currency', currency }).format(v) : '-';
   const num = v => Number.isFinite(v) ? new Intl.NumberFormat(undefined).format(v) : '-';
   const pct = (a, b) => Number.isFinite(a) && Number.isFinite(b) && b ? ((a - b) / b) * 100 : null;
-  const itemUnit = it => Number(it[basis] ?? 0) || null;
-  const itemTotal = it => Number(it[`total_${basis}`] ?? ((itemUnit(it) || 0) * (it.qty || 0))) || 0;
+  const inputNumber = value => {
+    const raw = String(value ?? '').trim();
+    if (!raw) return null;
+    const parsed = Number(raw.replace(',', '.'));
+    return Number.isFinite(parsed) ? parsed : null;
+  };
+  const latestPoint = points => {
+    if (!Array.isArray(points)) return null;
+    for (let i = points.length - 1; i >= 0; i--) {
+      const price = Number(points[i]?.price);
+      if (Number.isFinite(price) && price > 0) return points[i];
+    }
+    return null;
+  };
+  const itemUnit = it => {
+    if (basis === 'history') {
+      const point = latestPoint(historyByItem.get(it.name));
+      return point ? Number(point.price) : null;
+    }
+    const primary = Number(it[basis]);
+    if (Number.isFinite(primary) && primary > 0) return primary;
+    const fallbackKey = basis === 'median' ? 'lowest' : 'median';
+    const fallback = Number(it[fallbackKey]);
+    return Number.isFinite(fallback) && fallback > 0 ? fallback : null;
+  };
+  const itemTotal = it => {
+    if (basis === 'history') {
+      const unit = itemUnit(it);
+      return unit ? unit * (Number(it.qty) || 0) : 0;
+    }
+    const direct = Number(it[`total_${basis}`]);
+    if (Number.isFinite(direct) && direct > 0) return direct;
+    const fallbackKey = basis === 'median' ? 'total_lowest' : 'total_median';
+    const fallback = Number(it[fallbackKey]);
+    if (Number.isFinite(fallback) && fallback > 0) return fallback;
+    const unit = itemUnit(it);
+    return unit ? unit * (Number(it.qty) || 0) : 0;
+  };
   const clean = v => (v == null || v === '') ? '-' : String(v);
   const family = it => [it.type, it.exterior, it.rarity].filter(Boolean).slice(0, 3);
   const EVENTS = [
@@ -631,7 +669,7 @@
       const { ctx, chartArea, scales } = chart;
       ctx.save();
       ctx.font = '11px JetBrains Mono, monospace';
-      ctx.textBaseline = 'top';
+      ctx.textBaseline = 'middle';
       visible.forEach((ev, idx) => {
         const x = scales.x.getPixelForValue(labels.indexOf(ev.date));
         if (x < chartArea.left || x > chartArea.right) return;
@@ -643,10 +681,10 @@
         ctx.lineTo(x, chartArea.bottom);
         ctx.stroke();
         ctx.setLineDash([]);
-        ctx.translate(x + 5, chartArea.top + 8 + (idx % 4) * 16);
-        ctx.rotate(-Math.PI / 8);
-        ctx.fillText(ev.label, 0, 0);
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        const label = ev.label.length > 24 ? `${ev.label.slice(0, 23)}...` : ev.label;
+        const y = Math.min(chartArea.bottom - 14, chartArea.top + 34 + (idx % 5) * 18);
+        ctx.textAlign = x > chartArea.right - 170 ? 'right' : 'left';
+        ctx.fillText(label, x > chartArea.right - 170 ? x - 6 : x + 6, y);
       });
       ctx.restore();
     },
@@ -704,6 +742,22 @@
     return { labels, value, coverage };
   }
 
+  function buildItemHistoryCache(raw) {
+    const out = new Map();
+    if (!raw || typeof raw !== 'object') return out;
+    for (const [key, entry] of Object.entries(raw)) {
+      if (!entry || !Array.isArray(entry.points) || !entry.points.length) continue;
+      const name = key.includes(':') ? key.slice(key.indexOf(':') + 1) : key;
+      out.set(name, entry.points);
+    }
+    return out;
+  }
+
+  function currentSeries() {
+    if (basis === 'history' && backtracked.value.some(v => v != null)) return backtracked.value;
+    return history[basis]?.some(v => v != null) ? history[basis] : history.median.concat(history.lowest);
+  }
+
   function fillSelect(id, allKey, values) {
     const el = $(id);
     const current = el.value;
@@ -727,8 +781,8 @@
     const exterior = $('#exterior-filter').value;
     const rarity = $('#rarity-filter').value;
     const account = $('#account-filter').value;
-    const min = Number($('#min-price').value.replace(',', '.'));
-    const max = Number($('#max-price').value.replace(',', '.'));
+    const min = inputNumber($('#min-price').value);
+    const max = inputNumber($('#max-price').value);
     let rows = [...(itemsData.items || [])].filter(it => {
       const hay = [it.name, it.type, it.exterior, it.rarity, it.quality, it.collection, it.weapon, it.family].join(' ').toLowerCase();
       const unit = itemUnit(it);
@@ -737,8 +791,8 @@
       if (exterior && it.exterior !== exterior) return false;
       if (rarity && (it.rarity || it.quality) !== rarity) return false;
       if (account && !(it.accounts || {})[account]) return false;
-      if (Number.isFinite(min) && unit != null && unit < min) return false;
-      if (Number.isFinite(max) && unit != null && unit > max) return false;
+      if (min != null && unit != null && unit < min) return false;
+      if (max != null && unit != null && unit > max) return false;
       if (onlyWatch && !watch.has(it.name)) return false;
       if (onlyMissing && unit != null) return false;
       return true;
@@ -759,7 +813,7 @@
   }
 
   function renderStats(rows) {
-    const series = history[basis].some(v => v != null) ? history[basis] : history.median.concat(history.lowest);
+    const series = currentSeries();
     const latest = historyLatest(series);
     const prev = [...series.slice(0, -1)].reverse().find(v => v != null);
     const base30 = series.length > 30 ? series[series.length - 31] : null;
@@ -924,11 +978,19 @@
         plugins: {
           legend: { labels: { color: '#b8c4d2' } },
           tooltip: { callbacks: { label: c => `${c.dataset.label}: ${money(c.parsed.y)}` } },
-          zoom: { zoom: { wheel: { enabled: true }, drag: { enabled: true }, mode: 'x' }, pan: { enabled: true, mode: 'x' } },
+          zoom: {
+            zoom: { wheel: { enabled: true }, drag: { enabled: true }, mode: 'x' },
+            pan: { enabled: true, mode: 'x', modifierKey: 'shift' },
+          },
           csEvents: { enabled: showEvents },
         },
       },
     });
+    ctx.canvas.ondblclick = () => {
+      span = 'all';
+      $$('[data-span]').forEach(b => b.classList.toggle('active', b.dataset.span === span));
+      renderChart();
+    };
   }
 
   function setUpdated() {
@@ -951,7 +1013,9 @@
 
   function exportCSV() {
     const rows = selectedItems();
-    const cols = ['name','qty',basis,`total_${basis}`,'type','exterior','rarity','quality','collection','market_url'];
+    const unitCol = basis === 'history' ? 'history_unit' : basis;
+    const totalCol = basis === 'history' ? 'history_total' : `total_${basis}`;
+    const cols = ['name','qty',unitCol,totalCol,'type','exterior','rarity','quality','collection','market_url'];
     const csv = [cols.join(',')].concat(rows.map(it => cols.map(k => `"${String(it[k] ?? '').replaceAll('"', '""')}"`).join(','))).join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
@@ -1042,11 +1106,16 @@
       if (!localStorage.getItem(LS.lang) && parsed.language) lang = parsed.language.slice(0, 2).toLowerCase();
     } catch (_) {}
 
-    const [valuesText, accountsText, itemsText, backtrackedText] = await Promise.all([
-      loadText('values.csv'), loadText('accounts.csv'), loadText('items.json'), loadText('backtracked_values.csv'),
+    const [valuesText, accountsText, itemsText, backtrackedText, itemHistoryText] = await Promise.all([
+      loadText('values.csv'),
+      loadText('accounts.csv'),
+      loadText('items.json'),
+      loadText('backtracked_values.csv'),
+      loadText('item_history_cache.json'),
     ]);
     history = normalizeHistory(parseCSV(valuesText));
     backtracked = normalizeBacktracked(parseCSV(backtrackedText));
+    try { historyByItem = buildItemHistoryCache(JSON.parse(itemHistoryText || '{}')); } catch (_) { historyByItem = new Map(); }
     accounts = parseCSV(accountsText);
     try { itemsData = JSON.parse(itemsText || '{"items":[]}'); } catch (_) { itemsData = { items: [] }; }
     if (itemsData.currency) currency = itemsData.currency.toUpperCase();

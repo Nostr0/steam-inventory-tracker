@@ -1002,6 +1002,12 @@ def main(backfill_history: bool = False) -> None:
             key_fields=["date", "steam_id"],
         )
 
+    if not all_items:
+        print("\nWARNING: Skipping items.json write — no inventory items were fetched successfully")
+        write_price_cache()
+        write_history_cache()
+        return
+
     # --- items.json: aggregate across all accounts, sort by median total value ---
     merged: dict = {}
     for d in all_items:
@@ -1032,7 +1038,6 @@ def main(backfill_history: bool = False) -> None:
         key=lambda x: (x["median"] or x["lowest"] or 0) * x["qty"],
         reverse=True,
     )
-    top = sorted_items[:TOP_ITEMS]
     write_item_snapshots(today, all_items)
     if backfill_history:
         backfill_market_history_once(sorted_items)
@@ -1070,7 +1075,7 @@ def main(backfill_history: bool = False) -> None:
                         "accounts":     it.get("accounts", {}),
                         "tags":         it.get("tags", {}),
                     }
-                    for it in top
+                    for it in sorted_items
                 ],
             },
             ensure_ascii=False,
@@ -1086,8 +1091,8 @@ def main(backfill_history: bool = False) -> None:
           f"median={total_median} {CURRENCY}, lowest={total_lowest} {CURRENCY}"
           + (" [PARTIAL]" if partial else ""))
 
-    print(f"\nTop {len(top)} items by median total value:")
-    for it in top:
+    print(f"\nTop {min(TOP_ITEMS, len(sorted_items))} items by median total value:")
+    for it in sorted_items[:TOP_ITEMS]:
         med_total = (it["median"] or 0) * it["qty"]
         med_s = f"{it['median']:.2f}" if it["median"] is not None else "N/A"
         print(f"  {it['name']!r:60s} ×{it['qty']}  "
