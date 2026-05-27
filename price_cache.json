@@ -53,6 +53,12 @@
     "lowest": 0.03,
     "median": 0.03
   },
+  "3:Dual Berettas | Silver Pour (Field-Tested)": {
+    "currency": "EUR",
+    "fetched_at": 1779901404.0550084,
+    "lowest": null,
+    "median": 0.03
+  },
   "3:Five-SeveN | Silver Quartz (Factory New)": {
     "currency": "EUR",
     "fetched_at": 1779871370.8380747,
@@ -238,6 +244,12 @@
     "fetched_at": 1779871416.866079,
     "lowest": 0.07,
     "median": 0.07
+  },
+  "3:Sealed Genesis Terminal": {
+    "currency": "EUR",
+    "fetched_at": 1779901409.4468644,
+    "lowest": null,
+    "median": 0.15
   },
   "3:Sealed Graffiti | Bling (Jungle Green)": {
     "currency": "EUR",
