@@ -1,441 +1,441 @@
 {
   "3:AUG | Commando Company (Minimal Wear)": {
     "currency": "EUR",
-    "fetched_at": 1780391448.7232213,
+    "fetched_at": 1780480516.0112226,
     "lowest": 0.03,
-    "median": 0.03
+    "median": 0.04
   },
   "3:AUG | Condemned (Field-Tested)": {
     "currency": "EUR",
-    "fetched_at": 1780391703.096399,
-    "lowest": 0.07,
+    "fetched_at": 1780480769.2115324,
+    "lowest": 0.06,
     "median": 0.07
   },
   "3:AWP | Safari Mesh (Battle-Scarred)": {
     "currency": "EUR",
-    "fetched_at": 1780391796.0838568,
-    "lowest": 0.23,
+    "fetched_at": 1780480863.400015,
+    "lowest": null,
     "median": 0.26
   },
   "3:CS20 Case": {
     "currency": "EUR",
-    "fetched_at": 1780391765.459337,
-    "lowest": 1.74,
-    "median": 1.75
+    "fetched_at": 1780480832.0090933,
+    "lowest": null,
+    "median": 1.73
   },
   "3:Chroma 2 Case": {
     "currency": "EUR",
-    "fetched_at": 1780391754.9952269,
-    "lowest": 4.74,
-    "median": 5.14
+    "fetched_at": 1780480821.6090164,
+    "lowest": null,
+    "median": 5.16
   },
   "3:Clutch Case": {
     "currency": "EUR",
-    "fetched_at": 1780391670.5766423,
-    "lowest": 0.87,
+    "fetched_at": 1780480738.6995509,
+    "lowest": 0.86,
     "median": 0.87
   },
   "3:Danger Zone Case": {
     "currency": "EUR",
-    "fetched_at": 1780391718.6513813,
-    "lowest": 1.99,
-    "median": 2.01
+    "fetched_at": 1780480785.505674,
+    "lowest": null,
+    "median": 1.97
   },
   "3:Dreams & Nightmares Case": {
     "currency": "EUR",
-    "fetched_at": 1780391453.8275766,
-    "lowest": 1.67,
-    "median": 1.77
+    "fetched_at": 1780480521.0748987,
+    "lowest": 1.63,
+    "median": 1.63
   },
   "3:Dual Berettas | Contractor (Field-Tested)": {
     "currency": "EUR",
-    "fetched_at": 1780391602.9645612,
+    "fetched_at": 1780480670.6997466,
     "lowest": 0.03,
-    "median": 0.04
+    "median": 0.03
   },
   "3:Dual Berettas | Silver Pour (Field-Tested)": {
     "currency": "EUR",
-    "fetched_at": 1780391438.5259109,
+    "fetched_at": 1780480505.83785,
     "lowest": 0.03,
     "median": 0.03
   },
   "3:Five-SeveN | Silver Quartz (Factory New)": {
     "currency": "EUR",
-    "fetched_at": 1780391639.9720197,
-    "lowest": 1.08,
-    "median": 1.09
+    "fetched_at": 1780480707.8292027,
+    "lowest": 1.2,
+    "median": 1.32
   },
   "3:Fracture Case": {
     "currency": "EUR",
-    "fetched_at": 1780391597.864792,
-    "lowest": 0.76,
+    "fetched_at": 1780480665.601223,
+    "lowest": 0.77,
     "median": 0.77
   },
   "3:Gamma 2 Case": {
     "currency": "EUR",
-    "fetched_at": 1780391749.9025602,
+    "fetched_at": 1780480816.2713828,
     "lowest": null,
-    "median": 3.97
+    "median": 3.83
   },
   "3:Gamma Case": {
     "currency": "EUR",
-    "fetched_at": 1780391801.496408,
-    "lowest": null,
-    "median": 3.97
+    "fetched_at": 1780480868.4614267,
+    "lowest": 3.96,
+    "median": 4.0
   },
   "3:Glock-18 | High Beam (Factory New)": {
     "currency": "EUR",
-    "fetched_at": 1780391734.35227,
-    "lowest": 0.21,
-    "median": 0.22
+    "fetched_at": 1780480800.7759871,
+    "lowest": 0.23,
+    "median": 0.23
   },
   "3:Horizon Case": {
     "currency": "EUR",
-    "fetched_at": 1780391629.358108,
-    "lowest": 2.43,
-    "median": 2.45
+    "fetched_at": 1780480697.0012941,
+    "lowest": 2.39,
+    "median": 2.44
   },
   "3:MAG-7 | Metallic DDPAT (Factory New)": {
     "currency": "EUR",
-    "fetched_at": 1780391708.1957777,
-    "lowest": 0.24,
-    "median": 0.22
+    "fetched_at": 1780480774.716549,
+    "lowest": null,
+    "median": 0.24
   },
   "3:MAG-7 | Rust Coat (Field-Tested)": {
     "currency": "EUR",
-    "fetched_at": 1780391692.9064548,
-    "lowest": null,
-    "median": 0.04
+    "fetched_at": 1780480759.017539,
+    "lowest": 0.03,
+    "median": 0.03
   },
   "3:MP5-SD | Dirt Drop (Battle-Scarred)": {
     "currency": "EUR",
-    "fetched_at": 1780391681.363091,
-    "lowest": null,
+    "fetched_at": 1780480748.8848002,
+    "lowest": 0.03,
     "median": 0.03
   },
   "3:MP9 | Buff Blue (Factory New)": {
     "currency": "EUR",
-    "fetched_at": 1780391458.920858,
-    "lowest": 0.13,
-    "median": 0.13
+    "fetched_at": 1780480526.143896,
+    "lowest": 0.12,
+    "median": 0.12
   },
   "3:MP9 | Orange Peel (Field-Tested)": {
     "currency": "EUR",
-    "fetched_at": 1780391697.998978,
-    "lowest": 0.07,
+    "fetched_at": 1780480764.1357155,
+    "lowest": 0.08,
     "median": 0.07
   },
   "3:Music Kit | bbno$, u mad!": {
     "currency": "EUR",
-    "fetched_at": 1780391650.183904,
-    "lowest": 3.26,
-    "median": 3.24
+    "fetched_at": 1780480718.3261547,
+    "lowest": 3.37,
+    "median": 3.23
   },
   "3:Nova | Sand Dune (Field-Tested)": {
     "currency": "EUR",
-    "fetched_at": 1780391618.7133508,
-    "lowest": null,
-    "median": 0.04
+    "fetched_at": 1780480686.2797797,
+    "lowest": 0.04,
+    "median": 0.03
   },
   "3:Operation Breakout Weapon Case": {
     "currency": "EUR",
-    "fetched_at": 1780391645.0796587,
-    "lowest": 9.22,
-    "median": 9.46
+    "fetched_at": 1780480713.2558787,
+    "lowest": null,
+    "median": 9.95
   },
   "3:Operation Wildfire Case": {
     "currency": "EUR",
-    "fetched_at": 1780391806.5879164,
-    "lowest": 4.19,
-    "median": 4.19
+    "fetched_at": 1780480873.5265782,
+    "lowest": 4.2,
+    "median": 4.2
   },
   "3:P2000 | Amber Fade (Minimal Wear)": {
     "currency": "EUR",
-    "fetched_at": 1780391655.282701,
-    "lowest": 1.31,
-    "median": 1.4
+    "fetched_at": 1780480723.403964,
+    "lowest": 1.18,
+    "median": 1.13
   },
   "3:P90 | Facility Negative (Minimal Wear)": {
     "currency": "EUR",
-    "fetched_at": 1780391634.8690815,
+    "fetched_at": 1780480702.7579033,
     "lowest": null,
-    "median": 0.45
+    "median": 0.43
   },
   "3:P90 | Sand Spray (Field-Tested)": {
     "currency": "EUR",
-    "fetched_at": 1780391469.405376,
-    "lowest": 0.03,
-    "median": 5.81
+    "fetched_at": 1780480536.8708513,
+    "lowest": null,
+    "median": 0.06
   },
   "3:PP-Bizon | Brass (Field-Tested)": {
     "currency": "EUR",
-    "fetched_at": 1780391739.4392085,
-    "lowest": 0.21,
-    "median": 0.21
+    "fetched_at": 1780480805.849164,
+    "lowest": 0.25,
+    "median": 0.18
   },
   "3:Prisma 2 Case": {
     "currency": "EUR",
-    "fetched_at": 1780391713.5688715,
+    "fetched_at": 1780480780.1186445,
     "lowest": null,
     "median": 1.98
   },
   "3:Prisma Case": {
     "currency": "EUR",
-    "fetched_at": 1780391760.3608322,
-    "lowest": null,
-    "median": 2.03
+    "fetched_at": 1780480826.6810002,
+    "lowest": 2.02,
+    "median": 2.06
   },
   "3:R8 Revolver | Bone Forged (Field-Tested)": {
     "currency": "EUR",
-    "fetched_at": 1780391665.4951272,
-    "lowest": 0.32,
-    "median": 0.37
+    "fetched_at": 1780480733.600115,
+    "lowest": 0.37,
+    "median": 0.33
   },
   "3:R8 Revolver | Junk Yard (Field-Tested)": {
     "currency": "EUR",
-    "fetched_at": 1780391660.401042,
-    "lowest": 0.42,
-    "median": 0.44
+    "fetched_at": 1780480728.5181518,
+    "lowest": 0.63,
+    "median": 1.21
   },
   "3:Recoil Case": {
     "currency": "EUR",
-    "fetched_at": 1780391608.0544386,
-    "lowest": 0.48,
+    "fetched_at": 1780480676.027333,
+    "lowest": null,
     "median": 0.48
   },
   "3:Revolution Case": {
     "currency": "EUR",
-    "fetched_at": 1780391464.3028677,
-    "lowest": null,
+    "fetched_at": 1780480531.213443,
+    "lowest": 0.35,
     "median": 0.36
   },
   "3:Revolver Case": {
     "currency": "EUR",
-    "fetched_at": 1780391811.6912766,
-    "lowest": 3.87,
-    "median": 3.91
+    "fetched_at": 1780480878.9065902,
+    "lowest": null,
+    "median": 3.8
   },
   "3:SCAR-20 | Carbon Fiber (Minimal Wear)": {
     "currency": "EUR",
-    "fetched_at": 1780391729.2556705,
-    "lowest": null,
-    "median": 0.19
+    "fetched_at": 1780480795.6702454,
+    "lowest": 0.14,
+    "median": 0.15
   },
   "3:SCAR-20 | Contractor (Battle-Scarred)": {
     "currency": "EUR",
-    "fetched_at": 1780391613.1571155,
+    "fetched_at": 1780480681.1258647,
     "lowest": 0.03,
     "median": 0.03
   },
   "3:SSG 08 | Ghost Crusader (Minimal Wear)": {
     "currency": "EUR",
-    "fetched_at": 1780391744.5465682,
-    "lowest": 2.79,
+    "fetched_at": 1780480810.9311144,
+    "lowest": 2.55,
     "median": 2.47
   },
   "3:Sawed-Off | Forest DDPAT (Field-Tested)": {
     "currency": "EUR",
-    "fetched_at": 1780391624.2632864,
-    "lowest": null,
-    "median": 0.05
-  },
-  "3:Sawed-Off | Snake Camo (Field-Tested)": {
-    "currency": "EUR",
-    "fetched_at": 1780391687.1222458,
-    "lowest": null,
-    "median": 0.03
-  },
-  "3:Sealed Genesis Terminal": {
-    "currency": "EUR",
-    "fetched_at": 1780391443.6131775,
-    "lowest": 0.15,
-    "median": 0.16
-  },
-  "3:Sealed Graffiti | Bling (Jungle Green)": {
-    "currency": "EUR",
-    "fetched_at": 1780391566.977087,
+    "fetched_at": 1780480691.9212267,
     "lowest": null,
     "median": 0.04
   },
+  "3:Sawed-Off | Snake Camo (Field-Tested)": {
+    "currency": "EUR",
+    "fetched_at": 1780480753.946251,
+    "lowest": 0.06,
+    "median": 0.06
+  },
+  "3:Sealed Genesis Terminal": {
+    "currency": "EUR",
+    "fetched_at": 1780480510.929433,
+    "lowest": 0.15,
+    "median": 0.15
+  },
+  "3:Sealed Graffiti | Bling (Jungle Green)": {
+    "currency": "EUR",
+    "fetched_at": 1780480634.7506828,
+    "lowest": null,
+    "median": 0.03
+  },
   "3:Sealed Graffiti | Chess King (Cash Green)": {
     "currency": "EUR",
-    "fetched_at": 1780391572.07277,
+    "fetched_at": 1780480639.847671,
     "lowest": 0.03,
     "median": null
   },
   "3:Sealed Graffiti | Death Sentence (Wire Blue)": {
     "currency": "EUR",
-    "fetched_at": 1780391500.319792,
-    "lowest": null,
+    "fetched_at": 1780480567.3652155,
+    "lowest": 0.03,
     "median": 0.03
   },
   "3:Sealed Graffiti | Double (Violent Violet)": {
     "currency": "EUR",
-    "fetched_at": 1780391530.9219244,
+    "fetched_at": 1780480598.5444963,
     "lowest": 0.03,
     "median": 0.03
   },
   "3:Sealed Graffiti | Eco (Battle Green)": {
     "currency": "EUR",
-    "fetched_at": 1780391505.4186037,
-    "lowest": 0.03,
+    "fetched_at": 1780480572.7897048,
+    "lowest": null,
     "median": 0.03
   },
   "3:Sealed Graffiti | Eye Spy (Tiger Orange)": {
     "currency": "EUR",
-    "fetched_at": 1780391546.2293675,
+    "fetched_at": 1780480613.8847933,
     "lowest": 0.03,
     "median": null
   },
   "3:Sealed Graffiti | Jump Shot (Bazooka Pink)": {
     "currency": "EUR",
-    "fetched_at": 1780391561.526124,
+    "fetched_at": 1780480629.3687882,
     "lowest": 0.03,
-    "median": 0.03
+    "median": 0.06
   },
   "3:Sealed Graffiti | Jump Shot (Cash Green)": {
     "currency": "EUR",
-    "fetched_at": 1780391479.598927,
+    "fetched_at": 1780480547.0308657,
     "lowest": 0.03,
     "median": null
   },
   "3:Sealed Graffiti | Jump Shot (Monarch Blue)": {
     "currency": "EUR",
-    "fetched_at": 1780391536.0208354,
+    "fetched_at": 1780480603.6220076,
     "lowest": 0.03,
     "median": 0.03
   },
   "3:Sealed Graffiti | Ninja (Jungle Green)": {
     "currency": "EUR",
-    "fetched_at": 1780391515.6254342,
+    "fetched_at": 1780480582.9496512,
     "lowest": 0.03,
-    "median": 0.03
+    "median": 0.06
   },
   "3:Sealed Graffiti | Noscope (Violent Violet)": {
     "currency": "EUR",
-    "fetched_at": 1780391484.6895955,
+    "fetched_at": 1780480552.1270237,
     "lowest": 0.03,
     "median": 0.03
   },
   "3:Sealed Graffiti | Quickdraw (Desert Amber)": {
     "currency": "EUR",
-    "fetched_at": 1780391494.8860645,
+    "fetched_at": 1780480562.2923834,
     "lowest": 0.05,
     "median": 0.04
   },
   "3:Sealed Graffiti | Quickdraw (Dust Brown)": {
     "currency": "EUR",
-    "fetched_at": 1780391489.7877138,
-    "lowest": 0.03,
-    "median": 0.06
+    "fetched_at": 1780480557.2043333,
+    "lowest": 0.04,
+    "median": 0.05
   },
   "3:Sealed Graffiti | Quickdraw (Tracer Yellow)": {
     "currency": "EUR",
-    "fetched_at": 1780391474.5049467,
+    "fetched_at": 1780480541.9519188,
     "lowest": 0.04,
     "median": 0.03
   },
   "3:Sealed Graffiti | Rage Mode (Battle Green)": {
     "currency": "EUR",
-    "fetched_at": 1780391520.723055,
+    "fetched_at": 1780480588.0379553,
     "lowest": 0.05,
-    "median": 0.04
+    "median": 0.05
   },
   "3:Sealed Graffiti | Rage Mode (Bazooka Pink)": {
     "currency": "EUR",
-    "fetched_at": 1780391510.5295997,
+    "fetched_at": 1780480577.8670251,
     "lowest": 0.04,
     "median": 0.04
   },
   "3:Sealed Graffiti | Rage Mode (Shark White)": {
     "currency": "EUR",
-    "fetched_at": 1780391556.4275513,
-    "lowest": 0.04,
+    "fetched_at": 1780480624.266791,
+    "lowest": null,
     "median": 0.06
   },
   "3:Sealed Graffiti | Rage Mode (Violent Violet)": {
     "currency": "EUR",
-    "fetched_at": 1780391551.334011,
+    "fetched_at": 1780480618.9627566,
     "lowest": 0.04,
     "median": 0.04
   },
   "3:Sealed Graffiti | Toasted (Tracer Yellow)": {
     "currency": "EUR",
-    "fetched_at": 1780391577.1719365,
+    "fetched_at": 1780480644.9179907,
     "lowest": 0.03,
     "median": 0.03
   },
   "3:Sealed Graffiti | Toasted (War Pig Pink)": {
     "currency": "EUR",
-    "fetched_at": 1780391582.5829866,
-    "lowest": null,
+    "fetched_at": 1780480649.9812598,
+    "lowest": 0.03,
     "median": 0.03
   },
   "3:Sealed Graffiti | X-Knives (Brick Red)": {
     "currency": "EUR",
-    "fetched_at": 1780391541.1195776,
+    "fetched_at": 1780480608.8000002,
     "lowest": 0.03,
     "median": 0.03
   },
   "3:Sealed Graffiti | X-Knives (Frog Green)": {
     "currency": "EUR",
-    "fetched_at": 1780391587.6870694,
+    "fetched_at": 1780480655.052073,
     "lowest": 0.03,
     "median": 0.03
   },
   "3:Sealed Graffiti | X-Knives (Jungle Green)": {
     "currency": "EUR",
-    "fetched_at": 1780391525.8185177,
-    "lowest": 0.03,
+    "fetched_at": 1780480593.462387,
+    "lowest": null,
     "median": 0.03
   },
   "3:Snakebite Case": {
     "currency": "EUR",
-    "fetched_at": 1780391592.7692933,
-    "lowest": 0.76,
-    "median": 0.76
+    "fetched_at": 1780480660.4742124,
+    "lowest": null,
+    "median": 0.79
   },
   "3:Spectrum 2 Case": {
     "currency": "EUR",
-    "fetched_at": 1780391770.5714715,
-    "lowest": 3.96,
-    "median": 4.09
+    "fetched_at": 1780480837.0874434,
+    "lowest": 3.86,
+    "median": 3.89
   },
   "3:StatTrak™ SSG 08 | Turbo Peek (Field-Tested)": {
     "currency": "EUR",
-    "fetched_at": 1780391723.7455027,
-    "lowest": 30.7,
-    "median": 23.11
+    "fetched_at": 1780480790.5954275,
+    "lowest": 30.91,
+    "median": 30.56
   },
   "3:Sticker | Mastermind": {
     "currency": "EUR",
-    "fetched_at": 1780391790.9787772,
-    "lowest": 0.28,
-    "median": 0.15
+    "fetched_at": 1780480857.6498568,
+    "lowest": 0.27,
+    "median": 0.27
   },
   "3:Sticker | Shattered Web": {
     "currency": "EUR",
-    "fetched_at": 1780391785.8833258,
-    "lowest": 0.37,
-    "median": 0.37
+    "fetched_at": 1780480852.5768123,
+    "lowest": null,
+    "median": 0.42
   },
   "3:Sticker | Terrorist-Tech": {
     "currency": "EUR",
-    "fetched_at": 1780391780.77794,
+    "fetched_at": 1780480847.231238,
     "lowest": 0.2,
-    "median": 0.18
+    "median": 0.19
   },
   "3:Tec-9 | Cracked Opal (Field-Tested)": {
     "currency": "EUR",
-    "fetched_at": 1780391775.6630716,
-    "lowest": 0.36,
+    "fetched_at": 1780480842.1607845,
+    "lowest": 0.34,
     "median": 0.35
   },
   "3:XM1014 | Blue Spruce (Field-Tested)": {
     "currency": "EUR",
-    "fetched_at": 1780391675.6697688,
-    "lowest": 0.05,
-    "median": 0.04
+    "fetched_at": 1780480743.7895565,
+    "lowest": 0.06,
+    "median": 0.06
   },
   "AUG | Condemned (Field-Tested)": {
     "currency": "EUR",
