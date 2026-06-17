@@ -1,5 +1,5 @@
 {
-  "date": "2026-06-16",
+  "date": "2026-06-17",
   "currency": "EUR",
   "partial": false,
   "primary_value": "median",
@@ -7,10 +7,10 @@
     {
       "name": "Spectrum 2 Case",
       "qty": 46,
-      "lowest": null,
-      "median": 4.0,
-      "total_lowest": 0,
-      "total_median": 184.0,
+      "lowest": 3.64,
+      "median": 3.85,
+      "total_lowest": 167.44,
+      "total_median": 177.1,
       "type": "Container",
       "exterior": null,
       "quality": "Normal",
@@ -58,10 +58,10 @@
     {
       "name": "Gamma 2 Case",
       "qty": 28,
-      "lowest": 4.05,
-      "median": 4.02,
-      "total_lowest": 113.4,
-      "total_median": 112.56,
+      "lowest": 4.4,
+      "median": 4.25,
+      "total_lowest": 123.2,
+      "total_median": 119.0,
       "type": "Container",
       "exterior": null,
       "quality": "Normal",
@@ -109,10 +109,10 @@
     {
       "name": "Gamma Case",
       "qty": 14,
-      "lowest": 4.46,
-      "median": 4.47,
-      "total_lowest": 62.44,
-      "total_median": 62.58,
+      "lowest": null,
+      "median": 4.42,
+      "total_lowest": 0,
+      "total_median": 61.88,
       "type": "Container",
       "exterior": null,
       "quality": "Normal",
@@ -160,10 +160,10 @@
     {
       "name": "Chroma 2 Case",
       "qty": 8,
-      "lowest": 5.18,
-      "median": 5.16,
-      "total_lowest": 41.44,
-      "total_median": 41.28,
+      "lowest": 5.2,
+      "median": 5.17,
+      "total_lowest": 41.6,
+      "total_median": 41.36,
       "type": "Container",
       "exterior": null,
       "quality": "Normal",
@@ -211,10 +211,10 @@
     {
       "name": "StatTrak™ SSG 08 | Turbo Peek (Field-Tested)",
       "qty": 1,
-      "lowest": 34.38,
-      "median": 30.92,
-      "total_lowest": 34.38,
-      "total_median": 30.92,
+      "lowest": 39.18,
+      "median": 40.46,
+      "total_lowest": 39.18,
+      "total_median": 40.46,
       "type": "Sniper Rifle",
       "exterior": "Field-Tested",
       "quality": "StatTrak™",
@@ -274,10 +274,10 @@
     {
       "name": "Danger Zone Case",
       "qty": 13,
-      "lowest": 1.93,
-      "median": 1.94,
-      "total_lowest": 25.09,
-      "total_median": 25.22,
+      "lowest": null,
+      "median": 1.92,
+      "total_lowest": 0,
+      "total_median": 24.96,
       "type": "Container",
       "exterior": null,
       "quality": "Normal",
@@ -325,10 +325,10 @@
     {
       "name": "Clutch Case",
       "qty": 26,
-      "lowest": null,
-      "median": 0.9,
-      "total_lowest": 0,
-      "total_median": 23.4,
+      "lowest": 0.87,
+      "median": 0.84,
+      "total_lowest": 22.62,
+      "total_median": 21.84,
       "type": "Container",
       "exterior": null,
       "quality": "Normal",
@@ -376,9 +376,9 @@
     {
       "name": "Prisma 2 Case",
       "qty": 10,
-      "lowest": 1.89,
+      "lowest": 1.84,
       "median": 1.9,
-      "total_lowest": 18.9,
+      "total_lowest": 18.4,
       "total_median": 19.0,
       "type": "Container",
       "exterior": null,
@@ -427,10 +427,10 @@
     {
       "name": "Horizon Case",
       "qty": 6,
-      "lowest": null,
-      "median": 2.66,
-      "total_lowest": 0,
-      "total_median": 15.96,
+      "lowest": 2.55,
+      "median": 2.61,
+      "total_lowest": 15.3,
+      "total_median": 15.66,
       "type": "Container",
       "exterior": null,
       "quality": "Normal",
@@ -478,10 +478,10 @@
     {
       "name": "Prisma Case",
       "qty": 7,
-      "lowest": null,
-      "median": 1.98,
-      "total_lowest": 0,
-      "total_median": 13.86,
+      "lowest": 1.96,
+      "median": 1.94,
+      "total_lowest": 13.72,
+      "total_median": 13.58,
       "type": "Container",
       "exterior": null,
       "quality": "Normal",
@@ -529,10 +529,10 @@
     {
       "name": "Fracture Case",
       "qty": 17,
-      "lowest": 0.7,
-      "median": 0.76,
-      "total_lowest": 11.9,
-      "total_median": 12.92,
+      "lowest": 0.74,
+      "median": 0.77,
+      "total_lowest": 12.58,
+      "total_median": 13.09,
       "type": "Container",
       "exterior": null,
       "quality": "Normal",
@@ -581,9 +581,9 @@
       "name": "Dreams & Nightmares Case",
       "qty": 7,
       "lowest": null,
-      "median": 1.6,
+      "median": 1.57,
       "total_lowest": 0,
-      "total_median": 11.2,
+      "total_median": 10.99,
       "type": "Container",
       "exterior": null,
       "quality": "Normal",
@@ -631,10 +631,10 @@
     {
       "name": "Operation Breakout Weapon Case",
       "qty": 1,
-      "lowest": 9.48,
-      "median": 10.73,
-      "total_lowest": 9.48,
-      "total_median": 10.73,
+      "lowest": 10.35,
+      "median": 10.01,
+      "total_lowest": 10.35,
+      "total_median": 10.01,
       "type": "Container",
       "exterior": null,
       "quality": "Normal",
@@ -682,10 +682,10 @@
     {
       "name": "Snakebite Case",
       "qty": 12,
-      "lowest": null,
-      "median": 0.73,
-      "total_lowest": 0,
-      "total_median": 8.76,
+      "lowest": 0.71,
+      "median": 0.7,
+      "total_lowest": 8.52,
+      "total_median": 8.4,
       "type": "Container",
       "exterior": null,
       "quality": "Normal",
@@ -733,10 +733,10 @@
     {
       "name": "Revolver Case",
       "qty": 2,
-      "lowest": 3.74,
-      "median": 3.62,
-      "total_lowest": 7.48,
-      "total_median": 7.24,
+      "lowest": 3.64,
+      "median": 3.79,
+      "total_lowest": 7.28,
+      "total_median": 7.58,
       "type": "Container",
       "exterior": null,
       "quality": "Normal",
@@ -784,10 +784,10 @@
     {
       "name": "CS20 Case",
       "qty": 4,
-      "lowest": null,
-      "median": 1.69,
-      "total_lowest": 0,
-      "total_median": 6.76,
+      "lowest": 1.57,
+      "median": 1.67,
+      "total_lowest": 6.28,
+      "total_median": 6.68,
       "type": "Container",
       "exterior": null,
       "quality": "Normal",
@@ -835,10 +835,10 @@
     {
       "name": "Operation Wildfire Case",
       "qty": 1,
-      "lowest": null,
-      "median": 4.56,
-      "total_lowest": 0,
-      "total_median": 4.56,
+      "lowest": 4.6,
+      "median": 4.69,
+      "total_lowest": 4.6,
+      "total_median": 4.69,
       "type": "Container",
       "exterior": null,
       "quality": "Normal",
@@ -886,10 +886,10 @@
     {
       "name": "Music Kit | bbno$, u mad!",
       "qty": 1,
-      "lowest": 3.27,
-      "median": 2.91,
-      "total_lowest": 3.27,
-      "total_median": 2.91,
+      "lowest": 2.99,
+      "median": 3.01,
+      "total_lowest": 2.99,
+      "total_median": 3.01,
       "type": "Music Kit",
       "exterior": null,
       "quality": "Normal",
@@ -931,10 +931,10 @@
     {
       "name": "SSG 08 | Ghost Crusader (Minimal Wear)",
       "qty": 1,
-      "lowest": 2.84,
-      "median": 2.81,
-      "total_lowest": 2.84,
-      "total_median": 2.81,
+      "lowest": 2.78,
+      "median": 2.82,
+      "total_lowest": 2.78,
+      "total_median": 2.82,
       "type": "Sniper Rifle",
       "exterior": "Minimal Wear",
       "quality": "Normal",
@@ -994,10 +994,10 @@
     {
       "name": "Revolution Case",
       "qty": 5,
-      "lowest": 0.38,
-      "median": 0.35,
-      "total_lowest": 1.9,
-      "total_median": 1.75,
+      "lowest": 0.34,
+      "median": 0.34,
+      "total_lowest": 1.7,
+      "total_median": 1.7,
       "type": "Container",
       "exterior": null,
       "quality": "Normal",
@@ -1045,10 +1045,10 @@
     {
       "name": "Five-SeveN | Silver Quartz (Factory New)",
       "qty": 1,
-      "lowest": null,
-      "median": 1.73,
-      "total_lowest": 0,
-      "total_median": 1.73,
+      "lowest": 1.62,
+      "median": 1.58,
+      "total_lowest": 1.62,
+      "total_median": 1.58,
       "type": "Pistol",
       "exterior": "Factory New",
       "quality": "Normal",
@@ -1109,9 +1109,9 @@
       "name": "Recoil Case",
       "qty": 3,
       "lowest": 0.48,
-      "median": 0.49,
+      "median": 0.48,
       "total_lowest": 1.44,
-      "total_median": 1.47,
+      "total_median": 1.44,
       "type": "Container",
       "exterior": null,
       "quality": "Normal",
@@ -1160,9 +1160,9 @@
       "name": "P2000 | Amber Fade (Minimal Wear)",
       "qty": 1,
       "lowest": 1.2,
-      "median": 1.15,
+      "median": 1.21,
       "total_lowest": 1.2,
-      "total_median": 1.15,
+      "total_median": 1.21,
       "type": "Pistol",
       "exterior": "Minimal Wear",
       "quality": "Normal",
@@ -1222,10 +1222,10 @@
     {
       "name": "P90 | Facility Negative (Minimal Wear)",
       "qty": 1,
-      "lowest": 0.77,
-      "median": 0.71,
-      "total_lowest": 0.77,
-      "total_median": 0.71,
+      "lowest": 0.76,
+      "median": 0.73,
+      "total_lowest": 0.76,
+      "total_median": 0.73,
       "type": "SMG",
       "exterior": "Minimal Wear",
       "quality": "Normal",
@@ -1283,74 +1283,11 @@
       }
     },
     {
-      "name": "R8 Revolver | Bone Forged (Field-Tested)",
-      "qty": 1,
-      "lowest": 0.51,
-      "median": 0.51,
-      "total_lowest": 0.51,
-      "total_median": 0.51,
-      "type": "Pistol",
-      "exterior": "Field-Tested",
-      "quality": "Normal",
-      "rarity": "Mil-Spec Grade",
-      "weapon": "R8 Revolver",
-      "collection": "The Prisma 2 Collection",
-      "tournament": null,
-      "family": "R8 Revolver",
-      "commodity": false,
-      "tradable": true,
-      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLjm4Dv8TRe_c2pe5t_eM-fC3GZwPp-se9WQiy3nAgq_W-Dz4n9d3nBawchCZB4FOUOs0S7lNbnYujk5VGPi4pNziWsii9L53l1o7FVy42gbJI",
-      "icon_url_large": null,
-      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20%propid:6%",
-      "market_url": "https://steamcommunity.com/market/listings/730/R8%20Revolver%20%7C%20Bone%20Forged%20%28Field-Tested%29?l=german",
-      "accounts": {
-        "Main Account": 1
-      },
-      "tags": {
-        "Type": {
-          "name": "Pistol",
-          "internal": "CSGO_Type_Pistol",
-          "category_name": "Type",
-          "color": null
-        },
-        "Weapon": {
-          "name": "R8 Revolver",
-          "internal": "weapon_revolver",
-          "category_name": "Weapon",
-          "color": null
-        },
-        "ItemSet": {
-          "name": "The Prisma 2 Collection",
-          "internal": "set_community_25",
-          "category_name": "Collection",
-          "color": null
-        },
-        "Quality": {
-          "name": "Normal",
-          "internal": "normal",
-          "category_name": "Category",
-          "color": null
-        },
-        "Rarity": {
-          "name": "Mil-Spec Grade",
-          "internal": "Rarity_Rare_Weapon",
-          "category_name": "Quality",
-          "color": "4b69ff"
-        },
-        "Exterior": {
-          "name": "Field-Tested",
-          "internal": "WearCategory2",
-          "category_name": "Exterior",
-          "color": null
-        }
-      }
-    },
-    {
       "name": "Glock-18 | High Beam (Factory New)",
       "qty": 2,
-      "lowest": 0.26,
+      "lowest": 0.25,
       "median": 0.25,
-      "total_lowest": 0.52,
+      "total_lowest": 0.5,
       "total_median": 0.5,
       "type": "Pistol",
       "exterior": "Factory New",
@@ -1409,12 +1346,75 @@
       }
     },
     {
+      "name": "R8 Revolver | Bone Forged (Field-Tested)",
+      "qty": 1,
+      "lowest": 0.5,
+      "median": 0.48,
+      "total_lowest": 0.5,
+      "total_median": 0.48,
+      "type": "Pistol",
+      "exterior": "Field-Tested",
+      "quality": "Normal",
+      "rarity": "Mil-Spec Grade",
+      "weapon": "R8 Revolver",
+      "collection": "The Prisma 2 Collection",
+      "tournament": null,
+      "family": "R8 Revolver",
+      "commodity": false,
+      "tradable": true,
+      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLjm4Dv8TRe_c2pe5t_eM-fC3GZwPp-se9WQiy3nAgq_W-Dz4n9d3nBawchCZB4FOUOs0S7lNbnYujk5VGPi4pNziWsii9L53l1o7FVy42gbJI",
+      "icon_url_large": null,
+      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20%propid:6%",
+      "market_url": "https://steamcommunity.com/market/listings/730/R8%20Revolver%20%7C%20Bone%20Forged%20%28Field-Tested%29?l=german",
+      "accounts": {
+        "Main Account": 1
+      },
+      "tags": {
+        "Type": {
+          "name": "Pistol",
+          "internal": "CSGO_Type_Pistol",
+          "category_name": "Type",
+          "color": null
+        },
+        "Weapon": {
+          "name": "R8 Revolver",
+          "internal": "weapon_revolver",
+          "category_name": "Weapon",
+          "color": null
+        },
+        "ItemSet": {
+          "name": "The Prisma 2 Collection",
+          "internal": "set_community_25",
+          "category_name": "Collection",
+          "color": null
+        },
+        "Quality": {
+          "name": "Normal",
+          "internal": "normal",
+          "category_name": "Category",
+          "color": null
+        },
+        "Rarity": {
+          "name": "Mil-Spec Grade",
+          "internal": "Rarity_Rare_Weapon",
+          "category_name": "Quality",
+          "color": "4b69ff"
+        },
+        "Exterior": {
+          "name": "Field-Tested",
+          "internal": "WearCategory2",
+          "category_name": "Exterior",
+          "color": null
+        }
+      }
+    },
+    {
       "name": "Sticker | Shattered Web",
       "qty": 1,
-      "lowest": 0.46,
-      "median": 0.44,
-      "total_lowest": 0.46,
-      "total_median": 0.44,
+      "lowest": 0.43,
+      "median": 0.45,
+      "total_lowest": 0.43,
+      "total_median": 0.45,
       "type": "Sticker",
       "exterior": null,
       "quality": "Normal",
@@ -1462,10 +1462,10 @@
     {
       "name": "R8 Revolver | Junk Yard (Field-Tested)",
       "qty": 1,
-      "lowest": 0.42,
-      "median": 0.42,
-      "total_lowest": 0.42,
-      "total_median": 0.42,
+      "lowest": 0.5,
+      "median": 0.44,
+      "total_lowest": 0.5,
+      "total_median": 0.44,
       "type": "Pistol",
       "exterior": "Field-Tested",
       "quality": "Normal",
@@ -1525,10 +1525,10 @@
     {
       "name": "MAG-7 | Metallic DDPAT (Factory New)",
       "qty": 2,
-      "lowest": 0.19,
-      "median": 0.2,
-      "total_lowest": 0.38,
-      "total_median": 0.4,
+      "lowest": 0.2,
+      "median": 0.21,
+      "total_lowest": 0.4,
+      "total_median": 0.42,
       "type": "Shotgun",
       "exterior": "Factory New",
       "quality": "Normal",
@@ -1588,10 +1588,10 @@
     {
       "name": "Tec-9 | Cracked Opal (Field-Tested)",
       "qty": 1,
-      "lowest": 0.37,
-      "median": 0.34,
-      "total_lowest": 0.37,
-      "total_median": 0.34,
+      "lowest": 0.35,
+      "median": 0.37,
+      "total_lowest": 0.35,
+      "total_median": 0.37,
       "type": "Pistol",
       "exterior": "Field-Tested",
       "quality": "Normal",
@@ -1703,9 +1703,9 @@
       "name": "PP-Bizon | Brass (Field-Tested)",
       "qty": 1,
       "lowest": 0.24,
-      "median": 0.24,
+      "median": 0.23,
       "total_lowest": 0.24,
-      "total_median": 0.24,
+      "total_median": 0.23,
       "type": "SMG",
       "exterior": "Field-Tested",
       "quality": "Normal",
@@ -1763,63 +1763,12 @@
       }
     },
     {
-      "name": "Sticker | Terrorist-Tech",
+      "name": "AWP | Safari Mesh (Battle-Scarred)",
       "qty": 1,
       "lowest": 0.23,
       "median": 0.23,
       "total_lowest": 0.23,
       "total_median": 0.23,
-      "type": "Sticker",
-      "exterior": null,
-      "quality": "Normal",
-      "rarity": "High Grade",
-      "weapon": null,
-      "collection": null,
-      "tournament": null,
-      "family": "Sticker",
-      "commodity": true,
-      "tradable": true,
-      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGJai0ki7VeTHjNmpNG-D4ERw8Ljj71uoVRjjjJny9DFP0Oara6xSLandCjaSlOsn4eNsTX-3lB5w4zjdy46pJHKSaQ4lC8NzFudftBi5l9LhN_SiuVLVp32R1g",
-      "icon_url_large": null,
-      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20ADBDADB514A48DAD85AE9DA9CFA8A5ADBD318EC5ADDDBA7E497FF0",
-      "market_url": "https://steamcommunity.com/market/listings/730/Sticker%20%7C%20Terrorist-Tech?l=german",
-      "accounts": {
-        "Main Account": 1
-      },
-      "tags": {
-        "Type": {
-          "name": "Sticker",
-          "internal": "CSGO_Tool_Sticker",
-          "category_name": "Type",
-          "color": null
-        },
-        "Quality": {
-          "name": "Normal",
-          "internal": "normal",
-          "category_name": "Category",
-          "color": null
-        },
-        "Rarity": {
-          "name": "High Grade",
-          "internal": "Rarity_Rare",
-          "category_name": "Quality",
-          "color": "4b69ff"
-        },
-        "StickerCapsule": {
-          "name": "Shattered Web Sticker Collection",
-          "internal": "crate_sticker_pack_shattered_web_lootlist",
-          "category_name": "Sticker Collection",
-          "color": null
-        }
-      }
-    },
-    {
-      "name": "AWP | Safari Mesh (Battle-Scarred)",
-      "qty": 1,
-      "lowest": null,
-      "median": 0.22,
-      "total_lowest": 0,
-      "total_median": 0.22,
       "type": "Sniper Rifle",
       "exterior": "Battle-Scarred",
       "quality": "Normal",
@@ -1889,103 +1838,34 @@
       }
     },
     {
-      "name": "MP9 | Buff Blue (Factory New)",
+      "name": "Sticker | Terrorist-Tech",
       "qty": 1,
-      "lowest": 0.14,
-      "median": 0.16,
-      "total_lowest": 0.14,
-      "total_median": 0.16,
-      "type": "SMG",
-      "exterior": "Factory New",
-      "quality": "Normal",
-      "rarity": "Consumer Grade",
-      "weapon": "MP9",
-      "collection": "The Ascent Collection",
-      "tournament": null,
-      "family": "MP9",
-      "commodity": false,
-      "tradable": true,
-      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL8js_f9TZk7f67bZtoJPeWHVicyOl-pK84TnrhlEwjtWvQzoqvciiWaAIoA5okQ7ZYsBHpxNDkNbzh5QDbjolC02yg2XGzrD7d",
-      "icon_url_large": null,
-      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20%propid:6%",
-      "market_url": "https://steamcommunity.com/market/listings/730/MP9%20%7C%20Buff%20Blue%20%28Factory%20New%29?l=german",
-      "accounts": {
-        "Main Account": 1
-      },
-      "tags": {
-        "Type": {
-          "name": "SMG",
-          "internal": "CSGO_Type_SMG",
-          "category_name": "Type",
-          "color": null
-        },
-        "Weapon": {
-          "name": "MP9",
-          "internal": "weapon_mp9",
-          "category_name": "Weapon",
-          "color": null
-        },
-        "ItemSet": {
-          "name": "The Ascent Collection",
-          "internal": "set_timed_drops_cool",
-          "category_name": "Collection",
-          "color": null
-        },
-        "Quality": {
-          "name": "Normal",
-          "internal": "normal",
-          "category_name": "Category",
-          "color": null
-        },
-        "Rarity": {
-          "name": "Consumer Grade",
-          "internal": "Rarity_Common_Weapon",
-          "category_name": "Quality",
-          "color": "b0c3d9"
-        },
-        "Exterior": {
-          "name": "Factory New",
-          "internal": "WearCategory0",
-          "category_name": "Exterior",
-          "color": null
-        }
-      }
-    },
-    {
-      "name": "Sealed Genesis Terminal",
-      "qty": 1,
-      "lowest": null,
-      "median": 0.15,
-      "total_lowest": 0,
-      "total_median": 0.15,
-      "type": "Container",
+      "lowest": 0.23,
+      "median": 0.21,
+      "total_lowest": 0.23,
+      "total_median": 0.21,
+      "type": "Sticker",
       "exterior": null,
       "quality": "Normal",
-      "rarity": "Base Grade",
+      "rarity": "High Grade",
       "weapon": null,
-      "collection": "The Genesis Collection",
+      "collection": null,
       "tournament": null,
-      "family": "Container",
+      "family": "Sticker",
       "commodity": true,
       "tradable": true,
-      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGJKz2lu_XsnXwtmkJjSU91dh8bj35VTqVBP4io_frnRk7P6he6FpbqWXCzSVkL4h6bExTHuwx0wk6mjUmdn_Iy2TbAUkCZslQu8CtBTrkNz5d7S1oNprwEg",
+      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGJai0ki7VeTHjNmpNG-D4ERw8Ljj71uoVRjjjJny9DFP0Oara6xSLandCjaSlOsn4eNsTX-3lB5w4zjdy46pJHKSaQ4lC8NzFudftBi5l9LhN_SiuVLVp32R1g",
       "icon_url_large": null,
-      "inspect_url": null,
-      "market_url": "https://steamcommunity.com/market/listings/730/Sealed%20Genesis%20Terminal?l=german",
+      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20ADBDADB514A48DAD85AE9DA9CFA8A5ADBD318EC5ADDDBA7E497FF0",
+      "market_url": "https://steamcommunity.com/market/listings/730/Sticker%20%7C%20Terrorist-Tech?l=german",
       "accounts": {
         "Main Account": 1
       },
       "tags": {
         "Type": {
-          "name": "Container",
-          "internal": "CSGO_Type_WeaponCase",
+          "name": "Sticker",
+          "internal": "CSGO_Tool_Sticker",
           "category_name": "Type",
-          "color": null
-        },
-        "ItemSet": {
-          "name": "The Genesis Collection",
-          "internal": "set_community_36",
-          "category_name": "Collection",
           "color": null
         },
         "Quality": {
@@ -1995,19 +1875,25 @@
           "color": null
         },
         "Rarity": {
-          "name": "Base Grade",
-          "internal": "Rarity_Common",
+          "name": "High Grade",
+          "internal": "Rarity_Rare",
           "category_name": "Quality",
-          "color": "b0c3d9"
+          "color": "4b69ff"
+        },
+        "StickerCapsule": {
+          "name": "Shattered Web Sticker Collection",
+          "internal": "crate_sticker_pack_shattered_web_lootlist",
+          "category_name": "Sticker Collection",
+          "color": null
         }
       }
     },
     {
       "name": "SCAR-20 | Carbon Fiber (Minimal Wear)",
       "qty": 1,
-      "lowest": 0.14,
+      "lowest": 0.15,
       "median": 0.15,
-      "total_lowest": 0.14,
+      "total_lowest": 0.15,
       "total_median": 0.15,
       "type": "Sniper Rifle",
       "exterior": "Minimal Wear",
@@ -2066,45 +1952,96 @@
       }
     },
     {
-      "name": "P250 | Copper Oxide (Factory New)",
+      "name": "Sealed Genesis Terminal",
       "qty": 1,
-      "lowest": 0.08,
-      "median": 0.08,
-      "total_lowest": 0.08,
-      "total_median": 0.08,
-      "type": "Pistol",
-      "exterior": "Factory New",
+      "lowest": 0.14,
+      "median": 0.14,
+      "total_lowest": 0.14,
+      "total_median": 0.14,
+      "type": "Container",
+      "exterior": null,
       "quality": "Normal",
-      "rarity": "Consumer Grade",
-      "weapon": "P250",
-      "collection": "The Boreal Collection",
+      "rarity": "Base Grade",
+      "weapon": null,
+      "collection": "The Genesis Collection",
       "tournament": null,
-      "family": "P250",
-      "commodity": false,
+      "family": "Container",
+      "commodity": true,
       "tradable": true,
-      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLhzMOwwjFU0PW8bb1vLOWWMXfClL5JvOhuRz39kEVx526GzYyudHLFbAYpXpZ0EbZeuxK4ktyxNOu3tQLX2o1DyCX7ijQJsHjyf3ICdA",
+      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGJKz2lu_XsnXwtmkJjSU91dh8bj35VTqVBP4io_frnRk7P6he6FpbqWXCzSVkL4h6bExTHuwx0wk6mjUmdn_Iy2TbAUkCZslQu8CtBTrkNz5d7S1oNprwEg",
       "icon_url_large": null,
-      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20%propid:6%",
-      "market_url": "https://steamcommunity.com/market/listings/730/P250%20%7C%20Copper%20Oxide%20%28Factory%20New%29?l=german",
+      "inspect_url": null,
+      "market_url": "https://steamcommunity.com/market/listings/730/Sealed%20Genesis%20Terminal?l=german",
       "accounts": {
         "Main Account": 1
       },
       "tags": {
         "Type": {
-          "name": "Pistol",
-          "internal": "CSGO_Type_Pistol",
+          "name": "Container",
+          "internal": "CSGO_Type_WeaponCase",
+          "category_name": "Type",
+          "color": null
+        },
+        "ItemSet": {
+          "name": "The Genesis Collection",
+          "internal": "set_community_36",
+          "category_name": "Collection",
+          "color": null
+        },
+        "Quality": {
+          "name": "Normal",
+          "internal": "normal",
+          "category_name": "Category",
+          "color": null
+        },
+        "Rarity": {
+          "name": "Base Grade",
+          "internal": "Rarity_Common",
+          "category_name": "Quality",
+          "color": "b0c3d9"
+        }
+      }
+    },
+    {
+      "name": "MP9 | Buff Blue (Factory New)",
+      "qty": 1,
+      "lowest": 0.14,
+      "median": 0.14,
+      "total_lowest": 0.14,
+      "total_median": 0.14,
+      "type": "SMG",
+      "exterior": "Factory New",
+      "quality": "Normal",
+      "rarity": "Consumer Grade",
+      "weapon": "MP9",
+      "collection": "The Ascent Collection",
+      "tournament": null,
+      "family": "MP9",
+      "commodity": false,
+      "tradable": true,
+      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL8js_f9TZk7f67bZtoJPeWHVicyOl-pK84TnrhlEwjtWvQzoqvciiWaAIoA5okQ7ZYsBHpxNDkNbzh5QDbjolC02yg2XGzrD7d",
+      "icon_url_large": null,
+      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20%propid:6%",
+      "market_url": "https://steamcommunity.com/market/listings/730/MP9%20%7C%20Buff%20Blue%20%28Factory%20New%29?l=german",
+      "accounts": {
+        "Main Account": 1
+      },
+      "tags": {
+        "Type": {
+          "name": "SMG",
+          "internal": "CSGO_Type_SMG",
           "category_name": "Type",
           "color": null
         },
         "Weapon": {
-          "name": "P250",
-          "internal": "weapon_p250",
+          "name": "MP9",
+          "internal": "weapon_mp9",
           "category_name": "Weapon",
           "color": null
         },
         "ItemSet": {
-          "name": "The Boreal Collection",
-          "internal": "set_timed_drops_neutral",
+          "name": "The Ascent Collection",
+          "internal": "set_timed_drops_cool",
           "category_name": "Collection",
           "color": null
         },
@@ -2129,342 +2066,12 @@
       }
     },
     {
-      "name": "Sealed Graffiti | Rage Mode (Bazooka Pink)",
-      "qty": 1,
-      "lowest": 0.09,
-      "median": 0.08,
-      "total_lowest": 0.09,
-      "total_median": 0.08,
-      "type": "Graffiti",
-      "exterior": null,
-      "quality": "Normal",
-      "rarity": "Base Grade",
-      "weapon": null,
-      "collection": null,
-      "tournament": null,
-      "family": "Sealed Graffiti",
-      "commodity": true,
-      "tradable": true,
-      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/IzMF03bi9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdB2ozio1RrlIWFK3UfvMYB8UsvjiMXojflsZalyxSh31CIyHz2GZ-KuFpPsrTzBG0pPSEEEvycTKKdnKIHV0wHOdYYz3b-Tuls-3AFDudFOEqQQsGKfQFoWZKbMuLahE615lLpWL-lEtxEQQlZ8lSeR-30ykRMOt9ynM5jBavsQ",
-      "icon_url_large": null,
-      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20FEEEFEE63AF4DEFED6FFCEFA9CF9F6FEEE50F3CEEE96FE8EE63CE1D753",
-      "market_url": "https://steamcommunity.com/market/listings/730/Sealed%20Graffiti%20%7C%20Rage%20Mode%20%28Bazooka%20Pink%29?l=german",
-      "accounts": {
-        "Main Account": 1
-      },
-      "tags": {
-        "Type": {
-          "name": "Graffiti",
-          "internal": "CSGO_Type_Spray",
-          "category_name": "Type",
-          "color": null
-        },
-        "Quality": {
-          "name": "Normal",
-          "internal": "normal",
-          "category_name": "Category",
-          "color": null
-        },
-        "Rarity": {
-          "name": "Base Grade",
-          "internal": "Rarity_Common",
-          "category_name": "Quality",
-          "color": "b0c3d9"
-        },
-        "SprayColorCategory": {
-          "name": "Bazooka Pink",
-          "internal": "Tint16",
-          "category_name": "Graffiti Color",
-          "color": null
-        }
-      }
-    },
-    {
-      "name": "Sealed Graffiti | Rage Mode (Shark White)",
-      "qty": 1,
-      "lowest": null,
-      "median": 0.08,
-      "total_lowest": 0,
-      "total_median": 0.08,
-      "type": "Graffiti",
-      "exterior": null,
-      "quality": "Normal",
-      "rarity": "Base Grade",
-      "weapon": null,
-      "collection": null,
-      "tournament": null,
-      "family": "Sealed Graffiti",
-      "commodity": true,
-      "tradable": true,
-      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/IzMF03bi9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdB2ozio1RrlIWFK3UfvMYB8UsvjiMXojflsZalyxSh31CIyHz2GZ-KuFpPsrTzBG0pPSEEEvycTKKdnKIHV0wHOdYYz3b-Tuls-3AFDudFOEqQQsGKfQFoWZKbMuLahE615lLpWL-lEtxEQQlZ8lSeR-30ykQYL50y3BlAYMh9Q",
-      "icon_url_large": null,
-      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20899989914D83A989A188B98DEB8E8189992784B99AE189F9913CFDFA7F",
-      "market_url": "https://steamcommunity.com/market/listings/730/Sealed%20Graffiti%20%7C%20Rage%20Mode%20%28Shark%20White%29?l=german",
-      "accounts": {
-        "Main Account": 1
-      },
-      "tags": {
-        "Type": {
-          "name": "Graffiti",
-          "internal": "CSGO_Type_Spray",
-          "category_name": "Type",
-          "color": null
-        },
-        "Quality": {
-          "name": "Normal",
-          "internal": "normal",
-          "category_name": "Category",
-          "color": null
-        },
-        "Rarity": {
-          "name": "Base Grade",
-          "internal": "Rarity_Common",
-          "category_name": "Quality",
-          "color": "b0c3d9"
-        },
-        "SprayColorCategory": {
-          "name": "Shark White",
-          "internal": "Tint19",
-          "category_name": "Graffiti Color",
-          "color": null
-        }
-      }
-    },
-    {
-      "name": "MP9 | Orange Peel (Field-Tested)",
-      "qty": 1,
-      "lowest": 0.07,
-      "median": 0.07,
-      "total_lowest": 0.07,
-      "total_median": 0.07,
-      "type": "SMG",
-      "exterior": "Field-Tested",
-      "quality": "Normal",
-      "rarity": "Industrial Grade",
-      "weapon": "MP9",
-      "collection": "The Safehouse Collection",
-      "tournament": null,
-      "family": "MP9",
-      "commodity": false,
-      "tradable": true,
-      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL8js_f7jJk-_O-bZtiMvGdCWKvzOtyufRkASrjlEom42mAn9ehcS6fbw8oA8YlR7IJ4EPrkNziNOjg51Hfj4oQmSjgznQe7YSb6Mg",
-      "icon_url_large": null,
-      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20%propid:6%",
-      "market_url": "https://steamcommunity.com/market/listings/730/MP9%20%7C%20Orange%20Peel%20%28Field-Tested%29?l=german",
-      "accounts": {
-        "Main Account": 1
-      },
-      "tags": {
-        "Type": {
-          "name": "SMG",
-          "internal": "CSGO_Type_SMG",
-          "category_name": "Type",
-          "color": null
-        },
-        "Weapon": {
-          "name": "MP9",
-          "internal": "weapon_mp9",
-          "category_name": "Weapon",
-          "color": null
-        },
-        "ItemSet": {
-          "name": "The Safehouse Collection",
-          "internal": "set_safehouse",
-          "category_name": "Collection",
-          "color": null
-        },
-        "Quality": {
-          "name": "Normal",
-          "internal": "normal",
-          "category_name": "Category",
-          "color": null
-        },
-        "Rarity": {
-          "name": "Industrial Grade",
-          "internal": "Rarity_Uncommon_Weapon",
-          "category_name": "Quality",
-          "color": "5e98d9"
-        },
-        "Exterior": {
-          "name": "Field-Tested",
-          "internal": "WearCategory2",
-          "category_name": "Exterior",
-          "color": null
-        }
-      }
-    },
-    {
-      "name": "AUG | Condemned (Field-Tested)",
-      "qty": 1,
-      "lowest": 0.07,
-      "median": 0.07,
-      "total_lowest": 0.07,
-      "total_median": 0.07,
-      "type": "Rifle",
-      "exterior": "Field-Tested",
-      "quality": "Normal",
-      "rarity": "Industrial Grade",
-      "weapon": "AUG",
-      "collection": "The Safehouse Collection",
-      "tournament": null,
-      "family": "AUG",
-      "commodity": false,
-      "tradable": true,
-      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLwi5Hf7jJk4ve9YJtrL-KWHXOvx-dktd5kSi26gBBpsDuHn92oc3jGaAUpDsYiQ-Beu0Psld20Nbmx4FfWgtpMnyz42C8f7DErvbhblMNefg",
-      "icon_url_large": null,
-      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20%propid:6%",
-      "market_url": "https://steamcommunity.com/market/listings/730/AUG%20%7C%20Condemned%20%28Field-Tested%29?l=german",
-      "accounts": {
-        "Main Account": 1
-      },
-      "tags": {
-        "Type": {
-          "name": "Rifle",
-          "internal": "CSGO_Type_Rifle",
-          "category_name": "Type",
-          "color": null
-        },
-        "Weapon": {
-          "name": "AUG",
-          "internal": "weapon_aug",
-          "category_name": "Weapon",
-          "color": null
-        },
-        "ItemSet": {
-          "name": "The Safehouse Collection",
-          "internal": "set_safehouse",
-          "category_name": "Collection",
-          "color": null
-        },
-        "Quality": {
-          "name": "Normal",
-          "internal": "normal",
-          "category_name": "Category",
-          "color": null
-        },
-        "Rarity": {
-          "name": "Industrial Grade",
-          "internal": "Rarity_Uncommon_Weapon",
-          "category_name": "Quality",
-          "color": "5e98d9"
-        },
-        "Exterior": {
-          "name": "Field-Tested",
-          "internal": "WearCategory2",
-          "category_name": "Exterior",
-          "color": null
-        }
-      }
-    },
-    {
-      "name": "Sealed Graffiti | Rage Mode (Battle Green)",
-      "qty": 1,
-      "lowest": 0.06,
-      "median": 0.06,
-      "total_lowest": 0.06,
-      "total_median": 0.06,
-      "type": "Graffiti",
-      "exterior": null,
-      "quality": "Normal",
-      "rarity": "Base Grade",
-      "weapon": null,
-      "collection": null,
-      "tournament": null,
-      "family": "Sealed Graffiti",
-      "commodity": true,
-      "tradable": true,
-      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/IzMF03bi9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdB2ozio1RrlIWFK3UfvMYB8UsvjiMXojflsZalyxSh31CIyHz2GZ-KuFpPsrTzBG0pPSEEEvycTKKdnKIHV0wHOdYYz3b-Tuls-3AFDudFOEqQQsGKfQFoWZKbMuLahE615lLpWL-lEtxEQQlZ8lSeR-30ylEaeQhnXJlPrbWGA",
-      "icon_url_large": null,
-      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20ADBDADB569A78DAD85AC9DA9CFAAA5ADBD03A09DAAC5ADDDB5CE1CFAE6",
-      "market_url": "https://steamcommunity.com/market/listings/730/Sealed%20Graffiti%20%7C%20Rage%20Mode%20%28Battle%20Green%29?l=german",
-      "accounts": {
-        "Main Account": 1
-      },
-      "tags": {
-        "Type": {
-          "name": "Graffiti",
-          "internal": "CSGO_Type_Spray",
-          "category_name": "Type",
-          "color": null
-        },
-        "Quality": {
-          "name": "Normal",
-          "internal": "normal",
-          "category_name": "Category",
-          "color": null
-        },
-        "Rarity": {
-          "name": "Base Grade",
-          "internal": "Rarity_Common",
-          "category_name": "Quality",
-          "color": "b0c3d9"
-        },
-        "SprayColorCategory": {
-          "name": "Battle Green",
-          "internal": "Tint7",
-          "category_name": "Graffiti Color",
-          "color": null
-        }
-      }
-    },
-    {
-      "name": "Sealed Graffiti | X-Knives (Jungle Green)",
-      "qty": 2,
-      "lowest": 0.03,
-      "median": null,
-      "total_lowest": 0.06,
-      "total_median": 0,
-      "type": "Graffiti",
-      "exterior": null,
-      "quality": "Normal",
-      "rarity": "Base Grade",
-      "weapon": null,
-      "collection": null,
-      "tournament": null,
-      "family": "Sealed Graffiti",
-      "commodity": true,
-      "tradable": true,
-      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/IzMF03bi9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdB2ozio1RrlIWFK3UfvMYB8UsvjiMXojflsZalyxSh31CIyHz2GZ-KuFpPsrTzBG0quyECnHkVzTWIDLKGVomHLoKMW7d_DKit-nAR2zORrkqSwEFKPQE-jdOPJyMbBI83IcD82HulgptEBFuccpKfx2233gHOK0p0XxGdJwDnXUfofmM3A",
-      "icon_url_large": null,
-      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20485848508C4268486049784C2A4F404858F645784020483850BC8BD9A2",
-      "market_url": "https://steamcommunity.com/market/listings/730/Sealed%20Graffiti%20%7C%20X-Knives%20%28Jungle%20Green%29?l=german",
-      "accounts": {
-        "Main Account": 2
-      },
-      "tags": {
-        "Type": {
-          "name": "Graffiti",
-          "internal": "CSGO_Type_Spray",
-          "category_name": "Type",
-          "color": null
-        },
-        "Quality": {
-          "name": "Normal",
-          "internal": "normal",
-          "category_name": "Category",
-          "color": null
-        },
-        "Rarity": {
-          "name": "Base Grade",
-          "internal": "Rarity_Common",
-          "category_name": "Quality",
-          "color": "b0c3d9"
-        },
-        "SprayColorCategory": {
-          "name": "Jungle Green",
-          "internal": "Tint8",
-          "category_name": "Graffiti Color",
-          "color": null
-        }
-      }
-    },
-    {
       "name": "Sawed-Off | Forest DDPAT (Field-Tested)",
       "qty": 1,
-      "lowest": 0.09,
-      "median": 0.05,
-      "total_lowest": 0.09,
-      "total_median": 0.05,
+      "lowest": 0.08,
+      "median": 0.14,
+      "total_lowest": 0.08,
+      "total_median": 0.14,
       "type": "Shotgun",
       "exterior": "Field-Tested",
       "quality": "Normal",
@@ -2522,198 +2129,159 @@
       }
     },
     {
-      "name": "Sealed Graffiti | Quickdraw (Tracer Yellow)",
+      "name": "MP9 | Orange Peel (Field-Tested)",
       "qty": 1,
-      "lowest": 0.04,
-      "median": 0.04,
-      "total_lowest": 0.04,
-      "total_median": 0.04,
-      "type": "Graffiti",
-      "exterior": null,
-      "quality": "Normal",
-      "rarity": "Base Grade",
-      "weapon": null,
-      "collection": null,
-      "tournament": null,
-      "family": "Sealed Graffiti",
-      "commodity": true,
-      "tradable": true,
-      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/IzMF03bi9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdB2ozio1RrlIWFK3UfvMYB8UsvjiMXojflsZalyxSh31CIyHz2GZ-KuFpPsrTzBG0pveDD3n4YzKKKyWJTAduS-cKNT2P_2Gg5ryUEDnBQ7ooFgoMLPACp2cdP8zcOxpsh5lLpWL-lEtxEQQlZ8lSeR-30ykXZb58nSOu8wKtxg",
-      "icon_url_large": null,
-      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20B4A4B4AC70BE94B49CB584B0D6B3BCB4A407B984B2DCB4C4AC01B23CFA",
-      "market_url": "https://steamcommunity.com/market/listings/730/Sealed%20Graffiti%20%7C%20Quickdraw%20%28Tracer%20Yellow%29?l=german",
-      "accounts": {
-        "Main Account": 1
-      },
-      "tags": {
-        "Type": {
-          "name": "Graffiti",
-          "internal": "CSGO_Type_Spray",
-          "category_name": "Type",
-          "color": null
-        },
-        "Quality": {
-          "name": "Normal",
-          "internal": "normal",
-          "category_name": "Category",
-          "color": null
-        },
-        "Rarity": {
-          "name": "Base Grade",
-          "internal": "Rarity_Common",
-          "category_name": "Quality",
-          "color": "b0c3d9"
-        },
-        "SprayColorCategory": {
-          "name": "Tracer Yellow",
-          "internal": "Tint6",
-          "category_name": "Graffiti Color",
-          "color": null
-        }
-      }
-    },
-    {
-      "name": "Sealed Graffiti | Quickdraw (Dust Brown)",
-      "qty": 1,
-      "lowest": null,
-      "median": 0.04,
-      "total_lowest": 0,
-      "total_median": 0.04,
-      "type": "Graffiti",
-      "exterior": null,
-      "quality": "Normal",
-      "rarity": "Base Grade",
-      "weapon": null,
-      "collection": null,
-      "tournament": null,
-      "family": "Sealed Graffiti",
-      "commodity": true,
-      "tradable": true,
-      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/IzMF03bi9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdB2ozio1RrlIWFK3UfvMYB8UsvjiMXojflsZalyxSh31CIyHz2GZ-KuFpPsrTzBG0pveDD3n4YzKKKyWJTAduS-cKNT2P_2Gg5ryUEDnBQ7ooFgoMLPACp2cdP8zcOxpsh5lLpWL-lEtxEQQlZ8lSeR-30ylLN-ohnSVEvry40g",
-      "icon_url_large": null,
-      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20FBEBFBE33FF1DBFBD3FACBFF99FCF3FBEB48F6CBFF93FB8BE35FB750A3",
-      "market_url": "https://steamcommunity.com/market/listings/730/Sealed%20Graffiti%20%7C%20Quickdraw%20%28Dust%20Brown%29?l=german",
-      "accounts": {
-        "Main Account": 1
-      },
-      "tags": {
-        "Type": {
-          "name": "Graffiti",
-          "internal": "CSGO_Type_Spray",
-          "category_name": "Type",
-          "color": null
-        },
-        "Quality": {
-          "name": "Normal",
-          "internal": "normal",
-          "category_name": "Category",
-          "color": null
-        },
-        "Rarity": {
-          "name": "Base Grade",
-          "internal": "Rarity_Common",
-          "category_name": "Quality",
-          "color": "b0c3d9"
-        },
-        "SprayColorCategory": {
-          "name": "Dust Brown",
-          "internal": "Tint4",
-          "category_name": "Graffiti Color",
-          "color": null
-        }
-      }
-    },
-    {
-      "name": "Sealed Graffiti | Quickdraw (Desert Amber)",
-      "qty": 1,
-      "lowest": 0.05,
-      "median": 0.04,
-      "total_lowest": 0.05,
-      "total_median": 0.04,
-      "type": "Graffiti",
-      "exterior": null,
-      "quality": "Normal",
-      "rarity": "Base Grade",
-      "weapon": null,
-      "collection": null,
-      "tournament": null,
-      "family": "Sealed Graffiti",
-      "commodity": true,
-      "tradable": true,
-      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/IzMF03bi9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdB2ozio1RrlIWFK3UfvMYB8UsvjiMXojflsZalyxSh31CIyHz2GZ-KuFpPsrTzBG0pveDD3n4YzKKKyWJTAduS-cKNT2P_2Gg5ryUEDnBQ7ooFgoMLPACp2cdP8zcOxpsh5lLpWL-lEtxEQQlZ8lSeR-30ykSNOV2myVC0CuAHQ",
-      "icon_url_large": null,
-      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20DBCBDBC31FD1FBDBF3DAEBDFB9DCD3DBCB68D6EBDEB3DBABC3689B974F",
-      "market_url": "https://steamcommunity.com/market/listings/730/Sealed%20Graffiti%20%7C%20Quickdraw%20%28Desert%20Amber%29?l=german",
-      "accounts": {
-        "Main Account": 1
-      },
-      "tags": {
-        "Type": {
-          "name": "Graffiti",
-          "internal": "CSGO_Type_Spray",
-          "category_name": "Type",
-          "color": null
-        },
-        "Quality": {
-          "name": "Normal",
-          "internal": "normal",
-          "category_name": "Category",
-          "color": null
-        },
-        "Rarity": {
-          "name": "Base Grade",
-          "internal": "Rarity_Common",
-          "category_name": "Quality",
-          "color": "b0c3d9"
-        },
-        "SprayColorCategory": {
-          "name": "Desert Amber",
-          "internal": "Tint5",
-          "category_name": "Graffiti Color",
-          "color": null
-        }
-      }
-    },
-    {
-      "name": "XM1014 | Blue Spruce (Field-Tested)",
-      "qty": 1,
-      "lowest": 0.04,
-      "median": 0.04,
-      "total_lowest": 0.04,
-      "total_median": 0.04,
-      "type": "Shotgun",
+      "lowest": 0.06,
+      "median": 0.1,
+      "total_lowest": 0.06,
+      "total_median": 0.1,
+      "type": "SMG",
       "exterior": "Field-Tested",
       "quality": "Normal",
-      "rarity": "Consumer Grade",
-      "weapon": "XM1014",
-      "collection": "The Lake Collection",
+      "rarity": "Industrial Grade",
+      "weapon": "MP9",
+      "collection": "The Safehouse Collection",
       "tournament": null,
-      "family": "XM1014",
+      "family": "MP9",
       "commodity": false,
       "tradable": true,
-      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLpk8ewrHZk_P2RZat-M8-eC2OZ1OM4tbZqHCznw01y4z6HyYurI3OeO1ciX5UjQuUOukS6w9TiZbnk51OMiJUFk3st4_wA7g",
+      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyL8js_f7jJk-_O-bZtiMvGdCWKvzOtyufRkASrjlEom42mAn9ehcS6fbw8oA8YlR7IJ4EPrkNziNOjg51Hfj4oQmSjgznQe7YSb6Mg",
       "icon_url_large": null,
       "inspect_url": "steam://run/730//+csgo_econ_action_preview%20%propid:6%",
-      "market_url": "https://steamcommunity.com/market/listings/730/XM1014%20%7C%20Blue%20Spruce%20%28Field-Tested%29?l=german",
+      "market_url": "https://steamcommunity.com/market/listings/730/MP9%20%7C%20Orange%20Peel%20%28Field-Tested%29?l=german",
       "accounts": {
         "Main Account": 1
       },
       "tags": {
         "Type": {
-          "name": "Shotgun",
-          "internal": "CSGO_Type_Shotgun",
+          "name": "SMG",
+          "internal": "CSGO_Type_SMG",
           "category_name": "Type",
           "color": null
         },
         "Weapon": {
-          "name": "XM1014",
-          "internal": "weapon_xm1014",
+          "name": "MP9",
+          "internal": "weapon_mp9",
           "category_name": "Weapon",
           "color": null
         },
         "ItemSet": {
-          "name": "The Lake Collection",
-          "internal": "set_lake",
+          "name": "The Safehouse Collection",
+          "internal": "set_safehouse",
+          "category_name": "Collection",
+          "color": null
+        },
+        "Quality": {
+          "name": "Normal",
+          "internal": "normal",
+          "category_name": "Category",
+          "color": null
+        },
+        "Rarity": {
+          "name": "Industrial Grade",
+          "internal": "Rarity_Uncommon_Weapon",
+          "category_name": "Quality",
+          "color": "5e98d9"
+        },
+        "Exterior": {
+          "name": "Field-Tested",
+          "internal": "WearCategory2",
+          "category_name": "Exterior",
+          "color": null
+        }
+      }
+    },
+    {
+      "name": "Sealed Graffiti | Rage Mode (Bazooka Pink)",
+      "qty": 1,
+      "lowest": 0.1,
+      "median": 0.09,
+      "total_lowest": 0.1,
+      "total_median": 0.09,
+      "type": "Graffiti",
+      "exterior": null,
+      "quality": "Normal",
+      "rarity": "Base Grade",
+      "weapon": null,
+      "collection": null,
+      "tournament": null,
+      "family": "Sealed Graffiti",
+      "commodity": true,
+      "tradable": true,
+      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/IzMF03bi9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdB2ozio1RrlIWFK3UfvMYB8UsvjiMXojflsZalyxSh31CIyHz2GZ-KuFpPsrTzBG0pPSEEEvycTKKdnKIHV0wHOdYYz3b-Tuls-3AFDudFOEqQQsGKfQFoWZKbMuLahE615lLpWL-lEtxEQQlZ8lSeR-30ykRMOt9ynM5jBavsQ",
+      "icon_url_large": null,
+      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20FEEEFEE63AF4DEFED6FFCEFA9CF9F6FEEE50F3CEEE96FE8EE63CE1D753",
+      "market_url": "https://steamcommunity.com/market/listings/730/Sealed%20Graffiti%20%7C%20Rage%20Mode%20%28Bazooka%20Pink%29?l=german",
+      "accounts": {
+        "Main Account": 1
+      },
+      "tags": {
+        "Type": {
+          "name": "Graffiti",
+          "internal": "CSGO_Type_Spray",
+          "category_name": "Type",
+          "color": null
+        },
+        "Quality": {
+          "name": "Normal",
+          "internal": "normal",
+          "category_name": "Category",
+          "color": null
+        },
+        "Rarity": {
+          "name": "Base Grade",
+          "internal": "Rarity_Common",
+          "category_name": "Quality",
+          "color": "b0c3d9"
+        },
+        "SprayColorCategory": {
+          "name": "Bazooka Pink",
+          "internal": "Tint16",
+          "category_name": "Graffiti Color",
+          "color": null
+        }
+      }
+    },
+    {
+      "name": "P250 | Copper Oxide (Factory New)",
+      "qty": 1,
+      "lowest": null,
+      "median": 0.07,
+      "total_lowest": 0,
+      "total_median": 0.07,
+      "type": "Pistol",
+      "exterior": "Factory New",
+      "quality": "Normal",
+      "rarity": "Consumer Grade",
+      "weapon": "P250",
+      "collection": "The Boreal Collection",
+      "tournament": null,
+      "family": "P250",
+      "commodity": false,
+      "tradable": true,
+      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLhzMOwwjFU0PW8bb1vLOWWMXfClL5JvOhuRz39kEVx526GzYyudHLFbAYpXpZ0EbZeuxK4ktyxNOu3tQLX2o1DyCX7ijQJsHjyf3ICdA",
+      "icon_url_large": null,
+      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20%propid:6%",
+      "market_url": "https://steamcommunity.com/market/listings/730/P250%20%7C%20Copper%20Oxide%20%28Factory%20New%29?l=german",
+      "accounts": {
+        "Main Account": 1
+      },
+      "tags": {
+        "Type": {
+          "name": "Pistol",
+          "internal": "CSGO_Type_Pistol",
+          "category_name": "Type",
+          "color": null
+        },
+        "Weapon": {
+          "name": "P250",
+          "internal": "weapon_p250",
+          "category_name": "Weapon",
+          "color": null
+        },
+        "ItemSet": {
+          "name": "The Boreal Collection",
+          "internal": "set_timed_drops_neutral",
           "category_name": "Collection",
           "color": null
         },
@@ -2730,8 +2298,8 @@
           "color": "b0c3d9"
         },
         "Exterior": {
-          "name": "Field-Tested",
-          "internal": "WearCategory2",
+          "name": "Factory New",
+          "internal": "WearCategory0",
           "category_name": "Exterior",
           "color": null
         }
@@ -2740,10 +2308,10 @@
     {
       "name": "Sawed-Off | Snake Camo (Field-Tested)",
       "qty": 1,
-      "lowest": 0.04,
-      "median": 0.04,
-      "total_lowest": 0.04,
-      "total_median": 0.04,
+      "lowest": null,
+      "median": 0.07,
+      "total_lowest": 0,
+      "total_median": 0.07,
       "type": "Shotgun",
       "exterior": "Field-Tested",
       "quality": "Normal",
@@ -2801,12 +2369,495 @@
       }
     },
     {
+      "name": "Sealed Graffiti | X-Knives (Jungle Green)",
+      "qty": 2,
+      "lowest": 0.03,
+      "median": 0.03,
+      "total_lowest": 0.06,
+      "total_median": 0.06,
+      "type": "Graffiti",
+      "exterior": null,
+      "quality": "Normal",
+      "rarity": "Base Grade",
+      "weapon": null,
+      "collection": null,
+      "tournament": null,
+      "family": "Sealed Graffiti",
+      "commodity": true,
+      "tradable": true,
+      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/IzMF03bi9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdB2ozio1RrlIWFK3UfvMYB8UsvjiMXojflsZalyxSh31CIyHz2GZ-KuFpPsrTzBG0quyECnHkVzTWIDLKGVomHLoKMW7d_DKit-nAR2zORrkqSwEFKPQE-jdOPJyMbBI83IcD82HulgptEBFuccpKfx2233gHOK0p0XxGdJwDnXUfofmM3A",
+      "icon_url_large": null,
+      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20485848508C4268486049784C2A4F404858F645784020483850BC8BD9A2",
+      "market_url": "https://steamcommunity.com/market/listings/730/Sealed%20Graffiti%20%7C%20X-Knives%20%28Jungle%20Green%29?l=german",
+      "accounts": {
+        "Main Account": 2
+      },
+      "tags": {
+        "Type": {
+          "name": "Graffiti",
+          "internal": "CSGO_Type_Spray",
+          "category_name": "Type",
+          "color": null
+        },
+        "Quality": {
+          "name": "Normal",
+          "internal": "normal",
+          "category_name": "Category",
+          "color": null
+        },
+        "Rarity": {
+          "name": "Base Grade",
+          "internal": "Rarity_Common",
+          "category_name": "Quality",
+          "color": "b0c3d9"
+        },
+        "SprayColorCategory": {
+          "name": "Jungle Green",
+          "internal": "Tint8",
+          "category_name": "Graffiti Color",
+          "color": null
+        }
+      }
+    },
+    {
+      "name": "Sealed Graffiti | X-Knives (Brick Red)",
+      "qty": 1,
+      "lowest": 0.03,
+      "median": 0.06,
+      "total_lowest": 0.03,
+      "total_median": 0.06,
+      "type": "Graffiti",
+      "exterior": null,
+      "quality": "Normal",
+      "rarity": "Base Grade",
+      "weapon": null,
+      "collection": null,
+      "tournament": null,
+      "family": "Sealed Graffiti",
+      "commodity": true,
+      "tradable": true,
+      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/IzMF03bi9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdB2ozio1RrlIWFK3UfvMYB8UsvjiMXojflsZalyxSh31CIyHz2GZ-KuFpPsrTzBG0quyECnHkVzTWIDLKGVomHLoKMW7d_DKit-nAR2zORrkqSwEFKPQE-jdOPJyMbBI83IcD82HulgptEBFuccpKfx2233gHOK0p0XxKcp9WnSAJds5QAg",
+      "icon_url_large": null,
+      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20CEDECED60AC4EECEE6CFFECAACC9C6CEDE70C3FECFA6CEBED6271481E0",
+      "market_url": "https://steamcommunity.com/market/listings/730/Sealed%20Graffiti%20%7C%20X-Knives%20%28Brick%20Red%29?l=german",
+      "accounts": {
+        "Main Account": 1
+      },
+      "tags": {
+        "Type": {
+          "name": "Graffiti",
+          "internal": "CSGO_Type_Spray",
+          "category_name": "Type",
+          "color": null
+        },
+        "Quality": {
+          "name": "Normal",
+          "internal": "normal",
+          "category_name": "Category",
+          "color": null
+        },
+        "Rarity": {
+          "name": "Base Grade",
+          "internal": "Rarity_Common",
+          "category_name": "Quality",
+          "color": "b0c3d9"
+        },
+        "SprayColorCategory": {
+          "name": "Brick Red",
+          "internal": "Tint1",
+          "category_name": "Graffiti Color",
+          "color": null
+        }
+      }
+    },
+    {
+      "name": "Sealed Graffiti | Chess King (Cash Green)",
+      "qty": 2,
+      "lowest": 0.03,
+      "median": null,
+      "total_lowest": 0.06,
+      "total_median": 0,
+      "type": "Graffiti",
+      "exterior": null,
+      "quality": "Normal",
+      "rarity": "Base Grade",
+      "weapon": null,
+      "collection": null,
+      "tournament": null,
+      "family": "Sealed Graffiti",
+      "commodity": true,
+      "tradable": true,
+      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/IzMF03bi9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdB2ozio1RrlIWFK3UfvMYB8UsvjiMXojflsZalyxSh31CIyHz2GZ-KuFpPsrTzBG0ouqID2fIYz7KKG-BGAluTOFZPT7Z_DqsseWRQTDISLouRVsEfKZSoTUYb83daRFrgdMD5XW2kAJ-ERonYMhTfBuy2ngKbLxzy3UTcDjS7A5U",
+      "icon_url_large": null,
+      "inspect_url": "steam://run/730//+csgo_econ_action_preview%208494849C408EA484AC85B480E6838C84942789B48EEC84F49CCA2FEF12",
+      "market_url": "https://steamcommunity.com/market/listings/730/Sealed%20Graffiti%20%7C%20Chess%20King%20%28Cash%20Green%29?l=german",
+      "accounts": {
+        "Main Account": 2
+      },
+      "tags": {
+        "Type": {
+          "name": "Graffiti",
+          "internal": "CSGO_Type_Spray",
+          "category_name": "Type",
+          "color": null
+        },
+        "Quality": {
+          "name": "Normal",
+          "internal": "normal",
+          "category_name": "Category",
+          "color": null
+        },
+        "Rarity": {
+          "name": "Base Grade",
+          "internal": "Rarity_Common",
+          "category_name": "Quality",
+          "color": "b0c3d9"
+        },
+        "SprayColorCategory": {
+          "name": "Cash Green",
+          "internal": "Tint10",
+          "category_name": "Graffiti Color",
+          "color": null
+        }
+      }
+    },
+    {
+      "name": "AUG | Condemned (Field-Tested)",
+      "qty": 1,
+      "lowest": 0.07,
+      "median": 0.06,
+      "total_lowest": 0.07,
+      "total_median": 0.06,
+      "type": "Rifle",
+      "exterior": "Field-Tested",
+      "quality": "Normal",
+      "rarity": "Industrial Grade",
+      "weapon": "AUG",
+      "collection": "The Safehouse Collection",
+      "tournament": null,
+      "family": "AUG",
+      "commodity": false,
+      "tradable": true,
+      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLwi5Hf7jJk4ve9YJtrL-KWHXOvx-dktd5kSi26gBBpsDuHn92oc3jGaAUpDsYiQ-Beu0Psld20Nbmx4FfWgtpMnyz42C8f7DErvbhblMNefg",
+      "icon_url_large": null,
+      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20%propid:6%",
+      "market_url": "https://steamcommunity.com/market/listings/730/AUG%20%7C%20Condemned%20%28Field-Tested%29?l=german",
+      "accounts": {
+        "Main Account": 1
+      },
+      "tags": {
+        "Type": {
+          "name": "Rifle",
+          "internal": "CSGO_Type_Rifle",
+          "category_name": "Type",
+          "color": null
+        },
+        "Weapon": {
+          "name": "AUG",
+          "internal": "weapon_aug",
+          "category_name": "Weapon",
+          "color": null
+        },
+        "ItemSet": {
+          "name": "The Safehouse Collection",
+          "internal": "set_safehouse",
+          "category_name": "Collection",
+          "color": null
+        },
+        "Quality": {
+          "name": "Normal",
+          "internal": "normal",
+          "category_name": "Category",
+          "color": null
+        },
+        "Rarity": {
+          "name": "Industrial Grade",
+          "internal": "Rarity_Uncommon_Weapon",
+          "category_name": "Quality",
+          "color": "5e98d9"
+        },
+        "Exterior": {
+          "name": "Field-Tested",
+          "internal": "WearCategory2",
+          "category_name": "Exterior",
+          "color": null
+        }
+      }
+    },
+    {
+      "name": "Sealed Graffiti | Quickdraw (Desert Amber)",
+      "qty": 1,
+      "lowest": 0.05,
+      "median": 0.05,
+      "total_lowest": 0.05,
+      "total_median": 0.05,
+      "type": "Graffiti",
+      "exterior": null,
+      "quality": "Normal",
+      "rarity": "Base Grade",
+      "weapon": null,
+      "collection": null,
+      "tournament": null,
+      "family": "Sealed Graffiti",
+      "commodity": true,
+      "tradable": true,
+      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/IzMF03bi9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdB2ozio1RrlIWFK3UfvMYB8UsvjiMXojflsZalyxSh31CIyHz2GZ-KuFpPsrTzBG0pveDD3n4YzKKKyWJTAduS-cKNT2P_2Gg5ryUEDnBQ7ooFgoMLPACp2cdP8zcOxpsh5lLpWL-lEtxEQQlZ8lSeR-30ykSNOV2myVC0CuAHQ",
+      "icon_url_large": null,
+      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20DBCBDBC31FD1FBDBF3DAEBDFB9DCD3DBCB68D6EBDEB3DBABC3689B974F",
+      "market_url": "https://steamcommunity.com/market/listings/730/Sealed%20Graffiti%20%7C%20Quickdraw%20%28Desert%20Amber%29?l=german",
+      "accounts": {
+        "Main Account": 1
+      },
+      "tags": {
+        "Type": {
+          "name": "Graffiti",
+          "internal": "CSGO_Type_Spray",
+          "category_name": "Type",
+          "color": null
+        },
+        "Quality": {
+          "name": "Normal",
+          "internal": "normal",
+          "category_name": "Category",
+          "color": null
+        },
+        "Rarity": {
+          "name": "Base Grade",
+          "internal": "Rarity_Common",
+          "category_name": "Quality",
+          "color": "b0c3d9"
+        },
+        "SprayColorCategory": {
+          "name": "Desert Amber",
+          "internal": "Tint5",
+          "category_name": "Graffiti Color",
+          "color": null
+        }
+      }
+    },
+    {
+      "name": "Sealed Graffiti | Rage Mode (Battle Green)",
+      "qty": 1,
+      "lowest": 0.07,
+      "median": 0.05,
+      "total_lowest": 0.07,
+      "total_median": 0.05,
+      "type": "Graffiti",
+      "exterior": null,
+      "quality": "Normal",
+      "rarity": "Base Grade",
+      "weapon": null,
+      "collection": null,
+      "tournament": null,
+      "family": "Sealed Graffiti",
+      "commodity": true,
+      "tradable": true,
+      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/IzMF03bi9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdB2ozio1RrlIWFK3UfvMYB8UsvjiMXojflsZalyxSh31CIyHz2GZ-KuFpPsrTzBG0pPSEEEvycTKKdnKIHV0wHOdYYz3b-Tuls-3AFDudFOEqQQsGKfQFoWZKbMuLahE615lLpWL-lEtxEQQlZ8lSeR-30ylEaeQhnXJlPrbWGA",
+      "icon_url_large": null,
+      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20ADBDADB569A78DAD85AC9DA9CFAAA5ADBD03A09DAAC5ADDDB5CE1CFAE6",
+      "market_url": "https://steamcommunity.com/market/listings/730/Sealed%20Graffiti%20%7C%20Rage%20Mode%20%28Battle%20Green%29?l=german",
+      "accounts": {
+        "Main Account": 1
+      },
+      "tags": {
+        "Type": {
+          "name": "Graffiti",
+          "internal": "CSGO_Type_Spray",
+          "category_name": "Type",
+          "color": null
+        },
+        "Quality": {
+          "name": "Normal",
+          "internal": "normal",
+          "category_name": "Category",
+          "color": null
+        },
+        "Rarity": {
+          "name": "Base Grade",
+          "internal": "Rarity_Common",
+          "category_name": "Quality",
+          "color": "b0c3d9"
+        },
+        "SprayColorCategory": {
+          "name": "Battle Green",
+          "internal": "Tint7",
+          "category_name": "Graffiti Color",
+          "color": null
+        }
+      }
+    },
+    {
+      "name": "Sealed Graffiti | Rage Mode (Violent Violet)",
+      "qty": 1,
+      "lowest": 0.06,
+      "median": 0.05,
+      "total_lowest": 0.06,
+      "total_median": 0.05,
+      "type": "Graffiti",
+      "exterior": null,
+      "quality": "Normal",
+      "rarity": "Base Grade",
+      "weapon": null,
+      "collection": null,
+      "tournament": null,
+      "family": "Sealed Graffiti",
+      "commodity": true,
+      "tradable": true,
+      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/IzMF03bi9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdB2ozio1RrlIWFK3UfvMYB8UsvjiMXojflsZalyxSh31CIyHz2GZ-KuFpPsrTzBG0pPSEEEvycTKKdnKIHV0wHOdYYz3b-Tuls-3AFDudFOEqQQsGKfQFoWZKbMuLahE615lLpWL-lEtxEQQlZ8lSeR-30ykSN-R3zCeMKiJLoQ",
+      "icon_url_large": null,
+      "inspect_url": "steam://run/730//+csgo_econ_action_preview%201303130BD71933133B12231771141B1303BD1E231D7B13630B33601041",
+      "market_url": "https://steamcommunity.com/market/listings/730/Sealed%20Graffiti%20%7C%20Rage%20Mode%20%28Violent%20Violet%29?l=german",
+      "accounts": {
+        "Main Account": 1
+      },
+      "tags": {
+        "Type": {
+          "name": "Graffiti",
+          "internal": "CSGO_Type_Spray",
+          "category_name": "Type",
+          "color": null
+        },
+        "Quality": {
+          "name": "Normal",
+          "internal": "normal",
+          "category_name": "Category",
+          "color": null
+        },
+        "Rarity": {
+          "name": "Base Grade",
+          "internal": "Rarity_Common",
+          "category_name": "Quality",
+          "color": "b0c3d9"
+        },
+        "SprayColorCategory": {
+          "name": "Violent Violet",
+          "internal": "Tint14",
+          "category_name": "Graffiti Color",
+          "color": null
+        }
+      }
+    },
+    {
+      "name": "Sealed Graffiti | Rage Mode (Shark White)",
+      "qty": 1,
+      "lowest": 0.06,
+      "median": 0.05,
+      "total_lowest": 0.06,
+      "total_median": 0.05,
+      "type": "Graffiti",
+      "exterior": null,
+      "quality": "Normal",
+      "rarity": "Base Grade",
+      "weapon": null,
+      "collection": null,
+      "tournament": null,
+      "family": "Sealed Graffiti",
+      "commodity": true,
+      "tradable": true,
+      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/IzMF03bi9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdB2ozio1RrlIWFK3UfvMYB8UsvjiMXojflsZalyxSh31CIyHz2GZ-KuFpPsrTzBG0pPSEEEvycTKKdnKIHV0wHOdYYz3b-Tuls-3AFDudFOEqQQsGKfQFoWZKbMuLahE615lLpWL-lEtxEQQlZ8lSeR-30ykQYL50y3BlAYMh9Q",
+      "icon_url_large": null,
+      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20899989914D83A989A188B98DEB8E8189992784B99AE189F9913CFDFA7F",
+      "market_url": "https://steamcommunity.com/market/listings/730/Sealed%20Graffiti%20%7C%20Rage%20Mode%20%28Shark%20White%29?l=german",
+      "accounts": {
+        "Main Account": 1
+      },
+      "tags": {
+        "Type": {
+          "name": "Graffiti",
+          "internal": "CSGO_Type_Spray",
+          "category_name": "Type",
+          "color": null
+        },
+        "Quality": {
+          "name": "Normal",
+          "internal": "normal",
+          "category_name": "Category",
+          "color": null
+        },
+        "Rarity": {
+          "name": "Base Grade",
+          "internal": "Rarity_Common",
+          "category_name": "Quality",
+          "color": "b0c3d9"
+        },
+        "SprayColorCategory": {
+          "name": "Shark White",
+          "internal": "Tint19",
+          "category_name": "Graffiti Color",
+          "color": null
+        }
+      }
+    },
+    {
+      "name": "XM1014 | Blue Spruce (Field-Tested)",
+      "qty": 1,
+      "lowest": 0.08,
+      "median": 0.05,
+      "total_lowest": 0.08,
+      "total_median": 0.05,
+      "type": "Shotgun",
+      "exterior": "Field-Tested",
+      "quality": "Normal",
+      "rarity": "Consumer Grade",
+      "weapon": "XM1014",
+      "collection": "The Lake Collection",
+      "tournament": null,
+      "family": "XM1014",
+      "commodity": false,
+      "tradable": true,
+      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLpk8ewrHZk_P2RZat-M8-eC2OZ1OM4tbZqHCznw01y4z6HyYurI3OeO1ciX5UjQuUOukS6w9TiZbnk51OMiJUFk3st4_wA7g",
+      "icon_url_large": null,
+      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20%propid:6%",
+      "market_url": "https://steamcommunity.com/market/listings/730/XM1014%20%7C%20Blue%20Spruce%20%28Field-Tested%29?l=german",
+      "accounts": {
+        "Main Account": 1
+      },
+      "tags": {
+        "Type": {
+          "name": "Shotgun",
+          "internal": "CSGO_Type_Shotgun",
+          "category_name": "Type",
+          "color": null
+        },
+        "Weapon": {
+          "name": "XM1014",
+          "internal": "weapon_xm1014",
+          "category_name": "Weapon",
+          "color": null
+        },
+        "ItemSet": {
+          "name": "The Lake Collection",
+          "internal": "set_lake",
+          "category_name": "Collection",
+          "color": null
+        },
+        "Quality": {
+          "name": "Normal",
+          "internal": "normal",
+          "category_name": "Category",
+          "color": null
+        },
+        "Rarity": {
+          "name": "Consumer Grade",
+          "internal": "Rarity_Common_Weapon",
+          "category_name": "Quality",
+          "color": "b0c3d9"
+        },
+        "Exterior": {
+          "name": "Field-Tested",
+          "internal": "WearCategory2",
+          "category_name": "Exterior",
+          "color": null
+        }
+      }
+    },
+    {
       "name": "FAMAS | Byproduct (Field-Tested)",
       "qty": 1,
       "lowest": 0.03,
-      "median": 0.03,
+      "median": 0.04,
       "total_lowest": 0.03,
-      "total_median": 0.03,
+      "total_median": 0.04,
       "type": "Rifle",
       "exterior": "Field-Tested",
       "quality": "Normal",
@@ -2864,11 +2915,74 @@
       }
     },
     {
+      "name": "P90 | Sand Spray (Field-Tested)",
+      "qty": 1,
+      "lowest": 0.03,
+      "median": 0.04,
+      "total_lowest": 0.03,
+      "total_median": 0.04,
+      "type": "SMG",
+      "exterior": "Field-Tested",
+      "quality": "Normal",
+      "rarity": "Consumer Grade",
+      "weapon": "P90",
+      "collection": "The Dust 2 Collection",
+      "tournament": null,
+      "family": "P90",
+      "commodity": false,
+      "tradable": true,
+      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLhx8bf7jJk_OK8ab1SM_GdClidxOp_pewnGy2xzEh0t2jRzNugci3FP1MiW8BzFrMDuxC-mt2yP-i3tVTeitgXzTK-0H0VdESbcw",
+      "icon_url_large": null,
+      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20%propid:6%",
+      "market_url": "https://steamcommunity.com/market/listings/730/P90%20%7C%20Sand%20Spray%20%28Field-Tested%29?l=german",
+      "accounts": {
+        "Main Account": 1
+      },
+      "tags": {
+        "Type": {
+          "name": "SMG",
+          "internal": "CSGO_Type_SMG",
+          "category_name": "Type",
+          "color": null
+        },
+        "Weapon": {
+          "name": "P90",
+          "internal": "weapon_p90",
+          "category_name": "Weapon",
+          "color": null
+        },
+        "ItemSet": {
+          "name": "The Dust 2 Collection",
+          "internal": "set_dust_2",
+          "category_name": "Collection",
+          "color": null
+        },
+        "Quality": {
+          "name": "Normal",
+          "internal": "normal",
+          "category_name": "Category",
+          "color": null
+        },
+        "Rarity": {
+          "name": "Consumer Grade",
+          "internal": "Rarity_Common_Weapon",
+          "category_name": "Quality",
+          "color": "b0c3d9"
+        },
+        "Exterior": {
+          "name": "Field-Tested",
+          "internal": "WearCategory2",
+          "category_name": "Exterior",
+          "color": null
+        }
+      }
+    },
+    {
       "name": "Dual Berettas | Silver Pour (Field-Tested)",
       "qty": 1,
-      "lowest": null,
+      "lowest": 0.03,
       "median": 0.03,
-      "total_lowest": 0,
+      "total_lowest": 0.03,
       "total_median": 0.03,
       "type": "Pistol",
       "exterior": "Field-Tested",
@@ -2990,46 +3104,34 @@
       }
     },
     {
-      "name": "P90 | Sand Spray (Field-Tested)",
+      "name": "Sealed Graffiti | Quickdraw (Tracer Yellow)",
       "qty": 1,
-      "lowest": null,
+      "lowest": 0.04,
       "median": 0.03,
-      "total_lowest": 0,
+      "total_lowest": 0.04,
       "total_median": 0.03,
-      "type": "SMG",
-      "exterior": "Field-Tested",
+      "type": "Graffiti",
+      "exterior": null,
       "quality": "Normal",
-      "rarity": "Consumer Grade",
-      "weapon": "P90",
-      "collection": "The Dust 2 Collection",
+      "rarity": "Base Grade",
+      "weapon": null,
+      "collection": null,
       "tournament": null,
-      "family": "P90",
-      "commodity": false,
+      "family": "Sealed Graffiti",
+      "commodity": true,
       "tradable": true,
-      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLhx8bf7jJk_OK8ab1SM_GdClidxOp_pewnGy2xzEh0t2jRzNugci3FP1MiW8BzFrMDuxC-mt2yP-i3tVTeitgXzTK-0H0VdESbcw",
+      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/IzMF03bi9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdB2ozio1RrlIWFK3UfvMYB8UsvjiMXojflsZalyxSh31CIyHz2GZ-KuFpPsrTzBG0pveDD3n4YzKKKyWJTAduS-cKNT2P_2Gg5ryUEDnBQ7ooFgoMLPACp2cdP8zcOxpsh5lLpWL-lEtxEQQlZ8lSeR-30ykXZb58nSOu8wKtxg",
       "icon_url_large": null,
-      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20%propid:6%",
-      "market_url": "https://steamcommunity.com/market/listings/730/P90%20%7C%20Sand%20Spray%20%28Field-Tested%29?l=german",
+      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20B4A4B4AC70BE94B49CB584B0D6B3BCB4A407B984B2DCB4C4AC01B23CFA",
+      "market_url": "https://steamcommunity.com/market/listings/730/Sealed%20Graffiti%20%7C%20Quickdraw%20%28Tracer%20Yellow%29?l=german",
       "accounts": {
         "Main Account": 1
       },
       "tags": {
         "Type": {
-          "name": "SMG",
-          "internal": "CSGO_Type_SMG",
+          "name": "Graffiti",
+          "internal": "CSGO_Type_Spray",
           "category_name": "Type",
-          "color": null
-        },
-        "Weapon": {
-          "name": "P90",
-          "internal": "weapon_p90",
-          "category_name": "Weapon",
-          "color": null
-        },
-        "ItemSet": {
-          "name": "The Dust 2 Collection",
-          "internal": "set_dust_2",
-          "category_name": "Collection",
           "color": null
         },
         "Quality": {
@@ -3039,15 +3141,15 @@
           "color": null
         },
         "Rarity": {
-          "name": "Consumer Grade",
-          "internal": "Rarity_Common_Weapon",
+          "name": "Base Grade",
+          "internal": "Rarity_Common",
           "category_name": "Quality",
           "color": "b0c3d9"
         },
-        "Exterior": {
-          "name": "Field-Tested",
-          "internal": "WearCategory2",
-          "category_name": "Exterior",
+        "SprayColorCategory": {
+          "name": "Tracer Yellow",
+          "internal": "Tint6",
+          "category_name": "Graffiti Color",
           "color": null
         }
       }
@@ -3056,9 +3158,9 @@
       "name": "Sealed Graffiti | Jump Shot (Cash Green)",
       "qty": 1,
       "lowest": 0.03,
-      "median": null,
+      "median": 0.03,
       "total_lowest": 0.03,
-      "total_median": 0,
+      "total_median": 0.03,
       "type": "Graffiti",
       "exterior": null,
       "quality": "Normal",
@@ -3149,6 +3251,57 @@
         "SprayColorCategory": {
           "name": "Violent Violet",
           "internal": "Tint14",
+          "category_name": "Graffiti Color",
+          "color": null
+        }
+      }
+    },
+    {
+      "name": "Sealed Graffiti | Quickdraw (Dust Brown)",
+      "qty": 1,
+      "lowest": 0.04,
+      "median": 0.03,
+      "total_lowest": 0.04,
+      "total_median": 0.03,
+      "type": "Graffiti",
+      "exterior": null,
+      "quality": "Normal",
+      "rarity": "Base Grade",
+      "weapon": null,
+      "collection": null,
+      "tournament": null,
+      "family": "Sealed Graffiti",
+      "commodity": true,
+      "tradable": true,
+      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/IzMF03bi9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdB2ozio1RrlIWFK3UfvMYB8UsvjiMXojflsZalyxSh31CIyHz2GZ-KuFpPsrTzBG0pveDD3n4YzKKKyWJTAduS-cKNT2P_2Gg5ryUEDnBQ7ooFgoMLPACp2cdP8zcOxpsh5lLpWL-lEtxEQQlZ8lSeR-30ylLN-ohnSVEvry40g",
+      "icon_url_large": null,
+      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20FBEBFBE33FF1DBFBD3FACBFF99FCF3FBEB48F6CBFF93FB8BE35FB750A3",
+      "market_url": "https://steamcommunity.com/market/listings/730/Sealed%20Graffiti%20%7C%20Quickdraw%20%28Dust%20Brown%29?l=german",
+      "accounts": {
+        "Main Account": 1
+      },
+      "tags": {
+        "Type": {
+          "name": "Graffiti",
+          "internal": "CSGO_Type_Spray",
+          "category_name": "Type",
+          "color": null
+        },
+        "Quality": {
+          "name": "Normal",
+          "internal": "normal",
+          "category_name": "Category",
+          "color": null
+        },
+        "Rarity": {
+          "name": "Base Grade",
+          "internal": "Rarity_Common",
+          "category_name": "Quality",
+          "color": "b0c3d9"
+        },
+        "SprayColorCategory": {
+          "name": "Dust Brown",
+          "internal": "Tint4",
           "category_name": "Graffiti Color",
           "color": null
         }
@@ -3259,9 +3412,9 @@
     {
       "name": "Sealed Graffiti | Ninja (Jungle Green)",
       "qty": 1,
-      "lowest": 0.04,
+      "lowest": 0.03,
       "median": 0.03,
-      "total_lowest": 0.04,
+      "total_lowest": 0.03,
       "total_median": 0.03,
       "type": "Graffiti",
       "exterior": null,
@@ -3410,63 +3563,12 @@
       }
     },
     {
-      "name": "Sealed Graffiti | X-Knives (Brick Red)",
-      "qty": 1,
-      "lowest": 0.03,
-      "median": 0.03,
-      "total_lowest": 0.03,
-      "total_median": 0.03,
-      "type": "Graffiti",
-      "exterior": null,
-      "quality": "Normal",
-      "rarity": "Base Grade",
-      "weapon": null,
-      "collection": null,
-      "tournament": null,
-      "family": "Sealed Graffiti",
-      "commodity": true,
-      "tradable": true,
-      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/IzMF03bi9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdB2ozio1RrlIWFK3UfvMYB8UsvjiMXojflsZalyxSh31CIyHz2GZ-KuFpPsrTzBG0quyECnHkVzTWIDLKGVomHLoKMW7d_DKit-nAR2zORrkqSwEFKPQE-jdOPJyMbBI83IcD82HulgptEBFuccpKfx2233gHOK0p0XxKcp9WnSAJds5QAg",
-      "icon_url_large": null,
-      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20CEDECED60AC4EECEE6CFFECAACC9C6CEDE70C3FECFA6CEBED6271481E0",
-      "market_url": "https://steamcommunity.com/market/listings/730/Sealed%20Graffiti%20%7C%20X-Knives%20%28Brick%20Red%29?l=german",
-      "accounts": {
-        "Main Account": 1
-      },
-      "tags": {
-        "Type": {
-          "name": "Graffiti",
-          "internal": "CSGO_Type_Spray",
-          "category_name": "Type",
-          "color": null
-        },
-        "Quality": {
-          "name": "Normal",
-          "internal": "normal",
-          "category_name": "Category",
-          "color": null
-        },
-        "Rarity": {
-          "name": "Base Grade",
-          "internal": "Rarity_Common",
-          "category_name": "Quality",
-          "color": "b0c3d9"
-        },
-        "SprayColorCategory": {
-          "name": "Brick Red",
-          "internal": "Tint1",
-          "category_name": "Graffiti Color",
-          "color": null
-        }
-      }
-    },
-    {
       "name": "Sealed Graffiti | Eye Spy (Tiger Orange)",
       "qty": 1,
       "lowest": 0.03,
-      "median": 0.03,
+      "median": null,
       "total_lowest": 0.03,
-      "total_median": 0.03,
+      "total_median": 0,
       "type": "Graffiti",
       "exterior": null,
       "quality": "Normal",
@@ -3506,57 +3608,6 @@
         "SprayColorCategory": {
           "name": "Tiger Orange",
           "internal": "Tint3",
-          "category_name": "Graffiti Color",
-          "color": null
-        }
-      }
-    },
-    {
-      "name": "Sealed Graffiti | Rage Mode (Violent Violet)",
-      "qty": 1,
-      "lowest": 0.04,
-      "median": 0.03,
-      "total_lowest": 0.04,
-      "total_median": 0.03,
-      "type": "Graffiti",
-      "exterior": null,
-      "quality": "Normal",
-      "rarity": "Base Grade",
-      "weapon": null,
-      "collection": null,
-      "tournament": null,
-      "family": "Sealed Graffiti",
-      "commodity": true,
-      "tradable": true,
-      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/IzMF03bi9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdB2ozio1RrlIWFK3UfvMYB8UsvjiMXojflsZalyxSh31CIyHz2GZ-KuFpPsrTzBG0pPSEEEvycTKKdnKIHV0wHOdYYz3b-Tuls-3AFDudFOEqQQsGKfQFoWZKbMuLahE615lLpWL-lEtxEQQlZ8lSeR-30ykSN-R3zCeMKiJLoQ",
-      "icon_url_large": null,
-      "inspect_url": "steam://run/730//+csgo_econ_action_preview%201303130BD71933133B12231771141B1303BD1E231D7B13630B33601041",
-      "market_url": "https://steamcommunity.com/market/listings/730/Sealed%20Graffiti%20%7C%20Rage%20Mode%20%28Violent%20Violet%29?l=german",
-      "accounts": {
-        "Main Account": 1
-      },
-      "tags": {
-        "Type": {
-          "name": "Graffiti",
-          "internal": "CSGO_Type_Spray",
-          "category_name": "Type",
-          "color": null
-        },
-        "Quality": {
-          "name": "Normal",
-          "internal": "normal",
-          "category_name": "Category",
-          "color": null
-        },
-        "Rarity": {
-          "name": "Base Grade",
-          "internal": "Rarity_Common",
-          "category_name": "Quality",
-          "color": "b0c3d9"
-        },
-        "SprayColorCategory": {
-          "name": "Violent Violet",
-          "internal": "Tint14",
           "category_name": "Graffiti Color",
           "color": null
         }
@@ -3616,9 +3667,9 @@
     {
       "name": "Sealed Graffiti | Bling (Jungle Green)",
       "qty": 1,
-      "lowest": 0.03,
+      "lowest": null,
       "median": 0.03,
-      "total_lowest": 0.03,
+      "total_lowest": 0,
       "total_median": 0.03,
       "type": "Graffiti",
       "exterior": null,
@@ -3770,9 +3821,9 @@
       "name": "Sealed Graffiti | X-Knives (Frog Green)",
       "qty": 1,
       "lowest": 0.03,
-      "median": null,
+      "median": 0.03,
       "total_lowest": 0.03,
-      "total_median": 0,
+      "total_median": 0.03,
       "type": "Graffiti",
       "exterior": null,
       "quality": "Normal",
@@ -3946,9 +3997,9 @@
     {
       "name": "Nova | Sand Dune (Field-Tested)",
       "qty": 1,
-      "lowest": 0.03,
+      "lowest": 0.04,
       "median": 0.03,
-      "total_lowest": 0.03,
+      "total_lowest": 0.04,
       "total_median": 0.03,
       "type": "Shotgun",
       "exterior": "Field-Tested",
@@ -4009,9 +4060,9 @@
     {
       "name": "MP5-SD | Dirt Drop (Battle-Scarred)",
       "qty": 1,
-      "lowest": 0.03,
+      "lowest": null,
       "median": 0.03,
-      "total_lowest": 0.03,
+      "total_lowest": 0,
       "total_median": 0.03,
       "type": "SMG",
       "exterior": "Battle-Scarred",
@@ -4072,9 +4123,9 @@
     {
       "name": "MAG-7 | Rust Coat (Field-Tested)",
       "qty": 1,
-      "lowest": null,
+      "lowest": 0.03,
       "median": 0.03,
-      "total_lowest": 0,
+      "total_lowest": 0.03,
       "total_median": 0.03,
       "type": "Shotgun",
       "exterior": "Field-Tested",
@@ -4128,57 +4179,6 @@
           "name": "Field-Tested",
           "internal": "WearCategory2",
           "category_name": "Exterior",
-          "color": null
-        }
-      }
-    },
-    {
-      "name": "Sealed Graffiti | Chess King (Cash Green)",
-      "qty": 2,
-      "lowest": null,
-      "median": null,
-      "total_lowest": 0,
-      "total_median": 0,
-      "type": "Graffiti",
-      "exterior": null,
-      "quality": "Normal",
-      "rarity": "Base Grade",
-      "weapon": null,
-      "collection": null,
-      "tournament": null,
-      "family": "Sealed Graffiti",
-      "commodity": true,
-      "tradable": true,
-      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/IzMF03bi9WpSBq-S-ekoE33L-iLqGFHVaU25ZzQNQcXdB2ozio1RrlIWFK3UfvMYB8UsvjiMXojflsZalyxSh31CIyHz2GZ-KuFpPsrTzBG0ouqID2fIYz7KKG-BGAluTOFZPT7Z_DqsseWRQTDISLouRVsEfKZSoTUYb83daRFrgdMD5XW2kAJ-ERonYMhTfBuy2ngKbLxzy3UTcDjS7A5U",
-      "icon_url_large": null,
-      "inspect_url": "steam://run/730//+csgo_econ_action_preview%208494849C408EA484AC85B480E6838C84942789B48EEC84F49CCA2FEF12",
-      "market_url": "https://steamcommunity.com/market/listings/730/Sealed%20Graffiti%20%7C%20Chess%20King%20%28Cash%20Green%29?l=german",
-      "accounts": {
-        "Main Account": 2
-      },
-      "tags": {
-        "Type": {
-          "name": "Graffiti",
-          "internal": "CSGO_Type_Spray",
-          "category_name": "Type",
-          "color": null
-        },
-        "Quality": {
-          "name": "Normal",
-          "internal": "normal",
-          "category_name": "Category",
-          "color": null
-        },
-        "Rarity": {
-          "name": "Base Grade",
-          "internal": "Rarity_Common",
-          "category_name": "Quality",
-          "color": "b0c3d9"
-        },
-        "SprayColorCategory": {
-          "name": "Cash Green",
-          "internal": "Tint10",
-          "category_name": "Graffiti Color",
           "color": null
         }
       }
