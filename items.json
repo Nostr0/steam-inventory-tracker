@@ -1472,6 +1472,69 @@
       }
     },
     {
+      "name": "USP-S | Tropical Breeze (Well-Worn)",
+      "qty": 1,
+      "lowest": 0.42,
+      "median": 0.44,
+      "total_lowest": 0.42,
+      "total_median": 0.44,
+      "type": "Pistol",
+      "exterior": "Well-Worn",
+      "quality": "Normal",
+      "rarity": "Mil-Spec Grade",
+      "weapon": "USP-S",
+      "collection": "The Boreal Collection",
+      "tournament": null,
+      "family": "USP-S",
+      "commodity": false,
+      "tradable": true,
+      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGIGz3UqlXOLrxM-vMGmW8VNxu5Dx60noTyLkjYbf7itX6vytbbZSM_-WMXOCzv5_s-BlcCS2kRQyvnOEy4v6dnzDZ1IgWJFyFu4K5hLqktLuN-jrtASK3o1HxCr_iClO530-_a9cBiau7NtK",
+      "icon_url_large": null,
+      "inspect_url": "steam://run/730//+csgo_econ_action_preview%20%propid:6%",
+      "market_url": "https://steamcommunity.com/market/listings/730/USP-S%20%7C%20Tropical%20Breeze%20%28Well-Worn%29?l=german",
+      "accounts": {
+        "Main Account": 1
+      },
+      "tags": {
+        "Type": {
+          "name": "Pistol",
+          "internal": "CSGO_Type_Pistol",
+          "category_name": "Type",
+          "color": null
+        },
+        "Weapon": {
+          "name": "USP-S",
+          "internal": "weapon_usp_silencer",
+          "category_name": "Weapon",
+          "color": null
+        },
+        "ItemSet": {
+          "name": "The Boreal Collection",
+          "internal": "set_timed_drops_neutral",
+          "category_name": "Collection",
+          "color": null
+        },
+        "Quality": {
+          "name": "Normal",
+          "internal": "normal",
+          "category_name": "Category",
+          "color": null
+        },
+        "Rarity": {
+          "name": "Mil-Spec Grade",
+          "internal": "Rarity_Rare_Weapon",
+          "category_name": "Quality",
+          "color": "4b69ff"
+        },
+        "Exterior": {
+          "name": "Well-Worn",
+          "internal": "WearCategory3",
+          "category_name": "Exterior",
+          "color": null
+        }
+      }
+    },
+    {
       "name": "R8 Revolver | Junk Yard (Field-Tested)",
       "qty": 1,
       "lowest": 0.42,
@@ -1712,6 +1775,57 @@
       }
     },
     {
+      "name": "Sealed Genesis Terminal",
+      "qty": 2,
+      "lowest": 0.15,
+      "median": 0.14,
+      "total_lowest": 0.3,
+      "total_median": 0.28,
+      "type": "Container",
+      "exterior": null,
+      "quality": "Normal",
+      "rarity": "Base Grade",
+      "weapon": null,
+      "collection": "The Genesis Collection",
+      "tournament": null,
+      "family": "Container",
+      "commodity": true,
+      "tradable": true,
+      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGJKz2lu_XsnXwtmkJjSU91dh8bj35VTqVBP4io_frnRk7P6he6FpbqWXCzSVkL4h6bExTHuwx0wk6mjUmdn_Iy2TbAUkCZslQu8CtBTrkNz5d7S1oNprwEg",
+      "icon_url_large": null,
+      "inspect_url": null,
+      "market_url": "https://steamcommunity.com/market/listings/730/Sealed%20Genesis%20Terminal?l=german",
+      "accounts": {
+        "Main Account": 2
+      },
+      "tags": {
+        "Type": {
+          "name": "Container",
+          "internal": "CSGO_Type_WeaponCase",
+          "category_name": "Type",
+          "color": null
+        },
+        "ItemSet": {
+          "name": "The Genesis Collection",
+          "internal": "set_community_36",
+          "category_name": "Collection",
+          "color": null
+        },
+        "Quality": {
+          "name": "Normal",
+          "internal": "normal",
+          "category_name": "Category",
+          "color": null
+        },
+        "Rarity": {
+          "name": "Base Grade",
+          "internal": "Rarity_Common",
+          "category_name": "Quality",
+          "color": "b0c3d9"
+        }
+      }
+    },
+    {
       "name": "PP-Bizon | Brass (Field-Tested)",
       "qty": 1,
       "lowest": 0.24,
@@ -1948,57 +2062,6 @@
           "internal": "Team29",
           "category_name": "Team",
           "color": null
-        }
-      }
-    },
-    {
-      "name": "Sealed Genesis Terminal",
-      "qty": 1,
-      "lowest": 0.15,
-      "median": 0.14,
-      "total_lowest": 0.15,
-      "total_median": 0.14,
-      "type": "Container",
-      "exterior": null,
-      "quality": "Normal",
-      "rarity": "Base Grade",
-      "weapon": null,
-      "collection": "The Genesis Collection",
-      "tournament": null,
-      "family": "Container",
-      "commodity": true,
-      "tradable": true,
-      "icon_url": "https://community.cloudflare.steamstatic.com/economy/image/i0CoZ81Ui0m-9KwlBY1L_18myuGuq1wfhWSaZgMttyVfPaERSR0Wqmu7LAocGJKz2lu_XsnXwtmkJjSU91dh8bj35VTqVBP4io_frnRk7P6he6FpbqWXCzSVkL4h6bExTHuwx0wk6mjUmdn_Iy2TbAUkCZslQu8CtBTrkNz5d7S1oNprwEg",
-      "icon_url_large": null,
-      "inspect_url": null,
-      "market_url": "https://steamcommunity.com/market/listings/730/Sealed%20Genesis%20Terminal?l=german",
-      "accounts": {
-        "Main Account": 1
-      },
-      "tags": {
-        "Type": {
-          "name": "Container",
-          "internal": "CSGO_Type_WeaponCase",
-          "category_name": "Type",
-          "color": null
-        },
-        "ItemSet": {
-          "name": "The Genesis Collection",
-          "internal": "set_community_36",
-          "category_name": "Collection",
-          "color": null
-        },
-        "Quality": {
-          "name": "Normal",
-          "internal": "normal",
-          "category_name": "Category",
-          "color": null
-        },
-        "Rarity": {
-          "name": "Base Grade",
-          "internal": "Rarity_Common",
-          "category_name": "Quality",
-          "color": "b0c3d9"
         }
       }
     },

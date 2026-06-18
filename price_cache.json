@@ -443,6 +443,12 @@
     "lowest": 0.34,
     "median": 0.33
   },
+  "3:USP-S | Tropical Breeze (Well-Worn)": {
+    "currency": "EUR",
+    "fetched_at": 1781800541.975893,
+    "lowest": 0.42,
+    "median": 0.44
+  },
   "3:XM1014 | Blue Spruce (Field-Tested)": {
     "currency": "EUR",
     "fetched_at": 1781774509.4897954,
