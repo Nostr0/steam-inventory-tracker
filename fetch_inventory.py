@@ -410,15 +410,24 @@ def backfill_missing_daily_rows(path: Path, numeric_fields: tuple[str, ...]) -> 
 def get_with_retry(
     url: str,
     params: Optional[dict] = None,
-    max_retries: int = 6,
+    max_retries: int = 9,
     base_delay: float = 2.0,
+    max_delay: float = 90.0,
     timeout: int = 30,
 ) -> requests.Response:
     for attempt in range(max_retries):
         try:
             r = SESSION.get(url, params=params, timeout=timeout)
             if r.status_code == 429:
-                wait = base_delay * (2 ** attempt)
+                retry_after = r.headers.get("Retry-After")
+                if retry_after:
+                    try:
+                        wait = float(retry_after)
+                    except ValueError:
+                        wait = base_delay * (2 ** attempt)
+                else:
+                    wait = base_delay * (2 ** attempt)
+                wait = min(wait, max_delay) + random.uniform(0, 1.5)
                 dbg(f"429 rate-limited → waiting {wait:.0f}s "
                     f"(attempt {attempt + 1}/{max_retries})")
                 time.sleep(wait)
@@ -428,7 +437,7 @@ def get_with_retry(
         except requests.RequestException as exc:
             if attempt == max_retries - 1:
                 raise
-            wait = base_delay * (2 ** attempt)
+            wait = min(base_delay * (2 ** attempt), max_delay)
             dbg(f"Request error ({exc}), retrying in {wait:.0f}s")
             time.sleep(wait)
     raise RuntimeError(f"All {max_retries} retries exhausted for {url}")
